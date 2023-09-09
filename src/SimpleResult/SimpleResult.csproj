@@ -4,6 +4,10 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Title>SimpleResult</Title>
+        <Authors>EnergyNick</Authors>
+        <PackageLicenseUrl>https://github.com/EnergyNick/SimpleResult/blob/master/LICENSE</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/EnergyNick/SimpleResult</RepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>

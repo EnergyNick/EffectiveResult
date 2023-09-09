@@ -5,6 +5,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>SimpleResult</RootNamespace>
+        <Title>SimpleResult Core</Title>
+        <PackageLicenseUrl>https://github.com/EnergyNick/SimpleResult/blob/master/LICENSE</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/EnergyNick/SimpleResult</RepositoryUrl>
+        <Authors>EnergyNick</Authors>
     </PropertyGroup>
 
 </Project>
