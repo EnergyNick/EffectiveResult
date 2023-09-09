@@ -19,5 +19,5 @@ public interface IConclusion
     /// <summary>
     /// Get all errors.
     /// </summary>
-    IEnumerable<IError> Errors { get; }
+    IReadOnlyCollection<IError> Errors { get; }
 }
