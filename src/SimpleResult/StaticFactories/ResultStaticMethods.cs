@@ -18,6 +18,11 @@ public partial record Result
     public static Result Fail(IError error) => new(error);
 
     /// <summary>
+    /// Creates a failed result with the given errors
+    /// </summary>
+    public static Result Fail(IEnumerable<IError> error) => new(error);
+
+    /// <summary>
     /// Creates a failed result with the given error message.
     /// Message will be transformed to <see cref="Error"/>
     /// </summary>
@@ -64,7 +69,7 @@ public partial record Result
     /// <summary>
     /// Executes the action and catch all exceptions, If they will be thrown within the action.
     /// Exception transforming to Error by <see cref="catchHandler"/>
-    /// or by default catch handler from <see cref="ResultSettings.Current"/>
+    /// or by default catch handler from <see cref="ResultSettings"/>.<see cref="ResultSettings.Current"/>
     /// </summary>
     public static Result Try(Action action, Func<Exception, Error>? catchHandler = null)
     {
@@ -84,7 +89,7 @@ public partial record Result
     /// <summary>
     /// Executes the async action and catch all exceptions, If they will be thrown within the action.
     /// Exception transforming to Error by <see cref="catchHandler"/>
-    /// or by default catch handler from <see cref="ResultSettings.Current"/>
+    /// or by default catch handler from <see cref="ResultSettings"/>.<see cref="ResultSettings.Current"/>
     /// </summary>
     public static async Task<Result> TryAsync(Func<Task> action, Func<Exception, Error>? catchHandler = null)
     {
@@ -104,7 +109,7 @@ public partial record Result
     /// <summary>
     /// Executes the action with return value and catch all exceptions, If they will be thrown within the action.
     /// Exception transforming to Error by <see cref="catchHandler"/>
-    /// or by default catch handler from <see cref="ResultSettings.Current"/>
+    /// or by default catch handler from <see cref="ResultSettings"/>.<see cref="ResultSettings.Current"/>
     /// </summary>
     public static Result<T> Try<T>(Func<T> action, Func<Exception, Error>? catchHandler = null)
     {
@@ -123,7 +128,7 @@ public partial record Result
     /// <summary>
     /// Executes the async action with return value and catch all exceptions, If they will be thrown within the action.
     /// Exception transforming to Error by <see cref="catchHandler"/>
-    /// or by default catch handler from <see cref="ResultSettings.Current"/>
+    /// or by default catch handler from <see cref="ResultSettings"/>.<see cref="ResultSettings.Current"/>
     /// </summary>
     public static async Task<Result<T>> TryAsync<T>(Func<Task<T>> action, Func<Exception, Error>? catchHandler = null)
     {
