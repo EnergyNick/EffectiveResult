@@ -40,6 +40,16 @@ public partial record Result
     public static Result<TValue> Fail<TValue>(IError error) => new(error);
 
     /// <summary>
+    /// Creates a failed result with the given errors
+    /// </summary>
+    public static Result<TValue> Fail<TValue>(IEnumerable<IError> error) => new(error);
+
+    /// <summary>
+    /// Creates a failed result with the given errors
+    /// </summary>
+    public static Result<TValue> Fail<TValue>(params IError[] error) => new(error);
+
+    /// <summary>
     /// Creates a failed result with the given error message.
     /// Message will be transformed to <see cref="Error"/>
     /// </summary>
