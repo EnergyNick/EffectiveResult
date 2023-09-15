@@ -43,9 +43,19 @@ public record Result<TValue> : IConclusion
 
     internal Result(IError error) => _errors = ImmutableArray.Create(error);
 
-    internal Result(params IError[] errors) => _errors = errors.ToImmutableArray();
+    internal Result(params IError[] errors)
+    {
+        _errors = ImmutableArray.Create(errors);
+        if (_errors.Length == 0)
+            throw new InvalidResultOperationException("Can't create failed result without errors");
+    }
 
-    internal Result(IEnumerable<IError> errors) => _errors = errors.ToImmutableArray();
+    internal Result(IEnumerable<IError> errors)
+    {
+        _errors = errors.ToImmutableArray();
+        if (_errors.Length == 0)
+            throw new InvalidResultOperationException("Can't create failed result without errors");
+    }
 
     public Result(Result<TValue> other)
     {
