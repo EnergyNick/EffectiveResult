@@ -6,6 +6,18 @@ namespace SimpleResult.Extensions;
 public static class ConclusionErrorsExtensions
 {
     /// <summary>
+    /// Used to find the necessary error in result.
+    /// </summary>
+    /// <typeparam name="TError">Type of searching error</typeparam>
+    /// <typeparam name="TConclusion">Type of conclusion</typeparam>
+    public static bool HasError<TError, TConclusion>(this TConclusion conclusion, Predicate<TError>? predicate = null)
+        where TConclusion : IConclusion
+        where TError : IError
+    {
+        return conclusion.Errors.Any(x => x is TError error && (predicate?.Invoke(error) ?? true));
+    }
+
+    /// <summary>
     /// Check, if in array of <see cref="IError"/> contains error of <see cref="TError"/> type.
     /// </summary>
     /// <param name="errors">Source of errors</param>
