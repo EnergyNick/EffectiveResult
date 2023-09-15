@@ -47,6 +47,11 @@ public partial record Result
     /// <summary>
     /// Creates a failed result with the given errors
     /// </summary>
+    public static Result Fail(params IError[] error) => new(error);
+
+    /// <summary>
+    /// Creates a failed result with the given errors
+    /// </summary>
     public static Result<TValue> Fail<TValue>(IEnumerable<IError> error) => new(error);
 
     /// <summary>
