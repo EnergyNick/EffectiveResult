@@ -50,10 +50,10 @@ public record Result<TValue> : IConclusion
             throw new InvalidResultOperationException("Can't create failed result without errors");
     }
 
-    internal Result(IEnumerable<IError> errors)
+    internal Result(IEnumerable<IError> errors, bool isFailed = true)
     {
         _errors = errors.ToImmutableArray();
-        if (_errors.Length == 0)
+        if (isFailed && _errors.Length == 0)
             throw new InvalidResultOperationException("Can't create failed result without errors");
     }
 
@@ -61,15 +61,15 @@ public record Result<TValue> : IConclusion
     {
         if (other.IsSuccess)
             _value = other.ValueOrDefault;
-        else
-            _errors = other._errors;
+
+        _errors = other._errors;
     }
 
     /// <summary>
     /// Provide conversion to <see cref="Result"/> with same reasons
     /// </summary>
     /// <returns>Copy of current result with new value</returns>
-    public Result ToResult() => new(_errors);
+    public Result ToResult() => new(_errors, IsFailed);
 
     /// <summary>
     /// Provide conversion to <see cref="Result{TValue}"/> with value changing
