@@ -334,4 +334,94 @@ public class StaticFactoriesTests
         var valueResult = await valueAction();
         valueResult.ShouldBeFailed(error);
     }
+
+    [Fact]
+    public void OkIfMethod_WhenInvokeWithCondition_ShouldReturnValidResult()
+    {
+        // Arrange
+        const string errorMessage = "Very bad";
+        var error = new Error(errorMessage);
+
+        // Act
+        var successResultStr = Result.OkIf(true, errorMessage);
+        var successResultError = Result.OkIf(true, error);
+
+        var failedResultStr = Result.OkIf(false, errorMessage);
+        var failedResultError = Result.OkIf(false, error);
+
+        // Assert
+        successResultStr.ShouldBeSuccess();
+        successResultError.ShouldBeSuccess();
+
+        failedResultStr.ShouldBeFailed(error);
+        failedResultError.ShouldBeFailed(error);
+    }
+
+    [Fact]
+    public void FailIfMethod_WhenInvokeWithCondition_ShouldReturnValidResult()
+    {
+        // Arrange
+        const string errorMessage = "Very bad";
+        var error = new Error(errorMessage);
+
+        // Act
+        var successResultStr = Result.FailIf(false, errorMessage);
+        var successResultError = Result.FailIf(false, error);
+
+        var failedResultStr = Result.FailIf(true, errorMessage);
+        var failedResultError = Result.FailIf(true, error);
+
+        // Assert
+        successResultStr.ShouldBeSuccess();
+        successResultError.ShouldBeSuccess();
+
+        failedResultStr.ShouldBeFailed(error);
+        failedResultError.ShouldBeFailed(error);
+    }
+
+    [Fact]
+    public void OkIfMethod_WhenInvokeWithConditionAndValue_ShouldReturnValidResultWithValue()
+    {
+        // Arrange
+        const string errorMessage = "Very bad";
+        var error = new Error(errorMessage);
+        var value = new List<int>();
+
+        // Act
+        var successResultStr = Result.OkIf(true, errorMessage, value);
+        var successResultError = Result.OkIf(true, error, value);
+
+        var failedResultStr = Result.OkIf(false, errorMessage, value);
+        var failedResultError = Result.OkIf(false, error, value);
+
+        // Assert
+        successResultStr.ShouldBeSuccessAndEqualsValue(value);
+        successResultError.ShouldBeSuccessAndEqualsValue(value);
+
+        failedResultStr.ShouldBeFailed(error);
+        failedResultError.ShouldBeFailed(error);
+    }
+
+    [Fact]
+    public void FailIfMethod_WhenInvokeWithConditionAndValue_ShouldReturnValidResultWithValue()
+    {
+        // Arrange
+        const string errorMessage = "Very bad";
+        var error = new Error(errorMessage);
+        var value = new List<int>();
+
+        // Act
+        var successResultStr = Result.FailIf(false, errorMessage, value);
+        var successResultError = Result.FailIf(false, error, value);
+
+        var failedResultStr = Result.FailIf(true, errorMessage, value);
+        var failedResultError = Result.FailIf(true, error, value);
+
+        // Assert
+        successResultStr.ShouldBeSuccessAndEqualsValue(value);
+        successResultError.ShouldBeSuccessAndEqualsValue(value);
+
+        failedResultStr.ShouldBeFailed(error);
+        failedResultError.ShouldBeFailed(error);
+    }
 }
