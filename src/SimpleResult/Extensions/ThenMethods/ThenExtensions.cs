@@ -5,20 +5,7 @@ public static partial class ResultsThenExtensions
     /// <summary>
     /// Provide chaining method for action on success result
     /// </summary>
-    /// <param name="input">Source of success status</param>
-    /// <param name="continuation">Action for invoke on success</param>
-    /// <returns>Result from <paramref name="input"/></returns>
-    public static Result Then(this Result input, Action continuation)
-    {
-        if (input.IsSuccess)
-            continuation();
-        return input;
-    }
-
-    /// <summary>
-    /// Provide chaining method for action on success result
-    /// </summary>
-    /// <param name="input">Source of success status</param>
+    /// <param name="input">Source result</param>
     /// <param name="continuation">Action for invoke on success</param>
     /// <typeparam name="TValue">Type of result value on success</typeparam>
     /// <returns>Result from <paramref name="input"/></returns>

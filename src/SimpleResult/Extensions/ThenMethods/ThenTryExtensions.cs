@@ -8,7 +8,7 @@ public static partial class ResultsThenExtensions
     /// Provide chaining method for action on success result.
     /// On exception in "<paramref name="continuation"/>" catch and return failed result.
     /// </summary>
-    /// <param name="input">Source of success status</param>
+    /// <param name="input">Source result</param>
     /// <param name="continuation">Action for invoke on success</param>
     /// <param name="catchHandler">
     /// Transform exceptions to errors,
@@ -35,7 +35,7 @@ public static partial class ResultsThenExtensions
     /// Provide chaining method for action on success result.
     /// On exception in "<paramref name="continuation"/>" catch and return failed result.
     /// </summary>
-    /// <param name="input">Source of success status</param>
+    /// <param name="input">Source result</param>
     /// <param name="continuation">Action for invoke on success</param>
     /// <param name="catchHandler">
     /// Transform exceptions to errors,
@@ -63,7 +63,7 @@ public static partial class ResultsThenExtensions
     /// Provide chaining method for next function on success result.
     /// On exception in "<paramref name="continuation"/>" catch and return failed result.
     /// </summary>
-    /// <param name="input">Source of success status</param>
+    /// <param name="input">Source result</param>
     /// <param name="continuation">Action for invoke on success</param>
     /// <param name="catchHandler">
     /// Transform exceptions to errors,
@@ -91,7 +91,7 @@ public static partial class ResultsThenExtensions
     /// Provide chaining method for next function on success result.
     /// On exception in "<paramref name="continuation"/>" catch and return failed result.
     /// </summary>
-    /// <param name="input">Source of success status</param>
+    /// <param name="input">Source result</param>
     /// <param name="continuation">Action for invoke on success</param>
     /// <param name="catchHandler">
     /// Transform exceptions to errors,
@@ -119,7 +119,7 @@ public static partial class ResultsThenExtensions
     /// Provide chaining method for action on success result.
     /// On exception in "<paramref name="continuation"/>" catch and return failed result.
     /// </summary>
-    /// <param name="input">Source of success status</param>
+    /// <param name="input">Source result</param>
     /// <param name="continuation">Action for invoke on success</param>
     /// <param name="catchHandler">
     /// Transform exceptions to errors,
@@ -148,7 +148,7 @@ public static partial class ResultsThenExtensions
     /// Provide chaining method for action on success result.
     /// On exception in "<paramref name="continuation"/>" catch and return failed result.
     /// </summary>
-    /// <param name="input">Source of success status</param>
+    /// <param name="input">Source result</param>
     /// <param name="continuation">Action for invoke on success</param>
     /// <param name="catchHandler">
     /// Transform exceptions to errors,
