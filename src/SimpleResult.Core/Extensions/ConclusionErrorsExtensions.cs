@@ -49,7 +49,7 @@ public static class ConclusionErrorsExtensions
         Predicate<IExceptionalError>? filter = null)
         where TConclusion : IConclusion
     {
-        return TryGetException<TConclusion, Exception>(conclusion, out exception, filter);
+        return TryGetException<Exception, TConclusion>(conclusion, out exception, filter);
     }
 
     /// <summary>
@@ -61,7 +61,7 @@ public static class ConclusionErrorsExtensions
     /// <typeparam name="TConclusion">Type of conclusion</typeparam>
     /// <typeparam name="TException">Type of matching exception</typeparam>
     /// <returns>True, if conclusion contains matching error</returns>
-    public static bool TryGetException<TConclusion, TException>(this TConclusion conclusion,
+    public static bool TryGetException<TException, TConclusion>(this TConclusion conclusion,
         [NotNullWhen(true)] out TException? exception,
         Predicate<IExceptionalError>? filter = null)
         where TException : Exception
@@ -85,7 +85,7 @@ public static class ConclusionErrorsExtensions
         Predicate<IExceptionalError>? filter = null)
         where TConclusion : IConclusion
     {
-        return GetExceptions<TConclusion, Exception>(conclusion, filter);
+        return GetExceptions<Exception, TConclusion>(conclusion, filter);
     }
 
     /// <summary>
@@ -96,7 +96,7 @@ public static class ConclusionErrorsExtensions
     /// <typeparam name="TConclusion">Type of conclusion</typeparam>
     /// <typeparam name="TException">Type of exception</typeparam>
     /// <returns>Collections of matching exceptions from conclusion</returns>
-    public static IEnumerable<TException> GetExceptions<TConclusion, TException>(this TConclusion conclusion,
+    public static IEnumerable<TException> GetExceptions<TException, TConclusion>(this TConclusion conclusion,
         Predicate<IExceptionalError>? filter = null)
         where TException : Exception
         where TConclusion : IConclusion
