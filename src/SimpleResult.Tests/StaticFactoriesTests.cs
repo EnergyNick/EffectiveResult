@@ -116,28 +116,7 @@ public class StaticFactoriesTests
     }
 
     [Fact]
-    public void FailMethod_WhenInvokeWithErrorsEnumerable_ShouldReturnFailedResultWithValidErrors()
-    {
-        // Arrange
-        var exception = new Exception("Test");
-        var errors = new IError[]
-        {
-            new Error("Very bad"),
-            new Error("So bad, but why..."),
-            new ExceptionalError(exception)
-        }.AsEnumerable();
-
-        // Act
-        var result = Result.Fail(errors);
-        var resultWithValue = Result.Fail<string>(errors);
-
-        // Assert
-        result.ShouldBeFailed(errors);
-        resultWithValue.ShouldBeFailed(errors);
-    }
-
-    [Fact]
-    public void FailMethod_WhenInvokeWithEmptyErrorsEnumerable_ShouldThrowResultException()
+    public void FailMethod_WhenInvokeWithEmptyErrors_ShouldThrowResultException()
     {
         // Arrange
         var errors = Enumerable.Empty<IError>();

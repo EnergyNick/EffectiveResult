@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-using System.ComponentModel;
 using SimpleResult.Core;
 using SimpleResult.Exceptions;
 
@@ -43,16 +42,12 @@ public record Result<TValue> : IConclusion
 
     internal Result(IError error) => _errors = ImmutableArray.Create(error);
 
-    internal Result(params IError[] errors)
-    {
-        _errors = ImmutableArray.Create(errors);
-        if (_errors.Length == 0)
-            throw new InvalidResultOperationException("Can't create failed result without errors");
-    }
-
     internal Result(IEnumerable<IError> errors, bool isFailed = true)
     {
-        _errors = errors.ToImmutableArray();
+        _errors = errors is IError[] arrayErrors
+            ? ImmutableArray.Create(arrayErrors)
+            : errors.ToImmutableArray();
+
         if (isFailed && _errors.Length == 0)
             throw new InvalidResultOperationException("Can't create failed result without errors");
     }

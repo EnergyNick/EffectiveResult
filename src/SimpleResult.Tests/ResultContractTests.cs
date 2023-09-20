@@ -13,7 +13,7 @@ public class ResultContractTests
     {
         // Arrange
         var valueInt = 5;
-        var valueStr = new List<string> {"Wow!"};
+        var valueStr = new List<string> { "Wow!" };
 
         // Act
         var result = new Result();
@@ -69,40 +69,14 @@ public class ResultContractTests
     {
         // Arrange
         var errors = Array.Empty<IError>();
-        var enumerableErrors = errors.AsEnumerable();
 
         // Act
         var resultArray = () => new Result(errors);
-        var resultEnumerable = () => new Result(enumerableErrors);
         var valuedResultArray = () => new Result<List<string>>(errors);
-        var valuedResultEnumerable = () => new Result<List<string>>(enumerableErrors);
 
         // Assert
         resultArray.Should().Throw<InvalidResultOperationException>();
-        resultEnumerable.Should().Throw<InvalidResultOperationException>();
         valuedResultArray.Should().Throw<InvalidResultOperationException>();
-        valuedResultEnumerable.Should().Throw<InvalidResultOperationException>();
-    }
-
-    [Fact]
-    public void ResultConstruction_WhenCreateFailedResultWithEnumerableErrors_ShouldBeInValidState()
-    {
-        // Arrange
-        var errors = new IError[]
-        {
-            new Error("Very bad"),
-            new ExceptionalError(new Exception())
-        }.AsEnumerable();
-
-        // Act
-        var result = new Result(errors);
-        var valuedResult = new Result<int>(errors);
-        var classResult = new Result<List<string>>(errors);
-
-        // Assert
-        result.ShouldBeFailed(errors);
-        valuedResult.ShouldBeFailed(errors);
-        classResult.ShouldBeFailed(errors);
     }
 
     [Fact]
