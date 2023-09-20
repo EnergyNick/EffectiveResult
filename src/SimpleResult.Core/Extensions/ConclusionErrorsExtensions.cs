@@ -50,11 +50,11 @@ public static class ConclusionErrorsExtensions
     /// <typeparam name="TConclusion">Type of conclusion</typeparam>
     /// <returns>True, if conclusion contains matching error</returns>
     public static bool TryGetException<TConclusion>(this TConclusion conclusion,
-        Predicate<IExceptionalError> filter,
-        [NotNullWhen(true)] out Exception? exception)
+        [NotNullWhen(true)] out Exception? exception,
+        Predicate<Exception>? filter = null)
         where TConclusion : IConclusion
     {
-        return TryGetException(conclusion, out exception, filter);
+        return TryGetException<Exception, TConclusion>(conclusion, out exception, filter);
     }
 
     /// <summary>
@@ -68,13 +68,13 @@ public static class ConclusionErrorsExtensions
     /// <returns>True, if conclusion contains matching error</returns>
     public static bool TryGetException<TException, TConclusion>(this TConclusion conclusion,
         [NotNullWhen(true)] out TException? exception,
-        Predicate<IExceptionalError>? filter = null)
+        Predicate<TException>? filter = null)
         where TException : Exception
         where TConclusion : IConclusion
     {
         var error = conclusion.Errors
             .OfType<IExceptionalError>()
-            .FirstOrDefault(e => filter?.Invoke(e) ?? true);
+            .FirstOrDefault(e => e.Exception is TException ex && (filter?.Invoke(ex) ?? true));
         exception = error?.Exception as TException;
         return error != null;
     }
@@ -87,7 +87,7 @@ public static class ConclusionErrorsExtensions
     /// <typeparam name="TConclusion">Type of conclusion</typeparam>
     /// <returns>Collections of matching exceptions from conclusion</returns>
     public static IEnumerable<Exception> GetExceptions<TConclusion>(this TConclusion conclusion,
-        Predicate<IExceptionalError>? filter = null)
+        Predicate<Exception>? filter = null)
         where TConclusion : IConclusion
     {
         return GetExceptions<Exception, TConclusion>(conclusion, filter);
@@ -102,13 +102,13 @@ public static class ConclusionErrorsExtensions
     /// <typeparam name="TException">Type of exception</typeparam>
     /// <returns>Collections of matching exceptions from conclusion</returns>
     public static IEnumerable<TException> GetExceptions<TException, TConclusion>(this TConclusion conclusion,
-        Predicate<IExceptionalError>? filter = null)
+        Predicate<TException>? filter = null)
         where TException : Exception
         where TConclusion : IConclusion
     {
         return conclusion.Errors
             .OfType<IExceptionalError>()
-            .Where(e => e.Exception is TException && (filter?.Invoke(e) ?? true))
+            .Where(e => e.Exception is TException ex && (filter?.Invoke(ex) ?? true))
             .Select(x => (TException)x.Exception);
     }
 }
