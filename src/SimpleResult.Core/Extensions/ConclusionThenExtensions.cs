@@ -2,7 +2,7 @@
 
 namespace SimpleResult.Extensions;
 
-public static class ResultFailExtensions
+public static class ConclusionThenExtensions
 {
     /// <summary>
     /// Provide chaining method for action on success result
