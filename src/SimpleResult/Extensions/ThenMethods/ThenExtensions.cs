@@ -35,6 +35,19 @@ public static partial class ResultsThenExtensions
     /// </summary>
     /// <param name="input">Source result</param>
     /// <param name="continuation">Function for invoke on success</param>
+    /// <returns>Result of <paramref name="continuation"/> or errors from <paramref name="input"/></returns>
+    public static Result Then(this Result input, Func<Result> continuation)
+    {
+        return input.IsSuccess
+            ? continuation()
+            : input;
+    }
+
+    /// <summary>
+    /// Provide chaining method for next function on success result
+    /// </summary>
+    /// <param name="input">Source result</param>
+    /// <param name="continuation">Function for invoke on success</param>
     /// <typeparam name="TOutput">Type of "<paramref name="continuation"/>" result</typeparam>
     /// <returns>Result of <paramref name="continuation"/> or errors from <paramref name="input"/></returns>
     public static Result<TOutput> Then<TOutput>(this Result input, Func<Result<TOutput>> continuation)
@@ -58,6 +71,21 @@ public static partial class ResultsThenExtensions
         return input.IsSuccess
             ? continuation(input.ValueOrDefault!).MakeResult()
             : input.ToResult<TOutput>();
+    }
+
+    /// <summary>
+    /// Provide chaining method for next function on success result
+    /// </summary>
+    /// <param name="input">Source result</param>
+    /// <param name="continuation">Function for invoke on success</param>
+    /// <typeparam name="TInput">Type <paramref name="input"/> result</typeparam>
+    /// <returns>Result of <paramref name="continuation"/> or errors from <paramref name="input"/></returns>
+    public static Result Then<TInput>(this Result<TInput> input,
+        Func<TInput, Result> continuation)
+    {
+        return input.IsSuccess
+            ? continuation(input.ValueOrDefault!)
+            : input.ToResult();
     }
 
     /// <summary>
