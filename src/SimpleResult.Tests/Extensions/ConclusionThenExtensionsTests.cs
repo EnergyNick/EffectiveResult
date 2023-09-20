@@ -6,7 +6,7 @@ namespace SimpleResult.Tests.Extensions;
 public class ConclusionThenExtensionsTests
 {
     [Fact]
-    public void Then_WhenInvokeOnSuccessResult_ShouldBeInvoked()
+    public void ThenExtension_WhenInvokeOnSuccessResult_ShouldBeInvoked()
     {
         // Arrange
         var result = Result.Ok();
@@ -22,7 +22,7 @@ public class ConclusionThenExtensionsTests
     }
 
     [Fact]
-    public void Then_WhenInvokeOnFailedResult_ShouldNotBeInvoked()
+    public void ThenExtension_WhenInvokeOnFailedResult_ShouldNotBeInvoked()
     {
         // Arrange
         var error = new Error("Bad");
@@ -40,7 +40,7 @@ public class ConclusionThenExtensionsTests
     }
 
     [Fact]
-    public void OnFail_WhenInvokeOnFailedResult_ShouldBeInvoked()
+    public void OnFailExtension_WhenInvokeOnFailedResult_ShouldBeInvoked()
     {
         // Arrange
         var error = new Error("Bad");
@@ -58,7 +58,7 @@ public class ConclusionThenExtensionsTests
     }
 
     [Fact]
-    public void OnFail_WhenInvokeOnSuccessResult_ShouldNotBeInvoked()
+    public void OnFailExtension_WhenInvokeOnSuccessResult_ShouldNotBeInvoked()
     {
         // Arrange
         var result = Result.Ok();
@@ -74,7 +74,7 @@ public class ConclusionThenExtensionsTests
     }
 
     [Fact]
-    public void OnFail_WhenInvokeOnFailedResultWithArgumentAction_ShouldBeInvoked()
+    public void OnFailExtension_WhenInvokeOnFailedResultWithArgumentAction_ShouldBeInvoked()
     {
         // Arrange
         var error = new Error("Bad");
@@ -92,7 +92,7 @@ public class ConclusionThenExtensionsTests
     }
 
     [Fact]
-    public void OnFail_WhenInvokeOnSuccessResultWithArgumentAction_ShouldBeNotInvoked()
+    public void OnFailExtension_WhenInvokeOnSuccessResultWithArgumentAction_ShouldBeNotInvoked()
     {
         // Arrange
         var result = Result.Ok();
