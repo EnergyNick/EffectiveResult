@@ -6,18 +6,6 @@ namespace SimpleResult.Extensions;
 public static class ConclusionErrorsExtensions
 {
     /// <summary>
-    /// Used to find the necessary error in result.
-    /// </summary>
-    /// <typeparam name="TError">Type of searching error</typeparam>
-    /// <typeparam name="TConclusion">Type of conclusion</typeparam>
-    public static bool HasError<TError, TConclusion>(this TConclusion conclusion, Predicate<TError>? predicate = null)
-        where TConclusion : IConclusion
-        where TError : IError
-    {
-        return conclusion.Errors.Any(x => x is TError error && (predicate?.Invoke(error) ?? true));
-    }
-
-    /// <summary>
     /// Check, if in array of <see cref="IError"/> contains error of <see cref="TError"/> type.
     /// </summary>
     /// <param name="errors">Source of errors</param>
@@ -29,11 +17,28 @@ public static class ConclusionErrorsExtensions
     {
         var enumeratedReasons = errors as ICollection<IError> ?? errors.ToArray();
 
+        return enumeratedReasons.Any(reason =>
+            reason is TError reasonOfType
+            && (predicate is null || predicate(reasonOfType)));
+    }
+
+    /// <summary>
+    /// Check, if in array of <see cref="IError"/> contains error of <see cref="TError"/> type and in caused errors.
+    /// </summary>
+    /// <param name="errors">Source of errors</param>
+    /// <param name="predicate">Additional error predicate</param>
+    /// <typeparam name="TError">Type of error</typeparam>
+    /// <returns>True, if exists in enumerable</returns>
+    public static bool HasErrorsOfTypeRecursively<TError>(this IEnumerable<IError> errors, Predicate<TError>? predicate = null)
+        where TError : IError
+    {
+        var enumeratedReasons = errors as ICollection<IError> ?? errors.ToArray();
+
         var anyErrors = enumeratedReasons.Any(reason =>
             reason is TError reasonOfType
             && (predicate is null || predicate(reasonOfType)));
 
-        return anyErrors || enumeratedReasons.Any(error => HasErrorsOfType(error.CausedErrors, predicate));
+        return anyErrors || enumeratedReasons.Any(error => HasErrorsOfTypeRecursively(error.CausedErrors, predicate));
     }
 
     /// <summary>
@@ -45,11 +50,11 @@ public static class ConclusionErrorsExtensions
     /// <typeparam name="TConclusion">Type of conclusion</typeparam>
     /// <returns>True, if conclusion contains matching error</returns>
     public static bool TryGetException<TConclusion>(this TConclusion conclusion,
-        [NotNullWhen(true)] out Exception? exception,
-        Predicate<IExceptionalError>? filter = null)
+        Predicate<IExceptionalError> filter,
+        [NotNullWhen(true)] out Exception? exception)
         where TConclusion : IConclusion
     {
-        return TryGetException<Exception, TConclusion>(conclusion, out exception, filter);
+        return TryGetException(conclusion, out exception, filter);
     }
 
     /// <summary>
