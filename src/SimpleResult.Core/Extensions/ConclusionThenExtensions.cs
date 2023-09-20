@@ -7,11 +7,11 @@ public static class ConclusionThenExtensions
     /// <summary>
     /// Provide chaining method for action on success result
     /// </summary>
-    /// <param name="input">Source result</param>
+    /// <param name="input">Source of conclusion</param>
     /// <param name="continuation">Action for invoke on success</param>
-    /// <returns>Result from <paramref name="input"/></returns>
-    public static TResult Then<TResult>(this TResult input, Action continuation)
-        where TResult : IConclusion
+    /// <returns>Conclusion from <paramref name="input"/></returns>
+    public static TConclusion Then<TConclusion>(this TConclusion input, Action continuation)
+        where TConclusion : IConclusion
     {
         if (input.IsSuccess)
             continuation();
@@ -22,12 +22,12 @@ public static class ConclusionThenExtensions
     /// <summary>
     /// Call action only if <see cref="input"/> is failed
     /// </summary>
-    /// <param name="input">Source result</param>
+    /// <param name="input">Source of conclusion</param>
     /// <param name="onFailAction">Action for invoke on fail</param>
-    /// <typeparam name="TResult">Type of conclusion</typeparam>
+    /// <typeparam name="TConclusion">Type of conclusion</typeparam>
     /// <returns>Conclusion from <paramref name="input"/></returns>
-    public static TResult OnFail<TResult>(this TResult input, Action onFailAction)
-        where TResult : IConclusion
+    public static TConclusion OnFail<TConclusion>(this TConclusion input, Action onFailAction)
+        where TConclusion : IConclusion
     {
         if (input.IsFailed)
             onFailAction();
@@ -38,12 +38,12 @@ public static class ConclusionThenExtensions
     /// <summary>
     /// Call action only if <see cref="input"/> is failed
     /// </summary>
-    /// <param name="input">Source result</param>
+    /// <param name="input">Source of conclusion</param>
     /// <param name="onFailAction">Action for invoke on fail</param>
-    /// <typeparam name="TResult">Type of conclusion</typeparam>
+    /// <typeparam name="TConclusion">Type of conclusion</typeparam>
     /// <returns>Conclusion from <paramref name="input"/></returns>
-    public static TResult OnFail<TResult>(this TResult input, Action<IEnumerable<IError>> onFailAction)
-        where TResult : IConclusion
+    public static TConclusion OnFail<TConclusion>(this TConclusion input, Action<IEnumerable<IError>> onFailAction)
+        where TConclusion : IConclusion
     {
         if (input.IsFailed)
             onFailAction(input.Errors);
