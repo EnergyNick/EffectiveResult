@@ -16,7 +16,7 @@ public class ThenExtensionsTests
         Action<string> action = x => expected = x;
 
         // Act
-        var thenResult = result.Then(action);
+        var thenResult = result.OnSuccess(action);
 
         // Assert
         thenResult.Should().Be(result);
@@ -34,7 +34,7 @@ public class ThenExtensionsTests
         Action<string> action = x => expected = x;
 
         // Act
-        var thenResult = result.Then(action);
+        var thenResult = result.OnSuccess(action);
 
         // Assert
         thenResult.Should().Be(result);

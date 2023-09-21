@@ -16,7 +16,7 @@ public class ThenTryExtensionsTests
         Action<string> action = x => expected = x;
 
         // Act
-        var thenResult = result.ThenTry(action);
+        var thenResult = result.OnSuccessTry(action);
 
         // Assert
         thenResult.Should().Be(result);
@@ -35,7 +35,7 @@ public class ThenTryExtensionsTests
         Action<string> action = x => throw exception;
 
         // Act
-        var thenResultAction = () => result.ThenTry(action);
+        var thenResultAction = () => result.OnSuccessTry(action);
 
         // Assert
         thenResultAction.Should().NotThrow();
@@ -53,7 +53,7 @@ public class ThenTryExtensionsTests
         Action<string> action = x => expected = x;
 
         // Act
-        var thenResult = result.ThenTry(action);
+        var thenResult = result.OnSuccessTry(action);
 
         // Assert
         thenResult.Should().Be(result);

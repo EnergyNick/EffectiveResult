@@ -15,13 +15,15 @@ public static partial class ResultsThenExtensions
     /// Transform exceptions to errors,
     /// on default use <see cref="ResultSettings"/>.<see cref="ResultSettings.Current"/>
     /// </param>
-    /// <returns>Result from <paramref name="input"/></returns>
-    public static Result<TValue> ThenTry<TValue>(this Result<TValue> input, Action<TValue> continuation,
+    /// <returns>
+    /// Result from <paramref name="input"/> or copy with exception error from <paramref name="continuation"/>
+    /// </returns>
+    public static Result<TValue> OnSuccessTry<TValue>(this Result<TValue> input, Action<TValue> continuation,
             Func<Exception, Error>? catchHandler = null)
     {
         try
         {
-            return input.Then(continuation);
+            return input.OnSuccess(continuation);
         }
         catch (Exception e)
         {

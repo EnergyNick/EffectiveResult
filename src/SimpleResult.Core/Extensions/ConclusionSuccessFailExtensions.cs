@@ -2,7 +2,7 @@
 
 namespace SimpleResult.Extensions;
 
-public static class ConclusionThenExtensions
+public static class ConclusionSuccessFailExtensions
 {
     /// <summary>
     /// Provide chaining method for action on success result
@@ -10,7 +10,7 @@ public static class ConclusionThenExtensions
     /// <param name="input">Source of conclusion</param>
     /// <param name="continuation">Action for invoke on success</param>
     /// <returns>Conclusion from <paramref name="input"/></returns>
-    public static TConclusion Then<TConclusion>(this TConclusion input, Action continuation)
+    public static TConclusion OnSuccess<TConclusion>(this TConclusion input, Action continuation)
         where TConclusion : IConclusion
     {
         if (input.IsSuccess)

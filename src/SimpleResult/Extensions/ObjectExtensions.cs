@@ -6,7 +6,8 @@ namespace SimpleResult.Extensions;
 public static class ObjectExtensions
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result<TValue> MakeResult<TValue>(this TValue value) => Result.Ok(value);
+    public static Result<TValue> MakeResult<TValue>(this TValue value) =>
+        Result.Ok(value);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Result MakeFailedResult(this IError error) =>

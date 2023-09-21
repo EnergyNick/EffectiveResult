@@ -14,7 +14,7 @@ public class ConclusionThenExtensionsTests
         Action action = () => flag = true;
 
         // Act
-        var thenResult = result.Then(action);
+        var thenResult = result.OnSuccess(action);
 
         // Assert
         thenResult.Should().Be(result);
@@ -32,7 +32,7 @@ public class ConclusionThenExtensionsTests
         Action action = () => flag = true;
 
         // Act
-        var thenResult = result.Then(action);
+        var thenResult = result.OnSuccess(action);
 
         // Assert
         thenResult.Should().Be(result);

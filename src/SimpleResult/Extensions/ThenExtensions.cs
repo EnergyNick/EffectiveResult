@@ -9,7 +9,7 @@ public static partial class ResultsThenExtensions
     /// <param name="continuation">Action for invoke on success</param>
     /// <typeparam name="TValue">Type of result value on success</typeparam>
     /// <returns>Result from <paramref name="input"/></returns>
-    public static Result<TValue> Then<TValue>(this Result<TValue> input, Action<TValue> continuation)
+    public static Result<TValue> OnSuccess<TValue>(this Result<TValue> input, Action<TValue> continuation)
     {
         if (input.IsSuccess)
             continuation(input.ValueOrDefault!);
