@@ -37,7 +37,7 @@ public partial record Result
     /// <summary>
     /// Creates a success result with the given value
     /// </summary>
-    public static Result<TValue> Ok<TValue>(TValue value) => new(value);
+    public static Result<TValue> Ok<TValue>(in TValue value) => new(value);
 
     /// <summary>
     /// Creates a failed result with the given error

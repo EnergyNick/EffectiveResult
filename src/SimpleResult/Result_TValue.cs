@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Text;
 using SimpleResult.Core;
 using SimpleResult.Exceptions;
 
@@ -12,20 +13,20 @@ public record Result<TValue> : IConclusion
     /// <summary>
     /// Return current result value (If result has failed status, will be returned default value)
     /// </summary>
-    public TValue? ValueOrDefault => _value;
+    public ref readonly TValue? ValueOrDefault => ref _value;
 
     /// <summary>
     /// Return current result value (If result has failed status, an exception will be thrown)
     /// </summary>
     /// <exception cref="OperationOnFailedResultException">Thrown if result has failed status</exception>
-    public TValue Value
+    public ref readonly TValue Value
     {
         get
         {
             if (IsFailed)
                 throw new OperationOnFailedResultException("Get value");
 
-            return _value!;
+            return ref _value!;
         }
     }
 
@@ -38,7 +39,7 @@ public record Result<TValue> : IConclusion
     /// <inheritdoc />
     public IReadOnlyCollection<IError> Errors => _errors;
 
-    internal Result(TValue value) => _value = value;
+    internal Result(in TValue value) => _value = value;
 
     internal Result(IError error) => _errors = ImmutableArray.Create(error);
 
@@ -55,7 +56,7 @@ public record Result<TValue> : IConclusion
     public Result(Result<TValue> other)
     {
         if (other.IsSuccess)
-            _value = other.ValueOrDefault;
+            _value = other._value;
 
         _errors = other._errors;
     }
@@ -80,5 +81,23 @@ public record Result<TValue> : IConclusion
         return IsSuccess
             ? new Result<TNewValue>(converter!(_value!))
             : new Result<TNewValue>(_errors);
+    }
+
+    public static implicit operator Result<TValue>(in TValue value) => new(value);
+
+    protected virtual bool PrintMembers(StringBuilder builder)
+    {
+        builder.Append("IsSuccess = ");
+        if (IsSuccess)
+        {
+            builder.Append("true, Value = ");
+            builder.Append(_value);
+        }
+        else
+        {
+            builder.Append("false, Errors = ");
+            builder.Append(_errors);
+        }
+        return true;
     }
 }

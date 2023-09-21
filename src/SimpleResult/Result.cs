@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Text;
 using SimpleResult.Core;
 using SimpleResult.Exceptions;
 
@@ -63,5 +64,17 @@ public partial record Result : IConclusion
         return IsSuccess
             ? new Result<TNewValue>(valueFactory!())
             : new Result<TNewValue>(_errors);
+    }
+
+    protected virtual bool PrintMembers(StringBuilder builder)
+    {
+        builder.Append("IsSuccess = ");
+        builder.Append(IsSuccess ? "true" : "false");
+        if (IsFailed)
+        {
+            builder.Append(", Errors = ");
+            builder.Append(_errors);
+        }
+        return true;
     }
 }
