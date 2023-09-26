@@ -1,4 +1,5 @@
-﻿using SimpleResult.Settings;
+﻿using SimpleResult.Core;
+using SimpleResult.Settings;
 
 namespace SimpleResult.Extensions;
 
@@ -34,7 +35,7 @@ public static partial class ResultsThenExtensions
     }
 
     /// <summary>
-    /// Provide chaining method for action on success result.
+    /// Provide chaining method for next operation on success result.
     /// On exception in "<paramref name="continuation"/>" catch and return failed result.
     /// </summary>
     /// <param name="input">Source result</param>
@@ -61,7 +62,7 @@ public static partial class ResultsThenExtensions
     }
 
     /// <summary>
-    /// Provide chaining method for next function on success result.
+    /// Provide chaining method for next operation on success result.
     /// On exception in "<paramref name="continuation"/>" catch and return failed result.
     /// </summary>
     /// <param name="input">Source result</param>
@@ -87,7 +88,7 @@ public static partial class ResultsThenExtensions
     }
 
     /// <summary>
-    /// Provide chaining method for action on success result.
+    /// Provide chaining method for next operation on success result.
     /// On exception in "<paramref name="continuation"/>" catch and return failed result.
     /// </summary>
     /// <param name="input">Source result</param>
@@ -114,7 +115,7 @@ public static partial class ResultsThenExtensions
     }
 
     /// <summary>
-    /// Provide chaining method for action on success result.
+    /// Provide chaining method for next operation on success result.
     /// On exception in "<paramref name="continuation"/>" catch and return failed result.
     /// </summary>
     /// <param name="input">Source result</param>
@@ -143,7 +144,7 @@ public static partial class ResultsThenExtensions
     }
 
     /// <summary>
-    /// Provide chaining method for action on success result.
+    /// Provide chaining method for next operation on success result.
     /// On exception in "<paramref name="continuation"/>" catch and return failed result.
     /// </summary>
     /// <param name="input">Source result</param>
@@ -171,7 +172,7 @@ public static partial class ResultsThenExtensions
     }
 
     /// <summary>
-    /// Provide chaining method for action on success result.
+    /// Provide chaining method for next operation on success result.
     /// On exception in "<paramref name="continuation"/>" catch and return failed result.
     /// </summary>
     /// <param name="input">Source result</param>
@@ -197,5 +198,89 @@ public static partial class ResultsThenExtensions
 
             return new Result<TOutput>(input.Errors.Append(catchHandler(e)));
         }
+    }
+
+    /// <summary>
+    /// Provide chaining method for next operation on failed result.
+    /// On exception in "<paramref name="continuation"/>" catch and return failed result.
+    /// </summary>
+    /// <param name="input">Source result</param>
+    /// <param name="continuation">Function for invoke on fail</param>
+    /// <typeparam name="TValue">Type of "<paramref name="continuation"/>" result</typeparam>
+    /// <param name="catchHandler">
+    /// Transform exceptions to errors,
+    /// on default use <see cref="ResultSettings"/>.<see cref="ResultSettings.Current"/>
+    /// </param>
+    /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
+    public static Result<TValue> ThenTryOnFail<TValue>(this Result<TValue> input,
+        Func<IReadOnlyCollection<IError>, TValue> continuation,
+        Func<Exception, Error>? catchHandler = null)
+    {
+        return input.IsFailed
+            ? continuation(input.Errors).MakeResult()
+            : input;
+    }
+
+    /// <summary>
+    /// Provide chaining method for next operation on failed result.
+    /// On exception in "<paramref name="continuation"/>" catch and return failed result.
+    /// </summary>
+    /// <param name="input">Source result</param>
+    /// <param name="continuation">Function for invoke on fail</param>
+    /// <typeparam name="TValue">Type of "<paramref name="continuation"/>" result</typeparam>
+    /// <param name="catchHandler">
+    /// Transform exceptions to errors,
+    /// on default use <see cref="ResultSettings"/>.<see cref="ResultSettings.Current"/>
+    /// </param>
+    /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
+    public static Result<TValue> ThenTryOnFail<TValue>(this Result<TValue> input,
+        Func<IReadOnlyCollection<IError>, Result<TValue>> continuation,
+        Func<Exception, Error>? catchHandler = null)
+    {
+        return input.IsFailed
+            ? continuation(input.Errors)
+            : input;
+    }
+
+    /// <summary>
+    /// Provide chaining method for next operation on failed result.
+    /// On exception in "<paramref name="continuation"/>" catch and return failed result.
+    /// </summary>
+    /// <param name="input">Source result</param>
+    /// <param name="continuation">Function for invoke on fail</param>
+    /// <typeparam name="TValue">Type of "<paramref name="continuation"/>" result</typeparam>
+    /// <param name="catchHandler">
+    /// Transform exceptions to errors,
+    /// on default use <see cref="ResultSettings"/>.<see cref="ResultSettings.Current"/>
+    /// </param>
+    /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
+    public static Result<TValue> ThenTryOnFail<TValue>(this Result<TValue> input,
+        Func<TValue> continuation,
+        Func<Exception, Error>? catchHandler = null)
+    {
+        return input.IsFailed
+            ? continuation().MakeResult()
+            : input;
+    }
+
+    /// <summary>
+    /// Provide chaining method for next operation on failed result.
+    /// On exception in "<paramref name="continuation"/>" catch and return failed result.
+    /// </summary>
+    /// <param name="input">Source result</param>
+    /// <param name="continuation">Function for invoke on fail</param>
+    /// <typeparam name="TValue">Type of "<paramref name="continuation"/>" result</typeparam>
+    /// <param name="catchHandler">
+    /// Transform exceptions to errors,
+    /// on default use <see cref="ResultSettings"/>.<see cref="ResultSettings.Current"/>
+    /// </param>
+    /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
+    public static Result<TValue> ThenTryOnFail<TValue>(this Result<TValue> input,
+        Func<Result<TValue>> continuation,
+        Func<Exception, Error>? catchHandler = null)
+    {
+        return input.IsFailed
+            ? continuation()
+            : input;
     }
 }

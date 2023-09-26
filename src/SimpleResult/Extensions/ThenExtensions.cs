@@ -1,4 +1,6 @@
-﻿namespace SimpleResult.Extensions;
+﻿using SimpleResult.Core;
+
+namespace SimpleResult.Extensions;
 
 public static partial class ResultsThenExtensions
 {
@@ -17,7 +19,7 @@ public static partial class ResultsThenExtensions
     }
 
     /// <summary>
-    /// Provide chaining method for next function on success result
+    /// Provide chaining method for next operation on success result.
     /// </summary>
     /// <param name="input">Source result</param>
     /// <param name="continuation">Function for invoke on success</param>
@@ -31,7 +33,7 @@ public static partial class ResultsThenExtensions
     }
 
     /// <summary>
-    /// Provide chaining method for next function on success result
+    /// Provide chaining method for next operation on success result.
     /// </summary>
     /// <param name="input">Source result</param>
     /// <param name="continuation">Function for invoke on success</param>
@@ -44,7 +46,7 @@ public static partial class ResultsThenExtensions
     }
 
     /// <summary>
-    /// Provide chaining method for next function on success result
+    /// Provide chaining method for next operation on success result.
     /// </summary>
     /// <param name="input">Source result</param>
     /// <param name="continuation">Function for invoke on success</param>
@@ -58,7 +60,7 @@ public static partial class ResultsThenExtensions
     }
 
     /// <summary>
-    /// Provide chaining method for next function on success result
+    /// Provide chaining method for next operation on success result.
     /// </summary>
     /// <param name="input">Source result</param>
     /// <param name="continuation">Function for invoke on success</param>
@@ -74,7 +76,7 @@ public static partial class ResultsThenExtensions
     }
 
     /// <summary>
-    /// Provide chaining method for next function on success result
+    /// Provide chaining method for next operation on success result.
     /// </summary>
     /// <param name="input">Source result</param>
     /// <param name="continuation">Function for invoke on success</param>
@@ -89,7 +91,7 @@ public static partial class ResultsThenExtensions
     }
 
     /// <summary>
-    /// Provide chaining method for next function on success result
+    /// Provide chaining method for next operation on success result.
     /// </summary>
     /// <param name="input">Source result</param>
     /// <param name="continuation">Function for invoke on success</param>
@@ -102,5 +104,92 @@ public static partial class ResultsThenExtensions
         return input.IsSuccess
             ? continuation(input.ValueOrDefault!)
             : input.ToResult<TOutput>();
+    }
+
+    /// <summary>
+    /// Provide chaining method for next operation on failed result.
+    /// </summary>
+    /// <param name="input">Source result</param>
+    /// <param name="continuation">Function for invoke on fail</param>
+    /// <typeparam name="TValue">Type of "<paramref name="continuation"/>" result</typeparam>
+    /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
+    public static Result<TValue> ThenOnFail<TValue>(this Result<TValue> input,
+        Func<IReadOnlyCollection<IError>, TValue> continuation)
+    {
+        return input.IsFailed
+            ? continuation(input.Errors).MakeResult()
+            : input;
+    }
+
+    /// <summary>
+    /// Provide chaining method for next operation on failed result.
+    /// </summary>
+    /// <param name="input">Source result</param>
+    /// <param name="continuation">Function for invoke on fail</param>
+    /// <typeparam name="TValue">Type of "<paramref name="continuation"/>" result</typeparam>
+    /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
+    public static Result<TValue> ThenOnFail<TValue>(this Result<TValue> input,
+        Func<IReadOnlyCollection<IError>, Result<TValue>> continuation)
+    {
+        return input.IsFailed
+            ? continuation(input.Errors)
+            : input;
+    }
+
+    /// <summary>
+    /// Provide chaining method for next operation on failed result.
+    /// </summary>
+    /// <param name="input">Source result</param>
+    /// <param name="continuation">Function for invoke on fail</param>
+    /// <typeparam name="TValue">Type of "<paramref name="continuation"/>" result</typeparam>
+    /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
+    public static Result<TValue> ThenOnFail<TValue>(this Result<TValue> input, Func<TValue> continuation)
+    {
+        return input.IsFailed
+            ? continuation().MakeResult()
+            : input;
+    }
+
+    /// <summary>
+    /// Provide chaining method for next operation on failed result.
+    /// </summary>
+    /// <param name="input">Source result</param>
+    /// <param name="continuation">Function for invoke on fail</param>
+    /// <typeparam name="TValue">Type of "<paramref name="continuation"/>" result</typeparam>
+    /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
+    public static Result<TValue> ThenOnFail<TValue>(this Result<TValue> input, Func<Result<TValue>> continuation)
+    {
+        return input.IsFailed
+            ? continuation()
+            : input;
+    }
+
+    /// <summary>
+    /// Provide error mapping on failed result
+    /// </summary>
+    /// <param name="input">Source result</param>
+    /// <param name="errorMapper">Function for invoke on fail</param>
+    /// <returns>Result from <see cref="input"/> on success or result with mapped errors</returns>
+    public static Result MapErrorsOnFailed(this Result input,
+        Func<IReadOnlyCollection<IError>, IEnumerable<IError>> errorMapper)
+    {
+        return input.IsFailed
+            ? new Result(errorMapper(input.Errors))
+            : input;
+    }
+
+    /// <summary>
+    /// Provide error mapping on failed result
+    /// </summary>
+    /// <param name="input">Source result</param>
+    /// <param name="errorMapper">Function for invoke on fail</param>
+    /// <typeparam name="TValue">Type of "<paramref name="input"/>" result</typeparam>
+    /// <returns>Result from <see cref="input"/> on success or result with mapped errors</returns>
+    public static Result<TValue> MapErrorsOnFailed<TValue>(this Result<TValue> input,
+        Func<IReadOnlyCollection<IError>, IEnumerable<IError>> errorMapper)
+    {
+        return input.IsFailed
+            ? new Result<TValue>(errorMapper(input.Errors))
+            : input;
     }
 }
