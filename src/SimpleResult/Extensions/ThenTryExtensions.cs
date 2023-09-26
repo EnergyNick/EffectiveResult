@@ -6,35 +6,6 @@ namespace SimpleResult.Extensions;
 public static partial class ResultsThenExtensions
 {
     /// <summary>
-    /// Provide chaining method for action on success result.
-    /// On exception in "<paramref name="continuation"/>" catch and return failed result.
-    /// </summary>
-    /// <param name="input">Source result</param>
-    /// <param name="continuation">Action for invoke on success</param>
-    /// <typeparam name="TValue">Type of result value on success</typeparam>
-    /// <param name="catchHandler">
-    /// Transform exceptions to errors,
-    /// on default use <see cref="ResultSettings"/>.<see cref="ResultSettings.Current"/>
-    /// </param>
-    /// <returns>
-    /// Result from <paramref name="input"/> or copy with exception error from <paramref name="continuation"/>
-    /// </returns>
-    public static Result<TValue> OnSuccessTry<TValue>(this Result<TValue> input, Action<TValue> continuation,
-            Func<Exception, Error>? catchHandler = null)
-    {
-        try
-        {
-            return input.OnSuccess(continuation);
-        }
-        catch (Exception e)
-        {
-            catchHandler ??= ResultSettings.Current.TryCatchHandler;
-
-            return new Result<TValue>(input.Errors.Append(catchHandler(e)));
-        }
-    }
-
-    /// <summary>
     /// Provide chaining method for next operation on success result.
     /// On exception in "<paramref name="continuation"/>" catch and return failed result.
     /// </summary>

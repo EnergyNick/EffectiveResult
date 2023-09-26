@@ -5,20 +5,6 @@ namespace SimpleResult.Extensions;
 public static partial class ResultsThenExtensions
 {
     /// <summary>
-    /// Provide chaining method for action on success result
-    /// </summary>
-    /// <param name="input">Source result</param>
-    /// <param name="continuation">Action for invoke on success</param>
-    /// <typeparam name="TValue">Type of result value on success</typeparam>
-    /// <returns>Result from <paramref name="input"/></returns>
-    public static Result<TValue> OnSuccess<TValue>(this Result<TValue> input, Action<TValue> continuation)
-    {
-        if (input.IsSuccess)
-            continuation(input.ValueOrDefault!);
-        return input;
-    }
-
-    /// <summary>
     /// Provide chaining method for next operation on success result.
     /// </summary>
     /// <param name="input">Source result</param>
@@ -161,35 +147,6 @@ public static partial class ResultsThenExtensions
     {
         return input.IsFailed
             ? continuation()
-            : input;
-    }
-
-    /// <summary>
-    /// Provide error mapping on failed result
-    /// </summary>
-    /// <param name="input">Source result</param>
-    /// <param name="errorMapper">Function for invoke on fail</param>
-    /// <returns>Result from <see cref="input"/> on success or result with mapped errors</returns>
-    public static Result MapErrorsOnFailed(this Result input,
-        Func<IReadOnlyCollection<IError>, IEnumerable<IError>> errorMapper)
-    {
-        return input.IsFailed
-            ? new Result(errorMapper(input.Errors))
-            : input;
-    }
-
-    /// <summary>
-    /// Provide error mapping on failed result
-    /// </summary>
-    /// <param name="input">Source result</param>
-    /// <param name="errorMapper">Function for invoke on fail</param>
-    /// <typeparam name="TValue">Type of "<paramref name="input"/>" result</typeparam>
-    /// <returns>Result from <see cref="input"/> on success or result with mapped errors</returns>
-    public static Result<TValue> MapErrorsOnFailed<TValue>(this Result<TValue> input,
-        Func<IReadOnlyCollection<IError>, IEnumerable<IError>> errorMapper)
-    {
-        return input.IsFailed
-            ? new Result<TValue>(errorMapper(input.Errors))
             : input;
     }
 }
