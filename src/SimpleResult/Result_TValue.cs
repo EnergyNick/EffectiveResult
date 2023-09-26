@@ -62,6 +62,20 @@ public record Result<TValue> : IConclusion
     }
 
     /// <summary>
+    /// Return value from result on success or value from <see cref="defaultValue"/> on failed.
+    /// </summary>
+    /// <param name="defaultValue">Factory of default value on failed status</param>
+    /// <returns>Value based on result status</returns>
+    public TValue GetValueOrDefault(TValue defaultValue) => IsSuccess ? _value! : defaultValue;
+
+    /// <summary>
+    /// Return value from result on success or value from <see cref="defaultValueFactory"/> on failed.
+    /// </summary>
+    /// <param name="defaultValueFactory">Factory of default value on failed status</param>
+    /// <returns>Value based on result status</returns>
+    public TValue GetValueOrDefault(Func<TValue> defaultValueFactory) => IsSuccess ? _value! : defaultValueFactory();
+
+    /// <summary>
     /// Provide conversion to <see cref="Result"/> with same reasons
     /// </summary>
     /// <returns>Copy of current result with new value</returns>

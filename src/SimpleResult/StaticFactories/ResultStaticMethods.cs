@@ -183,4 +183,33 @@ public partial record Result
     /// </summary>
     public static Result<TValue> FailIf<TValue>(bool condition, string error, TValue valueIfSuccess) =>
         condition ? Fail<TValue>(error) : Ok(valueIfSuccess);
+
+    /// <summary>
+    /// Provide method for combining results to single result
+    /// </summary>
+    /// <param name="results">Input results to merge</param>
+    /// <returns>Result with combined status of <see cref="results"/></returns>
+    public static Result Combine(IEnumerable<Result> results)
+    {
+        var failed = results.Where(x => x.IsFailed).SelectMany(x => x.Errors).ToArray();
+
+        return failed.Length == 0
+            ? Ok()
+            : Fail(failed);
+    }
+
+    /// <summary>
+    /// Provide method for combining results to single result with values.
+    /// </summary>
+    /// <param name="results">Input results to merge</param>
+    /// <returns>Result with combined status of <see cref="results"/></returns>
+    public static Result<IEnumerable<TValue>> Combine<TValue>(IEnumerable<Result<TValue>> results)
+    {
+        var enumerated = results as Result<TValue>[] ?? results.ToArray();
+        var failed = enumerated.Any(x => x.IsFailed);
+
+        return failed
+            ? Ok(enumerated.Select(x => x.Value))
+            : Fail<IEnumerable<TValue>>(enumerated.SelectMany(x => x.Errors));
+    }
 }
