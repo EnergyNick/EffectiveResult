@@ -17,7 +17,7 @@ public static class ResultTrySuccessFailExtensions
     /// <returns>Conclusion from <paramref name="input"/></returns>
     public static Result OnSuccessTry(this Result input,
         Action continuation,
-        Func<Exception, Error>? catchHandler = null)
+        Func<Exception, IError>? catchHandler = null)
     {
         try
         {
@@ -47,7 +47,7 @@ public static class ResultTrySuccessFailExtensions
     /// </returns>
     public static Result<TValue> OnSuccessTry<TValue>(this Result<TValue> input,
         Action<TValue> continuation,
-        Func<Exception, Error>? catchHandler = null)
+        Func<Exception, IError>? catchHandler = null)
     {
         try
         {
@@ -73,7 +73,7 @@ public static class ResultTrySuccessFailExtensions
     /// <returns>Conclusion from <paramref name="input"/></returns>
     public static Result OnFailTry(this Result input,
         Action onFailAction,
-        Func<Exception, Error>? catchHandler = null)
+        Func<Exception, IError>? catchHandler = null)
     {
         try
         {
@@ -100,7 +100,7 @@ public static class ResultTrySuccessFailExtensions
     /// <returns>Conclusion from <paramref name="input"/></returns>
     public static Result<TValue> OnFailTry<TValue>(this Result<TValue> input,
         Action onFailAction,
-        Func<Exception, Error>? catchHandler = null)
+        Func<Exception, IError>? catchHandler = null)
     {
         try
         {
@@ -126,7 +126,7 @@ public static class ResultTrySuccessFailExtensions
     /// <returns>Conclusion from <paramref name="input"/></returns>
     public static Result OnFailTry(this Result input,
         Action<IEnumerable<IError>> onFailAction,
-        Func<Exception, Error>? catchHandler = null)
+        Func<Exception, IError>? catchHandler = null)
     {
         try
         {
@@ -153,7 +153,7 @@ public static class ResultTrySuccessFailExtensions
     /// <returns>Conclusion from <paramref name="input"/></returns>
     public static Result<TValue> OnFailTry<TValue>(this Result<TValue> input,
         Action<IEnumerable<IError>> onFailAction,
-        Func<Exception, Error>? catchHandler = null)
+        Func<Exception, IError>? catchHandler = null)
     {
         try
         {

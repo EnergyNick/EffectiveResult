@@ -18,7 +18,7 @@ public static partial class ResultsThenExtensions
     /// </param>
     /// <returns>Result of <paramref name="continuation"/> or errors from <paramref name="input"/></returns>
     public static Result<TOutput> ThenTry<TOutput>(this Result input, Func<TOutput> continuation,
-        Func<Exception, Error>? catchHandler = null)
+        Func<Exception, IError>? catchHandler = null)
     {
         try
         {
@@ -44,7 +44,7 @@ public static partial class ResultsThenExtensions
     /// </param>
     /// <returns>Result of <paramref name="continuation"/> or errors from <paramref name="input"/></returns>
     public static Result ThenTry(this Result input, Func<Result> continuation,
-        Func<Exception, Error>? catchHandler = null)
+        Func<Exception, IError>? catchHandler = null)
     {
         try
         {
@@ -71,7 +71,7 @@ public static partial class ResultsThenExtensions
     /// </param>
     /// <returns>Result of <paramref name="continuation"/> or errors from <paramref name="input"/></returns>
     public static Result<TOutput> ThenTry<TOutput>(this Result input, Func<Result<TOutput>> continuation,
-        Func<Exception, Error>? catchHandler = null)
+        Func<Exception, IError>? catchHandler = null)
     {
         try
         {
@@ -100,7 +100,7 @@ public static partial class ResultsThenExtensions
     /// <returns>Result of <paramref name="continuation"/> or errors from <paramref name="input"/></returns>
     public static Result<TOutput> ThenTry<TInput, TOutput>(this Result<TInput> input,
         Func<TInput, TOutput> continuation,
-        Func<Exception, Error>? catchHandler = null)
+        Func<Exception, IError>? catchHandler = null)
     {
         try
         {
@@ -128,7 +128,7 @@ public static partial class ResultsThenExtensions
     /// <returns>Result of <paramref name="continuation"/> or errors from <paramref name="input"/></returns>
     public static Result ThenTry<TInput>(this Result<TInput> input,
         Func<TInput, Result> continuation,
-        Func<Exception, Error>? catchHandler = null)
+        Func<Exception, IError>? catchHandler = null)
     {
         try
         {
@@ -157,7 +157,7 @@ public static partial class ResultsThenExtensions
     /// <returns>Result of <paramref name="continuation"/> or errors from <paramref name="input"/></returns>
     public static Result<TOutput> ThenTry<TInput, TOutput>(this Result<TInput> input,
         Func<TInput, Result<TOutput>> continuation,
-        Func<Exception, Error>? catchHandler = null)
+        Func<Exception, IError>? catchHandler = null)
     {
         try
         {
@@ -185,7 +185,7 @@ public static partial class ResultsThenExtensions
     /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
     public static Result<TValue> ThenTryOnFail<TValue>(this Result<TValue> input,
         Func<IReadOnlyCollection<IError>, TValue> continuation,
-        Func<Exception, Error>? catchHandler = null)
+        Func<Exception, IError>? catchHandler = null)
     {
         return input.IsFailed
             ? continuation(input.Errors).MakeResult()
@@ -206,7 +206,7 @@ public static partial class ResultsThenExtensions
     /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
     public static Result<TValue> ThenTryOnFail<TValue>(this Result<TValue> input,
         Func<IReadOnlyCollection<IError>, Result<TValue>> continuation,
-        Func<Exception, Error>? catchHandler = null)
+        Func<Exception, IError>? catchHandler = null)
     {
         return input.IsFailed
             ? continuation(input.Errors)
@@ -227,7 +227,7 @@ public static partial class ResultsThenExtensions
     /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
     public static Result<TValue> ThenTryOnFail<TValue>(this Result<TValue> input,
         Func<TValue> continuation,
-        Func<Exception, Error>? catchHandler = null)
+        Func<Exception, IError>? catchHandler = null)
     {
         return input.IsFailed
             ? continuation().MakeResult()
@@ -248,7 +248,7 @@ public static partial class ResultsThenExtensions
     /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
     public static Result<TValue> ThenTryOnFail<TValue>(this Result<TValue> input,
         Func<Result<TValue>> continuation,
-        Func<Exception, Error>? catchHandler = null)
+        Func<Exception, IError>? catchHandler = null)
     {
         return input.IsFailed
             ? continuation()

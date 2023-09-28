@@ -1,4 +1,6 @@
-﻿namespace SimpleResult.Settings;
+﻿using SimpleResult.Core;
+
+namespace SimpleResult.Settings;
 
 /// <summary>
 /// Represent parameters of global settings of <see cref="Result"/>
@@ -8,5 +10,5 @@ public class ResultParameters
     /// <summary>
     /// Provide converting of exception in try/catch blocks
     /// </summary>
-    public Func<Exception, Error> TryCatchHandler { get; init; }
+    public Func<Exception, IError> TryCatchHandler { get; init; }
 }
