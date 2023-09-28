@@ -199,6 +199,13 @@ public partial record Result
     }
 
     /// <summary>
+    /// Provide method for combining results to single result
+    /// </summary>
+    /// <param name="results">Input results to merge</param>
+    /// <returns>Result with combined status of <see cref="results"/></returns>
+    public static Result Combine(params Result[] results) => Combine(results.AsEnumerable());
+
+    /// <summary>
     /// Provide method for combining results to single result with values.
     /// </summary>
     /// <param name="results">Input results to merge</param>
@@ -209,7 +216,15 @@ public partial record Result
         var failed = enumerated.Any(x => x.IsFailed);
 
         return failed
-            ? Ok(enumerated.Select(x => x.Value))
-            : Fail<IEnumerable<TValue>>(enumerated.SelectMany(x => x.Errors));
+            ? Fail<IEnumerable<TValue>>(enumerated.SelectMany(x => x.Errors))
+            : Ok(enumerated.Select(x => x.Value));
     }
+
+    /// <summary>
+    /// Provide method for combining results to single result with values.
+    /// </summary>
+    /// <param name="results">Input results to merge</param>
+    /// <returns>Result with combined status of <see cref="results"/></returns>
+    public static Result<IEnumerable<TValue>> Combine<TValue>(params Result<TValue>[] results) =>
+        Combine(results.AsEnumerable());
 }

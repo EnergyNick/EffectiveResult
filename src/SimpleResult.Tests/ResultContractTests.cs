@@ -30,7 +30,7 @@ public class ResultContractTests
     public void ResultConstruction_WhenCreateFailedResult_ShouldBeInValidState()
     {
         // Arrange
-        var error = new InfoError("Very bad");
+        IError error = new InfoError("Very bad");
 
         // Act
         var result = new Result(error);
@@ -83,7 +83,7 @@ public class ResultContractTests
     public void ResultConstruction_WhenCloneWithCopyConstructor_ShouldBeEquals()
     {
         // Arrange
-        var error = new InfoError("So bad");
+        IError error = new InfoError("So bad");
         var value = new List<int> { 1, 2, 3, 4, 5 };
 
         var successResult = new Result<List<int>>(value);
