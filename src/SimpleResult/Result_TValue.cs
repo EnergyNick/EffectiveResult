@@ -102,6 +102,30 @@ public record Result<TValue> : IConclusion
 
     public static implicit operator Result<TValue>(Error error) => Result.Fail<TValue>(error);
 
+    /// <summary>
+    /// Provide method for fluent deconstruct type and use with syntactic sugar
+    /// </summary>
+    /// <param name="isSuccess">Status of result</param>
+    /// <param name="errors">Errors on fail or empty collection on success</param>
+    public void Deconstruct(out bool isSuccess, out IReadOnlyCollection<IError> errors)
+    {
+        isSuccess = IsSuccess;
+        errors = _errors;
+    }
+
+    /// <summary>
+    /// Provide method for fluent deconstruct type and use with syntactic sugar
+    /// </summary>
+    /// <param name="isSuccess">Status of result</param>
+    /// <param name="valueOrDefault">Value on success or default value on fail</param>
+    /// <param name="errors">Errors on fail or empty collection on success</param>
+    public void Deconstruct(out bool isSuccess, out TValue? valueOrDefault, out IReadOnlyCollection<IError> errors)
+    {
+        isSuccess = IsSuccess;
+        valueOrDefault = _value;
+        errors = _errors;
+    }
+
     [ExcludeFromCodeCoverage]
     protected virtual bool PrintMembers(StringBuilder builder)
     {

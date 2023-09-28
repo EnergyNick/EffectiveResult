@@ -81,4 +81,15 @@ public partial record Result : IConclusion
         }
         return true;
     }
+
+    /// <summary>
+    /// Provide method for fluent deconstruct type and use with syntactic sugar
+    /// </summary>
+    /// <param name="isSuccess">Status of result</param>
+    /// <param name="errors">Errors on fail or empty collection on success</param>
+    public void Deconstruct(out bool isSuccess, out IReadOnlyCollection<IError> errors)
+    {
+        isSuccess = IsSuccess;
+        errors = _errors;
+    }
 }

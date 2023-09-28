@@ -271,4 +271,33 @@ public class ResultContractTests
         valuedResult.ShouldBeFailed(error);
         classResult.ShouldBeFailed(error);
     }
+
+    [Fact]
+    public void ResultDeconstructOperator_WhenInvoked_ShouldReturnValidData()
+    {
+        // Arrange
+        var error = new Error("Very bad");
+        var strData = "Hello there!";
+        var valueData = 1988;
+
+        var result = Result.Fail(error);
+        var classResult = Result.Ok(strData);
+        var valuedResult = Result.Ok(valueData);
+
+        // Act
+        var (isSuccess1, errors1) = result;
+        var (isSuccess2, errors2) = valuedResult;
+        var (isSuccess3, valueOrDefault, errors3) = classResult;
+
+        // Assert
+        isSuccess1.Should().BeFalse();
+        errors1.Should().ContainSingle(x => error.Equals(x));
+
+        isSuccess2.Should().BeTrue();
+        errors2.Should().BeEmpty();
+
+        isSuccess3.Should().BeTrue();
+        errors3.Should().BeEmpty();
+        valueOrDefault.Should().Be(strData);
+    }
 }
