@@ -50,4 +50,28 @@ public static class ConclusionSuccessFailExtensions
 
         return input;
     }
+
+    /// <summary>
+    /// Call action only if <see cref="input"/> is failed and contains exception with type <see cref="TException"/>
+    /// </summary>
+    /// <param name="input">Source of conclusion</param>
+    /// <param name="onFailAction">Action for invoke on fail</param>
+    /// <typeparam name="TException">Type of searching error</typeparam>
+    /// <returns>Conclusion from <paramref name="input"/></returns>
+    public static IConclusion OnFailWithException<TException>(this IConclusion input,
+        Action<IExceptionalError> onFailAction)
+        where TException : Exception
+    {
+        if (input.IsFailed)
+        {
+            var exceptionalError = input.Errors
+                .OfType<IExceptionalError>()
+                .FirstOrDefault(x => x.Exception is TException);
+
+            if(exceptionalError is not null)
+                onFailAction(exceptionalError);
+        }
+
+        return input;
+    }
 }
