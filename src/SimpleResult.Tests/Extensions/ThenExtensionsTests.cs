@@ -1,4 +1,5 @@
-﻿using SimpleResult.Extensions;
+﻿using SimpleResult.Core;
+using SimpleResult.Extensions;
 using SimpleResult.Tests.Helpers;
 
 namespace SimpleResult.Tests.Extensions;
@@ -328,5 +329,147 @@ public class ThenExtensionsTests
         thenResultFailed.ShouldBeFailed(error);
 
         expectedValues.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void ThenOnFailExtension_WhenInvokeOnSuccessResultWithFuncFactory_ShouldNotBeInvoked()
+    {
+        // Arrange
+        var value = "Good time need good result";
+        var result = Result.Ok(value);
+
+        var internalValue = "Hello there!";
+        var isInvoked = false;
+        var action = () =>
+        {
+            isInvoked = true;
+            return internalValue;
+        };
+
+        var internalResult = Result.Ok(internalValue);
+        var isInvokedResult = false;
+        var actionResult = () =>
+        {
+            isInvokedResult = true;
+            return internalResult;
+        };
+
+        // Act
+        var firstResult = result.ThenOnFail(action);
+        var secondResult = result.ThenOnFail(actionResult);
+
+        // Assert
+        firstResult.Should().Be(result);
+        secondResult.Should().Be(result);
+        isInvoked.Should().BeFalse();
+        isInvokedResult.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ThenOnFailExtension_WhenInvokeOnFailedResultWithFuncFactory_ShouldBeInvokedAndReturnNewResult()
+    {
+        // Arrange
+        var error = new InfoError("Deadlocker");
+        var result = Result.Fail<string>(error);
+
+        var internalValue = "Hello there!";
+        var isInvoked = false;
+        var action = () =>
+        {
+            isInvoked = true;
+            return internalValue;
+        };
+
+        var internalResult = Result.Ok(internalValue);
+        var isInvokedResult = false;
+        var actionResult = () =>
+        {
+            isInvokedResult = true;
+            return internalResult;
+        };
+
+        // Act
+        var firstResult = result.ThenOnFail(action);
+        var secondResult = result.ThenOnFail(actionResult);
+
+        // Assert
+        firstResult.Should().NotBe(result);
+        secondResult.Should().NotBe(result);
+        isInvoked.Should().BeTrue();
+        isInvokedResult.Should().BeTrue();
+
+        firstResult.ShouldBeSuccessAndReferenceEqualsValue(internalValue);
+        secondResult.ShouldBeSuccessAndReferenceEqualsValue(internalValue);
+    }
+
+    [Fact]
+    public void ThenOnFailExtension_WhenInvokeOnSuccessResultWithFuncByErrors_ShouldNotBeInvoked()
+    {
+        // Arrange
+        var value = "Good time need good result";
+        var result = Result.Ok(value);
+
+        var internalValue = "Hello there!";
+        var isInvoked = false;
+        var action = (IReadOnlyCollection<IError> errors) =>
+        {
+            isInvoked = true;
+            return internalValue;
+        };
+
+        var internalResult = Result.Ok(internalValue);
+        var isInvokedResult = false;
+        var actionResult = (IReadOnlyCollection<IError> errors) =>
+        {
+            isInvokedResult = true;
+            return internalResult;
+        };
+
+        // Act
+        var firstResult = result.ThenOnFail(action);
+        var secondResult = result.ThenOnFail(actionResult);
+
+        // Assert
+        firstResult.Should().Be(result);
+        secondResult.Should().Be(result);
+        isInvoked.Should().BeFalse();
+        isInvokedResult.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ThenOnFailExtension_WhenInvokeOnFailedResultWithFuncByErrors_ShouldBeInvokedAndReturnNewResult()
+    {
+        // Arrange
+        var error = new InfoError("Deadlocker");
+        var result = Result.Fail<string>(error);
+
+        var internalValue = "Hello there!";
+        var isInvoked = false;
+        var action = (IReadOnlyCollection<IError> errors) =>
+        {
+            isInvoked = true;
+            return internalValue;
+        };
+
+        var internalResult = Result.Ok(internalValue);
+        var isInvokedResult = false;
+        var actionResult = (IReadOnlyCollection<IError> errors) =>
+        {
+            isInvokedResult = true;
+            return internalResult;
+        };
+
+        // Act
+        var firstResult = result.ThenOnFail(action);
+        var secondResult = result.ThenOnFail(actionResult);
+
+        // Assert
+        firstResult.Should().NotBe(result);
+        secondResult.Should().NotBe(result);
+        isInvoked.Should().BeTrue();
+        isInvokedResult.Should().BeTrue();
+
+        firstResult.ShouldBeSuccessAndReferenceEqualsValue(internalValue);
+        secondResult.ShouldBeSuccessAndReferenceEqualsValue(internalValue);
     }
 }

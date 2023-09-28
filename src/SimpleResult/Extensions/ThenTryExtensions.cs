@@ -187,9 +187,16 @@ public static class ResultsThenTryExtensions
         Func<IReadOnlyCollection<IError>, TValue> continuation,
         Func<Exception, IError>? catchHandler = null)
     {
-        return input.IsFailed
-            ? continuation(input.Errors).MakeResult()
-            : input;
+        try
+        {
+            return input.ThenOnFail(continuation);
+        }
+        catch (Exception e)
+        {
+            catchHandler ??= ResultSettings.Current.TryCatchHandler;
+
+            return new Result<TValue>(input.Errors.Append(catchHandler(e)));
+        }
     }
 
     /// <summary>
@@ -208,9 +215,16 @@ public static class ResultsThenTryExtensions
         Func<IReadOnlyCollection<IError>, Result<TValue>> continuation,
         Func<Exception, IError>? catchHandler = null)
     {
-        return input.IsFailed
-            ? continuation(input.Errors)
-            : input;
+        try
+        {
+            return input.ThenOnFail(continuation);
+        }
+        catch (Exception e)
+        {
+            catchHandler ??= ResultSettings.Current.TryCatchHandler;
+
+            return new Result<TValue>(input.Errors.Append(catchHandler(e)));
+        }
     }
 
     /// <summary>
@@ -229,9 +243,16 @@ public static class ResultsThenTryExtensions
         Func<TValue> continuation,
         Func<Exception, IError>? catchHandler = null)
     {
-        return input.IsFailed
-            ? continuation().MakeResult()
-            : input;
+        try
+        {
+            return input.ThenOnFail(continuation);
+        }
+        catch (Exception e)
+        {
+            catchHandler ??= ResultSettings.Current.TryCatchHandler;
+
+            return new Result<TValue>(input.Errors.Append(catchHandler(e)));
+        }
     }
 
     /// <summary>
@@ -250,8 +271,15 @@ public static class ResultsThenTryExtensions
         Func<Result<TValue>> continuation,
         Func<Exception, IError>? catchHandler = null)
     {
-        return input.IsFailed
-            ? continuation()
-            : input;
+        try
+        {
+            return input.ThenOnFail(continuation);
+        }
+        catch (Exception e)
+        {
+            catchHandler ??= ResultSettings.Current.TryCatchHandler;
+
+            return new Result<TValue>(input.Errors.Append(catchHandler(e)));
+        }
     }
 }

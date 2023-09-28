@@ -6,7 +6,7 @@ namespace SimpleResult.Tests.Extensions;
 public class ConclusionSuccessFailExtensionsTests
 {
     [Fact]
-    public void ThenExtension_WhenInvokeOnSuccessResult_ShouldBeInvoked()
+    public void OnSuccessExtension_WhenInvokeOnSuccessResult_ShouldBeInvoked()
     {
         // Arrange
         var result = Result.Ok();
@@ -22,7 +22,7 @@ public class ConclusionSuccessFailExtensionsTests
     }
 
     [Fact]
-    public void ThenExtension_WhenInvokeOnFailedResult_ShouldNotBeInvoked()
+    public void OnSuccessExtension_WhenInvokeOnFailedResult_ShouldNotBeInvoked()
     {
         // Arrange
         var error = new InfoError("Bad");
