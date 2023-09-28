@@ -34,10 +34,10 @@ public class ErrorMappingExtensionsTests
     public void MapErrorsOnFailedExtension_WhenFailedResult_ShouldBeInvoked()
     {
         // Arrange
-        var firstError = new InfoError("Fail");
-        var secondError = new InfoError("To Much errors");
+        var firstError = new Error("Fail");
+        var secondError = new Error("To Much errors");
 
-        var newError = new InfoError("Ho ho ho!");
+        var newError = new Error("Ho ho ho!");
         var newErrors = new IError[] { newError };
 
         var result = Result.Fail(firstError);

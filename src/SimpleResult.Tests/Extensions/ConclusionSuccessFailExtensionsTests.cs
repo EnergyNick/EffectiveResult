@@ -25,7 +25,7 @@ public class ConclusionSuccessFailExtensionsTests
     public void OnSuccessExtension_WhenInvokeOnFailedResult_ShouldNotBeInvoked()
     {
         // Arrange
-        var error = new InfoError("Bad");
+        var error = new Error("Bad");
         var result = Result.Fail(error);
 
         var flag = false;
@@ -61,7 +61,7 @@ public class ConclusionSuccessFailExtensionsTests
     public void OnSuccessExtension_WhenInvokeOnFailedTypedResult_ShouldNotBeInvoked()
     {
         // Arrange
-        var error = new InfoError("Deadlock");
+        var error = new Error("Deadlock");
         var result = Result.Fail<string>(error);
 
         string? expected = null;
@@ -79,7 +79,7 @@ public class ConclusionSuccessFailExtensionsTests
     public void OnFailExtension_WhenInvokeOnFailedResult_ShouldBeInvoked()
     {
         // Arrange
-        var error = new InfoError("Bad");
+        var error = new Error("Bad");
         var result = Result.Fail(error);
 
         var flag = false;
@@ -113,7 +113,7 @@ public class ConclusionSuccessFailExtensionsTests
     public void OnFailExtension_WhenInvokeOnFailedResultWithArgumentAction_ShouldBeInvoked()
     {
         // Arrange
-        var error = new InfoError("Bad");
+        var error = new Error("Bad");
         var result = Result.Fail(error);
 
         IEnumerable<IError>? received = null;

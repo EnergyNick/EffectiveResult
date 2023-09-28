@@ -26,7 +26,7 @@ public class ResultTrySuccessFailExtensionsTests
     public void OnSuccessTryExtension_WhenInvokeOnFailedResult_ShouldNotBeInvoked()
     {
         // Arrange
-        var error = new InfoError("Bad");
+        var error = new Error("Bad");
         var result = Result.Fail(error);
 
         var flag = false;
@@ -62,7 +62,7 @@ public class ResultTrySuccessFailExtensionsTests
     public void OnSuccessTryExtension_WhenInvokeOnFailedTypedResult_ShouldNotBeInvoked()
     {
         // Arrange
-        var error = new InfoError("Deadlock");
+        var error = new Error("Deadlock");
         var result = Result.Fail<string>(error);
 
         string? expected = null;
@@ -105,7 +105,7 @@ public class ResultTrySuccessFailExtensionsTests
     public void OnFailTryExtension_WhenInvokeOnFailedResult_ShouldBeInvoked()
     {
         // Arrange
-        var error = new InfoError("Bad");
+        var error = new Error("Bad");
         var result = Result.Fail(error);
 
         var flag = false;
@@ -139,7 +139,7 @@ public class ResultTrySuccessFailExtensionsTests
     public void OnFailTryExtension_WhenInvokeOnFailedResultWithArgumentAction_ShouldBeInvoked()
     {
         // Arrange
-        var error = new InfoError("Bad");
+        var error = new Error("Bad");
         var result = Result.Fail(error);
 
         IEnumerable<IError>? received = null;
@@ -174,7 +174,7 @@ public class ResultTrySuccessFailExtensionsTests
     public void OnFailTryExtension_WhenInvokeWithExceptionOnFailedResult_ShouldReturnFailedResultWithNewError()
     {
         // Arrange
-        var initialError = new InfoError("Very bad");
+        var initialError = new Error("Very bad");
         var result = Result.Fail(initialError);
         var valuedResult = Result.Fail<int>(initialError);
 

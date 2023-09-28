@@ -30,7 +30,7 @@ public class ResultContractTests
     public void ResultConstruction_WhenCreateFailedResult_ShouldBeInValidState()
     {
         // Arrange
-        IError error = new InfoError("Very bad");
+        IError error = new Error("Very bad");
 
         // Act
         var result = new Result(error);
@@ -49,7 +49,7 @@ public class ResultContractTests
         // Arrange
         var errors = new IError[]
         {
-            new InfoError("Very bad"),
+            new Error("Very bad"),
             new ExceptionalError(new Exception())
         };
 
@@ -83,7 +83,7 @@ public class ResultContractTests
     public void ResultConstruction_WhenCloneWithCopyConstructor_ShouldBeEquals()
     {
         // Arrange
-        IError error = new InfoError("So bad");
+        IError error = new Error("So bad");
         var value = new List<int> { 1, 2, 3, 4, 5 };
 
         var successResult = new Result<List<int>>(value);
@@ -121,7 +121,7 @@ public class ResultContractTests
     public void ResultGetValueOrDefault_WhenInvokeOnFailedResult_ShouldReturnDefaultValue()
     {
         // Arrange
-        var error = new InfoError("Error!!!");
+        var error = new Error("Error!!!");
         var result = Result.Fail<List<string>>(error);
 
         var defaultValue = new List<string> { "Default" };
@@ -189,7 +189,7 @@ public class ResultContractTests
         // Arrange
         var data = 145;
 
-        var error = new InfoError("Bad data");
+        var error = new Error("Bad data");
         var errors = new IError[] { error };
 
         var result = new Result(errors);
@@ -259,7 +259,7 @@ public class ResultContractTests
     public void ResultImplicitOperator_WhenSetFromError_ShouldCreateFailedResult()
     {
         // Arrange
-        var error = new InfoError("Very bad");
+        var error = new Error("Very bad");
 
         // Act
         Result result = error;

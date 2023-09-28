@@ -26,7 +26,7 @@ public class FunctionalExtensionsTest
     public void MergeInnerResult_WhenParentResultFailed_ShouldReturnFailedResultWithParentErrors()
     {
         // Arrange
-        var error = new InfoError("succ pred not working!");
+        var error = new Error("succ pred not working!");
         var result = Result.Fail<Result>(error);
         var valuedResult = Result.Fail<Result<string>>(error);
 
@@ -43,7 +43,7 @@ public class FunctionalExtensionsTest
     public void MergeInnerResult_WhenInnerResultFailed_ShouldReturnFailedResultWithInnerErrors()
     {
         // Arrange
-        var error = new InfoError("succ pred not working!");
+        var error = new Error("succ pred not working!");
         var result = Result.Ok(Result.Fail(error));
         var valuedResult = Result.Ok(Result.Fail<string>(error));
 
