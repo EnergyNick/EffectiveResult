@@ -403,4 +403,54 @@ public class StaticFactoriesTests
         failedResultStr.ShouldBeFailed(error);
         failedResultError.ShouldBeFailed(error);
     }
+
+    [Fact]
+    public void CombineMethod_WhenInvokeWithSuccessResults_ShouldReturnSuccessResult()
+    {
+        // Arrange
+        var results = new[] { Result.Ok(), Result.Ok(), Result.Ok() };
+        var values = new[] { "Hello", "My", "World" };
+        var valuedResults = values.Select(x => Result.Ok(x)).ToArray();
+
+        // Act
+        var result = Result.Combine(results);
+        var resultEnumerable = Result.Combine(results.AsEnumerable());
+        var resultWithValue = Result.Combine(valuedResults);
+        var resultWithValueEnumerable = Result.Combine(valuedResults.AsEnumerable());
+
+        // Assert
+        result.ShouldBeSuccess();
+        resultEnumerable.ShouldBeSuccess();
+        resultWithValue.ShouldBeSuccessAndValueCollectionEqualsTo(values);
+        resultWithValueEnumerable.ShouldBeSuccessAndValueCollectionEqualsTo(values);
+    }
+
+    [Fact]
+    public void CombineMethod_WhenInvokeWithFailedResult_ShouldReturnFailedResultWithMergedErrors()
+    {
+        // Arrange
+        var exception = new Exception("Test");
+        var errors = new IError[]
+        {
+            new InfoError("Very bad"),
+            new InfoError("So bad, but why..."),
+            new ExceptionalError(exception)
+        };
+        var value = "Hello world!";
+
+        var results = errors.Select(Result.Fail).Append(Result.Ok()).ToArray();
+        var valuedResults = errors.Select(Result.Fail<string>).Append(Result.Ok(value)).ToArray();
+
+        // Act
+        var result = Result.Combine(results);
+        var resultEnumerable = Result.Combine(results.AsEnumerable());
+        var resultWithValue = Result.Combine(valuedResults);
+        var resultWithValueEnumerable = Result.Combine(valuedResults.AsEnumerable());
+
+        // Assert
+        result.ShouldBeFailed(errors);
+        resultEnumerable.ShouldBeFailed(errors);
+        resultWithValue.ShouldBeFailed(errors);
+        resultWithValueEnumerable.ShouldBeFailed(errors);
+    }
 }

@@ -143,4 +143,59 @@ public class ConclusionSuccessFailExtensionsTests
         thenResult.Should().Be(result);
         received.Should().BeNull();
     }
+
+    [Fact]
+    public void OnFailWithExceptionExtension_WhenInvokeOnSuccessResult_ShouldBeNotInvoked()
+    {
+        // Arrange
+        var result = Result.Ok();
+
+        IExceptionalError? received = null;
+        Action<IExceptionalError> action = errors => received = errors;
+
+        // Act
+        var thenResult = result.OnFailWithException<Exception>(action);
+
+        // Assert
+        thenResult.Should().Be(result);
+        received.Should().BeNull();
+    }
+
+    [Fact]
+    public void OnFailWithExceptionExtension_WhenInvokeOnFailedResultWithoutExpectedException_ShouldBeNotInvoked()
+    {
+        // Arrange
+        var exception = new Exception("Bad");
+        var error = new ExceptionalError(exception);
+        var result = Result.Fail(error);
+
+        IExceptionalError? received = null;
+        Action<IExceptionalError> action = errors => received = errors;
+
+        // Act
+        var thenResult = result.OnFailWithException<ArgumentException>(action);
+
+        // Assert
+        thenResult.Should().Be(result);
+        received.Should().BeNull();
+    }
+
+    [Fact]
+    public void OnFailWithExceptionExtension_WhenInvokeOnFailedResultWithExpectedException_ShouldBeInvoked()
+    {
+        // Arrange
+        var exception = new ArgumentException("Fault!");
+        var error = new ExceptionalError(exception);
+        var result = Result.Fail(error);
+
+        IExceptionalError? received = null;
+        Action<IExceptionalError> action = errors => received = errors;
+
+        // Act
+        var thenResult = result.OnFailWithException<ArgumentException>(action);
+
+        // Assert
+        thenResult.Should().Be(result);
+        received.Should().Be(error);
+    }
 }

@@ -99,6 +99,44 @@ public class ResultContractTests
     }
 
     [Fact]
+    public void ResultGetValueOrDefault_WhenInvokeOnSuccessResult_ShouldReturnValue()
+    {
+        // Arrange
+        var data = new List<string> { "Wow!" };
+        var result = new Result<List<string>>(data);
+
+        var defaultValue = new List<string> { "Default" };
+        var defaultValueFromFactory = new List<string> { "Factory" };
+
+        // Act
+        var valueOrDefault = result.GetValueOrDefault(defaultValue);
+        var valueOrDefaultFactory = result.GetValueOrDefault(() => defaultValueFromFactory);
+
+        // Assert
+        valueOrDefault.Should().BeEquivalentTo(data);
+        valueOrDefaultFactory.Should().BeEquivalentTo(data);
+    }
+
+    [Fact]
+    public void ResultGetValueOrDefault_WhenInvokeOnFailedResult_ShouldReturnDefaultValue()
+    {
+        // Arrange
+        var error = new InfoError("Error!!!");
+        var result = Result.Fail<List<string>>(error);
+
+        var defaultValue = new List<string> { "Default" };
+        var defaultValueFromFactory = new List<string> { "Factory" };
+
+        // Act
+        var valueOrDefault = result.GetValueOrDefault(defaultValue);
+        var valueOrDefaultFactory = result.GetValueOrDefault(() => defaultValueFromFactory);
+
+        // Assert
+        valueOrDefault.Should().BeEquivalentTo(defaultValue);
+        valueOrDefaultFactory.Should().BeEquivalentTo(defaultValueFromFactory);
+    }
+
+    [Fact]
     public void ToResult_WhenConvertToValuelessResult_StateShouldBeEquals()
     {
         // Arrange
@@ -199,5 +237,38 @@ public class ResultContractTests
         resultFactoryCopyAction.Should().Throw<ArgumentNullOnSuccessException>();
         structResultCopyAction.Should().Throw<ArgumentNullOnSuccessException>();
         classResultCopyAction.Should().Throw<ArgumentNullOnSuccessException>();
+    }
+
+    [Fact]
+    public void ResultImplicitOperator_WhenSetFromValue_ShouldCreateSuccessResult()
+    {
+        // Arrange
+        var valueInt = 5;
+        var valueStr = new List<string> { "Wow!" };
+
+        // Act
+        Result<int> valuedResult = valueInt;
+        Result<List<string>> classResult = valueStr;
+
+        // Assert
+        valuedResult.ShouldBeSuccessAndEqualsValue(valueInt);
+        classResult.ShouldBeSuccessAndReferenceEqualsValue(valueStr);
+    }
+
+    [Fact]
+    public void ResultImplicitOperator_WhenSetFromError_ShouldCreateFailedResult()
+    {
+        // Arrange
+        var error = new InfoError("Very bad");
+
+        // Act
+        Result result = error;
+        Result<int> valuedResult = error;
+        Result<List<string>> classResult = error;
+
+        // Assert
+        result.ShouldBeFailed(error);
+        valuedResult.ShouldBeFailed(error);
+        classResult.ShouldBeFailed(error);
     }
 }

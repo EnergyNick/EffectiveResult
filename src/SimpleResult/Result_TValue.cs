@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using SimpleResult.Core;
 using SimpleResult.Exceptions;
@@ -101,6 +102,7 @@ public record Result<TValue> : IConclusion
 
     public static implicit operator Result<TValue>(BaseError error) => Result.Fail<TValue>(error);
 
+    [ExcludeFromCodeCoverage]
     protected virtual bool PrintMembers(StringBuilder builder)
     {
         builder.Append("IsSuccess = ");

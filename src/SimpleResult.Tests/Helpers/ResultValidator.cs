@@ -29,6 +29,15 @@ public static class ResultValidator
         result.Value.Should().Be(expected);
     }
 
+    public static void ShouldBeSuccessAndValueCollectionEqualsTo<TValue>(this Result<IEnumerable<TValue>> result,
+        ICollection<TValue> expected)
+    {
+        result.ShouldBeSuccess();
+
+        result.ValueOrDefault.Should().BeEquivalentTo(expected);
+        result.Value.Should().BeEquivalentTo(expected);
+    }
+
     public static void ShouldBeSuccessAndReferenceEqualsValue<TValue>(this Result<TValue> result, TValue expected)
         where TValue : class
     {
