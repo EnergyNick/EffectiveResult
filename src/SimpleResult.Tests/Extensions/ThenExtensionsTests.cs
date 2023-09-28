@@ -6,42 +6,6 @@ namespace SimpleResult.Tests.Extensions;
 public class ThenExtensionsTests
 {
     [Fact]
-    public void ThenExtension_WhenInvokeOnSuccessTypedResult_ShouldBeInvoked()
-    {
-        // Arrange
-        var value = "Hello there!";
-        var result = Result.Ok(value);
-
-        string? expected = null;
-        Action<string> action = x => expected = x;
-
-        // Act
-        var thenResult = result.OnSuccess(action);
-
-        // Assert
-        thenResult.Should().Be(result);
-        expected.Should().Be(value);
-    }
-
-    [Fact]
-    public void ThenExtension_WhenInvokeOnFailedTypedResult_ShouldNotBeInvoked()
-    {
-        // Arrange
-        var error = new Error("Deadlock");
-        var result = Result.Fail<string>(error);
-
-        string? expected = null;
-        Action<string> action = x => expected = x;
-
-        // Act
-        var thenResult = result.OnSuccess(action);
-
-        // Assert
-        thenResult.Should().Be(result);
-        expected.Should().BeNull();
-    }
-
-    [Fact]
     public void ThenExtension_WhenInvokeOnSuccessResultAndFunc_ShouldBeInvokedAndReturnTypedResult()
     {
         // Arrange
@@ -61,7 +25,7 @@ public class ThenExtensionsTests
     public void ThenExtension_WhenInvokeOnFailedResultAndFunc_ShouldNotBeInvoked()
     {
         // Arrange
-        var error = new Error("Deadlock");
+        var error = new InfoError("Deadlock");
         var result = Result.Fail(error);
 
         var value = "Hello there!";
@@ -80,7 +44,7 @@ public class ThenExtensionsTests
         // Arrange
         var result = Result.Ok();
 
-        var internalError = new Error("Situation is terrible!");
+        var internalError = new InfoError("Situation is terrible!");
         var internalSuccessResult = Result.Ok();
         var internalFailedResult = Result.Fail(internalError);
 
@@ -100,10 +64,10 @@ public class ThenExtensionsTests
     public void ThenExtension_WhenInvokeOnFailedResultWithFuncReturningResult_ShouldNotBeInvoked()
     {
         // Arrange
-        var error = new Error("Bad");
+        var error = new InfoError("Bad");
         var result = Result.Fail(error);
 
-        var internalError = new Error("Situation is terrible!");
+        var internalError = new InfoError("Situation is terrible!");
         var internalSuccessResult = Result.Ok();
         var internalFailedResult = Result.Fail(internalError);
 
@@ -126,7 +90,7 @@ public class ThenExtensionsTests
         var result = Result.Ok();
 
         var value = "Hello there!";
-        var error = new Error("Not functional?!");
+        var error = new InfoError("Not functional?!");
 
         var expectedSuccessResult = Result.Ok(value);
         var expectedFailedResult = Result.Fail<string>(error);
@@ -149,11 +113,11 @@ public class ThenExtensionsTests
     public void ThenExtension_WhenInvokeOnFailedResultAndFuncWithResultReturn_ShouldNotBeInvoked()
     {
         // Arrange
-        var error = new Error("Deadlock");
+        var error = new InfoError("Deadlock");
         var result = Result.Fail(error);
 
         var value = "Hello there!";
-        var internalError = new Error("Not functional?!");
+        var internalError = new InfoError("Not functional?!");
 
         var expectedSuccessResult = Result.Ok(value);
         var expectedFailedResult = Result.Fail(internalError);
@@ -197,7 +161,7 @@ public class ThenExtensionsTests
     public void ThenExtension_WhenInvokeOnFailedTypedResultAndFunc_ShouldNotBeInvoked()
     {
         // Arrange
-        var error = new Error("Deadlocker");
+        var error = new InfoError("Deadlocker");
         var result = Result.Fail<string>(error);
 
         var internalValue = "Hello there!";
@@ -225,7 +189,7 @@ public class ThenExtensionsTests
         var value = "Good time need good result";
         var result = Result.Ok(value);
 
-        var error = new Error("Not functional?!");
+        var error = new InfoError("Not functional?!");
 
         var expectedSuccessResult = Result.Ok();
         var expectedFailedResult = Result.Fail(error);
@@ -260,10 +224,10 @@ public class ThenExtensionsTests
     public void ThenExtension_WhenInvokeOnFailedTypedResultAndFuncWithResultReturn_ShouldNotBeInvokedAndReturnResult()
     {
         // Arrange
-        var error = new Error("Deadlock");
+        var error = new InfoError("Deadlock");
         var result = Result.Fail<string>(error);
 
-        var internalError = new Error("Not functional?!");
+        var internalError = new InfoError("Not functional?!");
 
         var expectedSuccessResult = Result.Ok();
         var expectedFailedResult = Result.Fail(internalError);
@@ -299,7 +263,7 @@ public class ThenExtensionsTests
         var result = Result.Ok(value);
 
         var internalValue = "Hello there!";
-        var error = new Error("Not functional?!");
+        var error = new InfoError("Not functional?!");
 
         var expectedSuccessResult = Result.Ok(internalValue);
         var expectedFailedResult = Result.Fail<string>(error);
@@ -334,11 +298,11 @@ public class ThenExtensionsTests
     public void ThenExtension_WhenInvokeOnFailedTypedResultAndFuncWithResultReturn_ShouldNotBeInvoked()
     {
         // Arrange
-        var error = new Error("Deadlock");
+        var error = new InfoError("Deadlock");
         var result = Result.Fail<string>(error);
 
         var internalValue = "Hello there!";
-        var internalError = new Error("Not functional?!");
+        var internalError = new InfoError("Not functional?!");
 
         var expectedSuccessResult = Result.Ok(internalValue);
         var expectedFailedResult = Result.Fail<string>(internalError);

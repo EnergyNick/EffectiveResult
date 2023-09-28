@@ -22,7 +22,7 @@ public class ObjectExtensionTests
     public void MakeFailedResult_WhenInvokeOnErrorObject_ShouldReturnFailedResultWithSameError()
     {
         // Arrange
-        var error = new Error("Very awful situation");
+        var error = new InfoError("Very awful situation");
 
         // Act
         var result = error.MakeFailedResult();

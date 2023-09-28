@@ -3,7 +3,7 @@ using SimpleResult.Settings;
 
 namespace SimpleResult.Extensions;
 
-public static partial class ResultsThenExtensions
+public static class ResultsThenTryExtensions
 {
     /// <summary>
     /// Provide chaining method for next operation on success result.

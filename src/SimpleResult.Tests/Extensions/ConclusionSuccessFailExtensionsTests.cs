@@ -3,7 +3,7 @@ using SimpleResult.Extensions;
 
 namespace SimpleResult.Tests.Extensions;
 
-public class ConclusionThenExtensionsTests
+public class ConclusionSuccessFailExtensionsTests
 {
     [Fact]
     public void ThenExtension_WhenInvokeOnSuccessResult_ShouldBeInvoked()
@@ -25,7 +25,7 @@ public class ConclusionThenExtensionsTests
     public void ThenExtension_WhenInvokeOnFailedResult_ShouldNotBeInvoked()
     {
         // Arrange
-        var error = new Error("Bad");
+        var error = new InfoError("Bad");
         var result = Result.Fail(error);
 
         var flag = false;
@@ -40,10 +40,46 @@ public class ConclusionThenExtensionsTests
     }
 
     [Fact]
+    public void OnSuccessExtension_WhenInvokeOnSuccessTypedResult_ShouldBeInvoked()
+    {
+        // Arrange
+        var value = "Hello there!";
+        var result = Result.Ok(value);
+
+        string? expected = null;
+        Action<string> action = x => expected = x;
+
+        // Act
+        var thenResult = result.OnSuccess(action);
+
+        // Assert
+        thenResult.Should().Be(result);
+        expected.Should().Be(value);
+    }
+
+    [Fact]
+    public void OnSuccessExtension_WhenInvokeOnFailedTypedResult_ShouldNotBeInvoked()
+    {
+        // Arrange
+        var error = new InfoError("Deadlock");
+        var result = Result.Fail<string>(error);
+
+        string? expected = null;
+        Action<string> action = x => expected = x;
+
+        // Act
+        var thenResult = result.OnSuccess(action);
+
+        // Assert
+        thenResult.Should().Be(result);
+        expected.Should().BeNull();
+    }
+
+    [Fact]
     public void OnFailExtension_WhenInvokeOnFailedResult_ShouldBeInvoked()
     {
         // Arrange
-        var error = new Error("Bad");
+        var error = new InfoError("Bad");
         var result = Result.Fail(error);
 
         var flag = false;
@@ -77,7 +113,7 @@ public class ConclusionThenExtensionsTests
     public void OnFailExtension_WhenInvokeOnFailedResultWithArgumentAction_ShouldBeInvoked()
     {
         // Arrange
-        var error = new Error("Bad");
+        var error = new InfoError("Bad");
         var result = Result.Fail(error);
 
         IEnumerable<IError>? received = null;

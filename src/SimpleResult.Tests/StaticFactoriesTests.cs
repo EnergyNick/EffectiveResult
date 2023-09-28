@@ -58,7 +58,7 @@ public class StaticFactoriesTests
         var resultWithValue = Result.Fail<string>(errorReason);
 
         // Assert
-        var expectedError = new Error(errorReason);
+        var expectedError = new InfoError(errorReason);
         result.ShouldBeFailed(expectedError);
         resultWithValue.ShouldBeFailed(expectedError);
     }
@@ -67,7 +67,7 @@ public class StaticFactoriesTests
     public void FailMethod_WhenInvokeWithError_ShouldReturnFailedResultWithValidError()
     {
         // Arrange
-        var error = new Error("Very bad");
+        var error = new InfoError("Very bad");
 
         // Act
         var result = Result.Fail(error);
@@ -101,8 +101,8 @@ public class StaticFactoriesTests
         var exception = new Exception("Test");
         var errors = new IError[]
         {
-            new Error("Very bad"),
-            new Error("So bad, but why..."),
+            new InfoError("Very bad"),
+            new InfoError("So bad, but why..."),
             new ExceptionalError(exception)
         };
 
@@ -202,7 +202,7 @@ public class StaticFactoriesTests
         Func<int> refMethod = () => throw exception;
         Func<string> valueMethod = () => throw exception;
 
-        var error = new Error("So bad");
+        var error = new InfoError("So bad");
         var handler = (Exception _) => error;
 
         // Act
@@ -294,7 +294,7 @@ public class StaticFactoriesTests
         Func<Task<int>> refMethod = () => throw exception;
         Func<Task<string>> valueMethod = () => throw exception;
 
-        var error = new Error("So bad");
+        var error = new InfoError("So bad");
         var handler = (Exception _) => error;
 
         // Act
@@ -319,7 +319,7 @@ public class StaticFactoriesTests
     {
         // Arrange
         const string errorMessage = "Very bad";
-        var error = new Error(errorMessage);
+        var error = new InfoError(errorMessage);
 
         // Act
         var successResultStr = Result.OkIf(true, errorMessage);
@@ -341,7 +341,7 @@ public class StaticFactoriesTests
     {
         // Arrange
         const string errorMessage = "Very bad";
-        var error = new Error(errorMessage);
+        var error = new InfoError(errorMessage);
 
         // Act
         var successResultStr = Result.FailIf(false, errorMessage);
@@ -363,7 +363,7 @@ public class StaticFactoriesTests
     {
         // Arrange
         const string errorMessage = "Very bad";
-        var error = new Error(errorMessage);
+        var error = new InfoError(errorMessage);
         var value = new List<int>();
 
         // Act
@@ -386,7 +386,7 @@ public class StaticFactoriesTests
     {
         // Arrange
         const string errorMessage = "Very bad";
-        var error = new Error(errorMessage);
+        var error = new InfoError(errorMessage);
         var value = new List<int>();
 
         // Act
