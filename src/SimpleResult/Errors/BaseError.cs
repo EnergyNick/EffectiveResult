@@ -7,6 +7,7 @@ namespace SimpleResult;
 /// Base abstraction of all errors from SimpleResult library.
 /// Provide useful methods and constructors for errors implementation
 /// and default implementation of <see cref="IError"/> interface.
+/// <remarks> Used also for implicit cast of error to <see cref="Result"/> and <see cref="Result{TValue}"/>.</remarks>
 /// </summary>
 public abstract record BaseError : IError
 {

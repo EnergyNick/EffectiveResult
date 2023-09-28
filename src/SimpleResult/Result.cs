@@ -66,6 +66,8 @@ public partial record Result : IConclusion
             : new Result<TNewValue>(_errors);
     }
 
+    public static implicit operator Result(BaseError error) => Result.Fail(error);
+
     protected virtual bool PrintMembers(StringBuilder builder)
     {
         builder.Append("IsSuccess = ");

@@ -99,6 +99,8 @@ public record Result<TValue> : IConclusion
 
     public static implicit operator Result<TValue>(in TValue value) => new(value);
 
+    public static implicit operator Result<TValue>(BaseError error) => Result.Fail<TValue>(error);
+
     protected virtual bool PrintMembers(StringBuilder builder)
     {
         builder.Append("IsSuccess = ");
