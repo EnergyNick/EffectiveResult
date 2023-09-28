@@ -2,7 +2,7 @@ using SimpleResult.Core;
 
 namespace SimpleResult;
 
-public record ExceptionalError : BaseError, IExceptionalError
+public record ExceptionalError : Error, IExceptionalError
 {
     public Exception Exception { get; init; }
 

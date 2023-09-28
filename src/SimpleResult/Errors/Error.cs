@@ -4,12 +4,12 @@ using SimpleResult.Core;
 namespace SimpleResult;
 
 /// <summary>
-/// Base abstraction of all errors from SimpleResult library.
+/// Base type of all errors from SimpleResult library.
 /// Provide useful methods and constructors for errors implementation
 /// and default implementation of <see cref="IError"/> interface.
 /// <remarks> Used also for implicit cast of error to <see cref="Result"/> and <see cref="Result{TValue}"/>.</remarks>
 /// </summary>
-public abstract record BaseError : IError
+public record Error : IError
 {
     private readonly ImmutableArray<IError> _causedErrors = ImmutableArray<IError>.Empty;
 
@@ -19,14 +19,14 @@ public abstract record BaseError : IError
     /// <inheritdoc />
     public IReadOnlyCollection<IError> CausedErrors => _causedErrors;
 
-    protected BaseError(string message) => Message = message;
+    public Error(string message) => Message = message;
 
-    protected BaseError(string message, IError causedBy) : this(message) =>
+    public Error(string message, IError causedBy) : this(message) =>
         _causedErrors = ImmutableArray.Create(causedBy);
 
-    protected BaseError(string message, params IError[] causedBy) : this(message) =>
+    public Error(string message, params IError[] causedBy) : this(message) =>
         _causedErrors = ImmutableArray.Create(causedBy);
 
-    protected BaseError(string message, IEnumerable<IError> causedBy) : this(message) =>
+    public Error(string message, IEnumerable<IError> causedBy) : this(message) =>
         _causedErrors = causedBy.ToImmutableArray();
 }

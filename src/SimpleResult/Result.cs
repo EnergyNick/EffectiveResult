@@ -67,7 +67,7 @@ public partial record Result : IConclusion
             : new Result<TNewValue>(_errors);
     }
 
-    public static implicit operator Result(BaseError error) => Result.Fail(error);
+    public static implicit operator Result(Error error) => Result.Fail(error);
 
     [ExcludeFromCodeCoverage]
     protected virtual bool PrintMembers(StringBuilder builder)

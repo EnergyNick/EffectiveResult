@@ -26,7 +26,7 @@ public partial record Result
     /// Creates a failed result with the given error message.
     /// Message will be transformed to <see cref="IError"/>
     /// </summary>
-    public static Result Fail(string errorMessage) => Fail(new InfoError(errorMessage));
+    public static Result Fail(string errorMessage) => Fail(new Error(errorMessage));
 
     /// <summary>
     /// Creates a failed result with the given exception.
@@ -51,9 +51,9 @@ public partial record Result
 
     /// <summary>
     /// Creates a failed result with the given error message.
-    /// Message will be transformed to <see cref="InfoError"/>
+    /// Message will be transformed to <see cref="Error"/>
     /// </summary>
-    public static Result<TValue> Fail<TValue>(string errorMessage) => Fail<TValue>(new InfoError(errorMessage));
+    public static Result<TValue> Fail<TValue>(string errorMessage) => Fail<TValue>(new Error(errorMessage));
 
     /// <summary>
     /// Creates a failed result with the given exception.
