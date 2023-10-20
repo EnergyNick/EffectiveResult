@@ -47,14 +47,12 @@ public static class ConclusionErrorsExtensions
     /// <param name="conclusion">Source of errors</param>
     /// <param name="exception">Provide first exception match, if return true</param>
     /// <param name="filter">Filter for matching error</param>
-    /// <typeparam name="TConclusion">Type of conclusion</typeparam>
     /// <returns>True, if conclusion contains matching error</returns>
-    public static bool TryGetException<TConclusion>(this TConclusion conclusion,
+    public static bool TryGetException(this IConclusion conclusion,
         [NotNullWhen(true)] out Exception? exception,
         Predicate<Exception>? filter = null)
-        where TConclusion : IConclusion
     {
-        return TryGetException<Exception, TConclusion>(conclusion, out exception, filter);
+        return TryGetException<Exception>(conclusion, out exception, filter);
     }
 
     /// <summary>
@@ -63,14 +61,12 @@ public static class ConclusionErrorsExtensions
     /// <param name="conclusion">Source of errors</param>
     /// <param name="exception">Provide first exception match, if return true</param>
     /// <param name="filter">Filter for matching error</param>
-    /// <typeparam name="TConclusion">Type of conclusion</typeparam>
     /// <typeparam name="TException">Type of matching exception</typeparam>
     /// <returns>True, if conclusion contains matching error</returns>
-    public static bool TryGetException<TException, TConclusion>(this TConclusion conclusion,
+    public static bool TryGetException<TException>(this IConclusion conclusion,
         [NotNullWhen(true)] out TException? exception,
         Predicate<TException>? filter = null)
         where TException : Exception
-        where TConclusion : IConclusion
     {
         var error = conclusion.Errors
             .OfType<IExceptionalError>()
@@ -84,13 +80,11 @@ public static class ConclusionErrorsExtensions
     /// </summary>
     /// <param name="conclusion">Source of errors</param>
     /// <param name="filter">Filter for matching error</param>
-    /// <typeparam name="TConclusion">Type of conclusion</typeparam>
     /// <returns>Collections of matching exceptions from conclusion</returns>
-    public static IEnumerable<Exception> GetExceptions<TConclusion>(this TConclusion conclusion,
+    public static IEnumerable<Exception> GetExceptions(this IConclusion conclusion,
         Predicate<Exception>? filter = null)
-        where TConclusion : IConclusion
     {
-        return GetExceptions<Exception, TConclusion>(conclusion, filter);
+        return GetExceptions<Exception>(conclusion, filter);
     }
 
     /// <summary>
@@ -98,13 +92,11 @@ public static class ConclusionErrorsExtensions
     /// </summary>
     /// <param name="conclusion">Source of errors</param>
     /// <param name="filter">Filter for matching error</param>
-    /// <typeparam name="TConclusion">Type of conclusion</typeparam>
     /// <typeparam name="TException">Type of exception</typeparam>
     /// <returns>Collections of matching exceptions from conclusion</returns>
-    public static IEnumerable<TException> GetExceptions<TException, TConclusion>(this TConclusion conclusion,
+    public static IEnumerable<TException> GetExceptions<TException>(this IConclusion conclusion,
         Predicate<TException>? filter = null)
         where TException : Exception
-        where TConclusion : IConclusion
     {
         return conclusion.Errors
             .OfType<IExceptionalError>()
