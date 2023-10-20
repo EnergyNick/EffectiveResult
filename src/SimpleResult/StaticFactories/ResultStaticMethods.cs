@@ -152,6 +152,11 @@ public partial record Result
     /// <summary>
     /// Create result with status depending on condition
     /// </summary>
+    public static Result OkIf(bool condition, Exception exception) => condition ? Ok() : Fail(exception);
+
+    /// <summary>
+    /// Create result with status depending on condition
+    /// </summary>
     public static Result FailIf(bool condition, IError error) => condition ? Fail(error) : Ok();
 
     /// <summary>
@@ -159,6 +164,10 @@ public partial record Result
     /// </summary>
     public static Result FailIf(bool condition, string error) => condition ? Fail(error) : Ok();
 
+    /// <summary>
+    /// Create result with status depending on condition
+    /// </summary>
+    public static Result FailIf(bool condition, Exception exception) => condition ? Fail(exception) : Ok();
 
     /// <summary>
     /// Create result with status depending on condition
@@ -175,6 +184,12 @@ public partial record Result
     /// <summary>
     /// Create result with status depending on condition
     /// </summary>
+    public static Result<TValue> OkIf<TValue>(bool condition, Exception exception, TValue valueIfSuccess) =>
+        condition ? Ok(valueIfSuccess) : Fail<TValue>(exception);
+
+    /// <summary>
+    /// Create result with status depending on condition
+    /// </summary>
     public static Result<TValue> FailIf<TValue>(bool condition, IError error, TValue valueIfSuccess) =>
         condition ? Fail<TValue>(error) : Ok(valueIfSuccess);
 
@@ -183,6 +198,12 @@ public partial record Result
     /// </summary>
     public static Result<TValue> FailIf<TValue>(bool condition, string error, TValue valueIfSuccess) =>
         condition ? Fail<TValue>(error) : Ok(valueIfSuccess);
+
+    /// <summary>
+    /// Create result with status depending on condition
+    /// </summary>
+    public static Result<TValue> FailIf<TValue>(bool condition, Exception exception, TValue valueIfSuccess) =>
+        condition ? Fail<TValue>(exception) : Ok(valueIfSuccess);
 
     /// <summary>
     /// Provide method for combining results to single result

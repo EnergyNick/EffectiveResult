@@ -363,22 +363,27 @@ public class StaticFactoriesTests
     {
         // Arrange
         const string errorMessage = "Very bad";
+        var exception = new Exception(errorMessage);
         var error = new Error(errorMessage);
         var value = new List<int>();
 
         // Act
         var successResultStr = Result.OkIf(true, errorMessage, value);
         var successResultError = Result.OkIf(true, error, value);
+        var successResultException = Result.OkIf(true, exception, value);
 
         var failedResultStr = Result.OkIf(false, errorMessage, value);
         var failedResultError = Result.OkIf(false, error, value);
+        var failedResultException = Result.OkIf(false, exception, value);
 
         // Assert
         successResultStr.ShouldBeSuccessAndEqualsValue(value);
         successResultError.ShouldBeSuccessAndEqualsValue(value);
+        successResultException.ShouldBeSuccessAndEqualsValue(value);
 
         failedResultStr.ShouldBeFailed(error);
         failedResultError.ShouldBeFailed(error);
+        failedResultException.ShouldBeFailed(error);
     }
 
     [Fact]
@@ -386,22 +391,27 @@ public class StaticFactoriesTests
     {
         // Arrange
         const string errorMessage = "Very bad";
+        var exception = new Exception(errorMessage);
         var error = new Error(errorMessage);
         var value = new List<int>();
 
         // Act
         var successResultStr = Result.FailIf(false, errorMessage, value);
         var successResultError = Result.FailIf(false, error, value);
+        var successResultException = Result.FailIf(false, exception, value);
 
         var failedResultStr = Result.FailIf(true, errorMessage, value);
         var failedResultError = Result.FailIf(true, error, value);
+        var failedResultException = Result.FailIf(true, exception, value);
 
         // Assert
         successResultStr.ShouldBeSuccessAndEqualsValue(value);
         successResultError.ShouldBeSuccessAndEqualsValue(value);
+        successResultException.ShouldBeSuccessAndEqualsValue(value);
 
         failedResultStr.ShouldBeFailed(error);
         failedResultError.ShouldBeFailed(error);
+        failedResultException.ShouldBeFailed(error);
     }
 
     [Fact]
