@@ -20,6 +20,22 @@ public static class ConclusionSuccessFailExtensions
     }
 
     /// <summary>
+    /// Provide chaining method for action on success result
+    /// </summary>
+    /// <param name="input">Source result</param>
+    /// <param name="continuation">Action for invoke on success</param>
+    /// <typeparam name="TValue">Type of result value on success</typeparam>
+    /// <typeparam name="TConclusion">Type of conclusion</typeparam>
+    /// <returns>Result from <paramref name="input"/></returns>
+    public static TConclusion OnSuccess<TConclusion, TValue>(this TConclusion input, Action<TValue> continuation)
+        where TConclusion : IConclusion, IValueProvider<TValue>
+    {
+        if (input.IsSuccess)
+            continuation(input.ValueOrDefault!);
+        return input;
+    }
+
+    /// <summary>
     /// Call action only if <see cref="input"/> is failed
     /// </summary>
     /// <param name="input">Source of conclusion</param>

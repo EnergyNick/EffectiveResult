@@ -6,7 +6,7 @@ using SimpleResult.Exceptions;
 
 namespace SimpleResult;
 
-public record Result<TValue> : IConclusion
+public record Result<TValue> : IConclusion, IValueProvider<TValue>
 {
     private readonly ImmutableArray<IError> _errors = ImmutableArray<IError>.Empty;
     private readonly TValue? _value;
