@@ -10,7 +10,7 @@ public static class FunctionalExtensions
     public static Result MergeInnerResult(this Result<Result> result) => result switch
     {
         { IsSuccess: true, ValueOrDefault.IsSuccess: true } => result.ValueOrDefault,
-        { IsSuccess: true, ValueOrDefault.IsFailed: true } =>
+        { IsSuccess: true, ValueOrDefault.IsSuccess: false } =>
             Result.Fail(result.ValueOrDefault.Errors),
         _ => Result.Fail(result.Errors)
     };
@@ -24,7 +24,7 @@ public static class FunctionalExtensions
     public static Result<TValue> MergeInnerResult<TValue>(this Result<Result<TValue>> result) => result switch
     {
         { IsSuccess: true, ValueOrDefault.IsSuccess: true } => result.ValueOrDefault,
-        { IsSuccess: true, ValueOrDefault.IsFailed: true } =>
+        { IsSuccess: true, ValueOrDefault.IsSuccess: false } =>
             Result.Fail<TValue>(result.ValueOrDefault.Errors),
         _ => Result.Fail<TValue>(result.Errors)
     };
