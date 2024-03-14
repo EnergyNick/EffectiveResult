@@ -1,4 +1,6 @@
 ﻿using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using SimpleResult.Core;
 
 namespace SimpleResult;
@@ -29,4 +31,18 @@ public record Error : IError
 
     public Error(string message, IEnumerable<IError> causedBy) : this(message) =>
         _causedErrors = causedBy.ToImmutableArray();
+
+    [ExcludeFromCodeCoverage]
+    protected virtual bool PrintMembers(StringBuilder builder)
+    {
+        builder.Append("Message = ");
+        builder.Append(Message);
+        if (_causedErrors.Any())
+        {
+            builder.Append(", CausedErrors = [ ");
+            builder.Append(string.Join("; ", _causedErrors));
+            builder.Append(" ]");
+        }
+        return true;
+    }
 }

@@ -6,7 +6,7 @@ using SimpleResult.Exceptions;
 
 namespace SimpleResult;
 
-public record Result<TValue> : IConclusion, IValueProvider<TValue>
+public sealed record Result<TValue> : IConclusion, IValueProvider<TValue>
 {
     private readonly ImmutableArray<IError> _errors = ImmutableArray<IError>.Empty;
     private readonly TValue? _value;
@@ -127,7 +127,7 @@ public record Result<TValue> : IConclusion, IValueProvider<TValue>
     }
 
     [ExcludeFromCodeCoverage]
-    protected virtual bool PrintMembers(StringBuilder builder)
+    private bool PrintMembers(StringBuilder builder)
     {
         builder.Append("IsSuccess = ");
         if (IsSuccess)
@@ -137,8 +137,9 @@ public record Result<TValue> : IConclusion, IValueProvider<TValue>
         }
         else
         {
-            builder.Append("false, Errors = ");
-            builder.Append(_errors);
+            builder.Append("false, Errors = [ ");
+            builder.Append(string.Join("; ", _errors));
+            builder.Append(" ]");
         }
         return true;
     }

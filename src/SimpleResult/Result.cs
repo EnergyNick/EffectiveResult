@@ -6,7 +6,7 @@ using SimpleResult.Exceptions;
 
 namespace SimpleResult;
 
-public partial record Result : IConclusion
+public sealed partial record Result : IConclusion
 {
     private readonly ImmutableArray<IError> _errors = ImmutableArray<IError>.Empty;
 
@@ -70,14 +70,15 @@ public partial record Result : IConclusion
     public static implicit operator Result(Error error) => Result.Fail(error);
 
     [ExcludeFromCodeCoverage]
-    protected virtual bool PrintMembers(StringBuilder builder)
+    private bool PrintMembers(StringBuilder builder)
     {
         builder.Append("IsSuccess = ");
         builder.Append(IsSuccess ? "true" : "false");
         if (IsFailed)
         {
-            builder.Append(", Errors = ");
-            builder.Append(_errors);
+            builder.Append(", Errors = [ ");
+            builder.Append(string.Join("; ", _errors));
+            builder.Append(" ]");
         }
         return true;
     }
