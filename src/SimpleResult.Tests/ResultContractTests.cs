@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using SimpleResult.Core;
 using SimpleResult.Exceptions;
-using SimpleResult.Tests.Helpers;
+using SimpleResult.TestCommon.Helpers;
 
 namespace SimpleResult.Tests;
 

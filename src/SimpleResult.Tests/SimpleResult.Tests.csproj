@@ -25,6 +25,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\SimpleResult\SimpleResult.csproj" />
+      <ProjectReference Include="..\Tests\SimpleResult.TestsCommon\SimpleResult.TestsCommon.csproj" />
     </ItemGroup>
 
 

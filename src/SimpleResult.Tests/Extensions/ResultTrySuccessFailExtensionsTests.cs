@@ -1,6 +1,6 @@
 ﻿using SimpleResult.Core;
 using SimpleResult.Extensions;
-using SimpleResult.Tests.Helpers;
+using SimpleResult.TestCommon.Helpers;
 
 namespace SimpleResult.Tests.Extensions;
 
