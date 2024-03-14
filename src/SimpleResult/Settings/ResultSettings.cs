@@ -28,6 +28,6 @@ public static class ResultSettings
     /// </summary>
     public static ResultParameters GetDefaultParameters() => new()
     {
-        TryCatchHandler = ex => new ExceptionalError(ex)
+        DefaultTryCatchHandler = ex => new ExceptionalError(ex)
     };
 }

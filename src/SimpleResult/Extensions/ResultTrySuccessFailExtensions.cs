@@ -25,7 +25,7 @@ public static class ResultTrySuccessFailExtensions
         }
         catch (Exception e)
         {
-            catchHandler ??= ResultSettings.Current.TryCatchHandler;
+            catchHandler ??= ResultSettings.Current.DefaultTryCatchHandler;
 
             return new Result(input.Errors.Append(catchHandler(e)));
         }
@@ -55,7 +55,7 @@ public static class ResultTrySuccessFailExtensions
         }
         catch (Exception e)
         {
-            catchHandler ??= ResultSettings.Current.TryCatchHandler;
+            catchHandler ??= ResultSettings.Current.DefaultTryCatchHandler;
 
             return new Result<TValue>(input.Errors.Append(catchHandler(e)));
         }
@@ -81,7 +81,7 @@ public static class ResultTrySuccessFailExtensions
         }
         catch (Exception e)
         {
-            catchHandler ??= ResultSettings.Current.TryCatchHandler;
+            catchHandler ??= ResultSettings.Current.DefaultTryCatchHandler;
 
             return new Result(input.Errors.Append(catchHandler(e)));
         }
@@ -108,7 +108,7 @@ public static class ResultTrySuccessFailExtensions
         }
         catch (Exception e)
         {
-            catchHandler ??= ResultSettings.Current.TryCatchHandler;
+            catchHandler ??= ResultSettings.Current.DefaultTryCatchHandler;
 
             return new Result<TValue>(input.Errors.Append(catchHandler(e)));
         }
@@ -134,7 +134,7 @@ public static class ResultTrySuccessFailExtensions
         }
         catch (Exception e)
         {
-            catchHandler ??= ResultSettings.Current.TryCatchHandler;
+            catchHandler ??= ResultSettings.Current.DefaultTryCatchHandler;
 
             return new Result(input.Errors.Append(catchHandler(e)));
         }
@@ -161,7 +161,7 @@ public static class ResultTrySuccessFailExtensions
         }
         catch (Exception e)
         {
-            catchHandler ??= ResultSettings.Current.TryCatchHandler;
+            catchHandler ??= ResultSettings.Current.DefaultTryCatchHandler;
 
             return new Result<TValue>(input.Errors.Append(catchHandler(e)));
         }

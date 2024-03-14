@@ -75,7 +75,7 @@ public partial record Result
         }
         catch (Exception e)
         {
-            catchHandler ??= ResultSettings.Current.TryCatchHandler;
+            catchHandler ??= ResultSettings.Current.DefaultTryCatchHandler;
 
             return Fail(catchHandler(e));
         }
@@ -95,7 +95,7 @@ public partial record Result
         }
         catch (Exception e)
         {
-            catchHandler ??= ResultSettings.Current.TryCatchHandler;
+            catchHandler ??= ResultSettings.Current.DefaultTryCatchHandler;
 
             return Fail(catchHandler(e));
         }
@@ -114,7 +114,7 @@ public partial record Result
         }
         catch (Exception e)
         {
-            catchHandler ??= ResultSettings.Current.TryCatchHandler;
+            catchHandler ??= ResultSettings.Current.DefaultTryCatchHandler;
 
             return Fail<T>(catchHandler(e));
         }
@@ -133,7 +133,7 @@ public partial record Result
         }
         catch (Exception e)
         {
-            catchHandler ??= ResultSettings.Current.TryCatchHandler;
+            catchHandler ??= ResultSettings.Current.DefaultTryCatchHandler;
 
             return Fail<T>(catchHandler(e));
         }

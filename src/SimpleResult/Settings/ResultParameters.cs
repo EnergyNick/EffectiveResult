@@ -10,5 +10,5 @@ public class ResultParameters
     /// <summary>
     /// Provide converting of exception in try/catch blocks
     /// </summary>
-    public Func<Exception, IError> TryCatchHandler { get; init; }
+    public Func<Exception, IError> DefaultTryCatchHandler { get; init; }
 }
