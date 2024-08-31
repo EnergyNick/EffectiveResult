@@ -6,7 +6,7 @@ using SimpleResult.Exceptions;
 
 namespace SimpleResult;
 
-public sealed record Result<TValue> : IConclusion, IValueProvider<TValue>
+public sealed record Result<TValue> : IConclusion, IValueStorage<TValue>
 {
     private readonly ImmutableArray<IError> _errors = ImmutableArray<IError>.Empty;
     private readonly TValue? _value;
@@ -32,9 +32,11 @@ public sealed record Result<TValue> : IConclusion, IValueProvider<TValue>
     }
 
     /// <inheritdoc />
+    [MemberNotNullWhen(true, nameof(Value), nameof(ValueOrDefault))]
     public bool IsSuccess => _errors.Length == 0;
 
     /// <inheritdoc />
+    [MemberNotNullWhen(false, nameof(Value), nameof(ValueOrDefault))]
     public bool IsFailed => _errors.Length != 0;
 
     /// <inheritdoc />

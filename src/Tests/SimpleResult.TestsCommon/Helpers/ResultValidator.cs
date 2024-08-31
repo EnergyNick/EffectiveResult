@@ -14,7 +14,7 @@ public static class ResultValidator
     }
 
     public static void ShouldBeSuccess<TResult, TValue>(this TResult result)
-        where TResult : IConclusion, IValueProvider<TValue>
+        where TResult : IConclusion, IValueStorage<TValue>
     {
         result.IsSuccess.Should().BeTrue();
         result.IsFailed.Should().BeFalse();
@@ -24,7 +24,7 @@ public static class ResultValidator
     }
 
     public static void ShouldBeSuccessAndEqualsValue<TResult, TValue>(this TResult result, TValue expected)
-        where TResult : IConclusion, IValueProvider<TValue>
+        where TResult : IConclusion, IValueStorage<TValue>
     {
         result.ShouldBeSuccess();
 
@@ -34,7 +34,7 @@ public static class ResultValidator
 
     public static void ShouldBeSuccessAndValueCollectionEqualsTo<TResult, TValue>(this TResult result,
         ICollection<TValue> expected)
-        where TResult : IConclusion, IValueProvider<IEnumerable<TValue>>
+        where TResult : IConclusion, IValueStorage<IEnumerable<TValue>>
     {
         result.ShouldBeSuccess();
 
@@ -44,7 +44,7 @@ public static class ResultValidator
 
     public static void ShouldBeSuccessAndReferenceEqualsValue<TResult, TValue>(this TResult result, TValue expected)
         where TValue : class
-        where TResult : IConclusion, IValueProvider<TValue>
+        where TResult : IConclusion, IValueStorage<TValue>
     {
         result.ShouldBeSuccessAndEqualsValue(expected);
         ReferenceEquals(result.Value, expected).Should().BeTrue();
@@ -65,11 +65,11 @@ public static class ResultValidator
     }
 
     public static void ShouldBeFailed<TResult, TValue>(this TResult result, params IError[] expectedErrors)
-        where TResult : IConclusion, IValueProvider<TValue> =>
+        where TResult : IConclusion, IValueStorage<TValue> =>
         result.ShouldBeFailed(expectedErrors as ICollection<IError>);
 
     public static void ShouldBeFailed<TResult, TValue>(this TResult result, IEnumerable<IError>? expectedErrors = null)
-        where TResult : IConclusion, IValueProvider<TValue>
+        where TResult : IConclusion, IValueStorage<TValue>
     {
         result.IsSuccess.Should().BeFalse();
         result.IsFailed.Should().BeTrue();

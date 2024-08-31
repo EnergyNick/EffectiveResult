@@ -28,7 +28,7 @@ public static class ConclusionSuccessFailExtensions
     /// <typeparam name="TConclusion">Type of conclusion</typeparam>
     /// <returns>Result from <paramref name="input"/></returns>
     public static TConclusion OnSuccess<TConclusion, TValue>(this TConclusion input, Action<TValue> continuation)
-        where TConclusion : IConclusion, IValueProvider<TValue>
+        where TConclusion : IConclusion, IValueStorage<TValue>
     {
         if (input.IsSuccess)
             continuation(input.ValueOrDefault!);

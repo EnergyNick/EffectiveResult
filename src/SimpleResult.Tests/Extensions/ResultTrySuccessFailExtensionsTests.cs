@@ -87,7 +87,7 @@ public class ResultTrySuccessFailExtensionsTests
         var expectedError = new ExceptionalError(exception);
 
         Action action = () => throw exception;
-        Action<int> valuedAction = x => throw exception;
+        Action<int> valuedAction = _ => throw exception;
 
         // Act
         var resultAction = () => result.OnSuccessTry(action);
@@ -182,7 +182,7 @@ public class ResultTrySuccessFailExtensionsTests
         var expectedError = new ExceptionalError(exception);
 
         Action action = () => throw exception;
-        Action<IEnumerable<IError>> errorsAction = x => throw exception;
+        Action<IEnumerable<IError>> errorsAction = _ => throw exception;
 
         // Act
         var resultFirstAction = () => result.OnFailTry(action);

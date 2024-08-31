@@ -1,6 +1,6 @@
 ﻿namespace SimpleResult.Core;
 
-public interface IValueProvider<TValue>
+public interface IValueStorage<TValue>
 {
     ref readonly TValue? ValueOrDefault { get; }
 
