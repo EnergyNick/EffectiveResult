@@ -1,16 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions" Version="6.12.0" />
+        <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentAssertions" Version="6.12.0"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0"/>
         <PackageReference Include="xunit" Version="2.4.2"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
@@ -24,10 +27,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SimpleResult\SimpleResult.csproj" />
+        <ProjectReference Include="..\SimpleResult\SimpleResult.csproj"/>
+        <ProjectReference Include="..\Tests\SimpleResult.TestsCommon\SimpleResult.TestsCommon.csproj"/>
     </ItemGroup>
-
-
-
 
 </Project>

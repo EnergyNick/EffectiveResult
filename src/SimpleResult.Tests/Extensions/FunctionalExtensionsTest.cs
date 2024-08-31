@@ -1,5 +1,5 @@
 ﻿using SimpleResult.Extensions;
-using SimpleResult.Tests.Helpers;
+using SimpleResult.TestsCommon.Helpers;
 
 namespace SimpleResult.Tests.Extensions;
 
