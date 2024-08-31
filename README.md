@@ -1,1 +1,1 @@
-# SimpleResult
+# ExtendedResult

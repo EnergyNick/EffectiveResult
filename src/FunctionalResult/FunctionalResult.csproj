@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Title>FunctionalResult</Title>
+        <Authors>EnergyNick</Authors>
+        <PackageLicenseUrl>https://github.com/EnergyNick/FunctionalResult/blob/master/LICENSE</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/EnergyNick/FunctionalResult</RepositoryUrl>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FunctionalResult.Core\FunctionalResult.Core.csproj" />
+    </ItemGroup>
+
+</Project>
