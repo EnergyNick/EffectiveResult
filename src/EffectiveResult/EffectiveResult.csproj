@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <PackageId>EffectiveResult</PackageId>
+        <Description>Implementation of the result monad pattern for an alternative way of handling errors.</Description>
+        <Authors>Nickolay Sikachin</Authors>
+        <Copyright>Copyright © Nickolay Sikachin 2024</Copyright>
+
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/EnergyNick/EffectiveResult</RepositoryUrl>
+
+        <PackageVersion>1.0.0-alpha</PackageVersion>
+        <PackageIcon>icon-128.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageReleaseNotes>Initial pre-release version</PackageReleaseNotes>
+        <PackageTags>Result, Monad, Functional, Pattern, Error, Handling, Exception</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="EffectiveResult.Core" Version="1.0.0-alpha" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\README.md" Pack="true" PackagePath="\"/>
+        <None Include="..\..\icons\icon-128.png" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+
+</Project>

@@ -1,4 +1,4 @@
-# FunctionalResult
+# Effective Result
 
 ### Simple examples
 ```csharp
