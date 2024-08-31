@@ -84,7 +84,7 @@ public static class ConclusionSuccessFailExtensions
                 .OfType<IExceptionalError>()
                 .FirstOrDefault(x => x.Exception is TException);
 
-            if(exceptionalError is not null)
+            if (exceptionalError is not null)
                 onFailAction(exceptionalError);
         }
 

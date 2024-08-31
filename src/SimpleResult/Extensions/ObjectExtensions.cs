@@ -18,10 +18,10 @@ public static class ObjectExtensions
         Result.Fail<TValue>(error);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result MakeFailedResult(this Exception exception)=>
+    public static Result MakeFailedResult(this Exception exception) =>
         Result.Fail(exception);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result<TValue> MakeFailedResult<TValue>(this Exception exception)=>
+    public static Result<TValue> MakeFailedResult<TValue>(this Exception exception) =>
         Result.Fail<TValue>(exception);
 }
