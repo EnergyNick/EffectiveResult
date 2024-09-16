@@ -195,34 +195,6 @@ public class StaticFactoriesTests
     }
 
     [Fact]
-    public void TryMethod_WhenInvokeWithReturnValueAndWithExceptionsAndCustomHandler_ShouldReturnFailedResultWithValidError()
-    {
-        // Arrange
-        var exception = new Exception("Monads are not bad!");
-        Func<int> refMethod = () => throw exception;
-        Func<string> valueMethod = () => throw exception;
-
-        var error = new Error("So bad");
-        var handler = (Exception _) => error;
-
-        // Act
-        var refAction = () => Result.Try(refMethod, handler);
-        var valueAction = () => Result.Try(valueMethod, handler);
-
-        // Assert
-        refMethod.Should().Throw<Exception>();
-        refAction.Should().NotThrow();
-
-        valueMethod.Should().Throw<Exception>();
-        valueAction.Should().NotThrow();
-
-        var refResult = refAction();
-        refResult.ShouldBeFailed(error);
-        var valueResult = valueAction();
-        valueResult.ShouldBeFailed(error);
-    }
-
-    [Fact]
     public async Task TryAsyncMethod_WhenInvokeWithoutExceptions_ShouldReturnSuccessResult()
     {
         // Arrange
@@ -284,34 +256,6 @@ public class StaticFactoriesTests
 
         var result = await resultAction();
         result.ShouldBeFailed(expectedError);
-    }
-
-    [Fact]
-    public async Task TryAsyncMethod_WhenInvokeWithReturnValueAndWithExceptionsAndCustomHandler_ShouldReturnFailedResultWithValidError()
-    {
-        // Arrange
-        var exception = new Exception("Monads are not bad!");
-        Func<Task<int>> refMethod = () => throw exception;
-        Func<Task<string>> valueMethod = () => throw exception;
-
-        var error = new Error("So bad");
-        var handler = (Exception _) => error;
-
-        // Act
-        var refAction = () => Result.TryAsync(refMethod, handler);
-        var valueAction = () => Result.TryAsync(valueMethod, handler);
-
-        // Assert
-        await refMethod.Should().ThrowAsync<Exception>();
-        await refAction.Should().NotThrowAsync();
-
-        await valueMethod.Should().ThrowAsync<Exception>();
-        await valueAction.Should().NotThrowAsync();
-
-        var refResult = await refAction();
-        refResult.ShouldBeFailed(error);
-        var valueResult = await valueAction();
-        valueResult.ShouldBeFailed(error);
     }
 
     [Fact]

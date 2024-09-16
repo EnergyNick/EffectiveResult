@@ -1,5 +1,4 @@
 ﻿using EffectiveResult.Abstractions;
-using EffectiveResult.Settings;
 
 namespace EffectiveResult.Extensions;
 
@@ -10,14 +9,8 @@ public static class ResultTrySuccessFailExtensions
     /// </summary>
     /// <param name="input">Source of conclusion</param>
     /// <param name="continuation">Action for invoke on success</param>
-    /// <param name="catchHandler">
-    /// Transform exceptions to errors,
-    /// on default use <see cref="ResultSettings"/>.<see cref="ResultSettings.Current"/>
-    /// </param>
     /// <returns>Conclusion from <paramref name="input"/></returns>
-    public static Result OnSuccessTry(this Result input,
-        Action continuation,
-        Func<Exception, IError>? catchHandler = null)
+    public static Result OnSuccessTry(this Result input, Action continuation)
     {
         try
         {
@@ -25,9 +18,7 @@ public static class ResultTrySuccessFailExtensions
         }
         catch (Exception e)
         {
-            catchHandler ??= ResultSettings.Current.DefaultTryCatchHandler;
-
-            return new Result(input.Errors.Append(catchHandler(e)));
+            return new Result(input.Errors.Append(new ExceptionalError(e)));
         }
     }
 
@@ -38,16 +29,10 @@ public static class ResultTrySuccessFailExtensions
     /// <param name="input">Source result</param>
     /// <param name="continuation">Action for invoke on success</param>
     /// <typeparam name="TValue">Type of result value on success</typeparam>
-    /// <param name="catchHandler">
-    /// Transform exceptions to errors,
-    /// on default use <see cref="ResultSettings"/>.<see cref="ResultSettings.Current"/>
-    /// </param>
     /// <returns>
     /// Result from <paramref name="input"/> or copy with exception error from <paramref name="continuation"/>
     /// </returns>
-    public static Result<TValue> OnSuccessTry<TValue>(this Result<TValue> input,
-        Action<TValue> continuation,
-        Func<Exception, IError>? catchHandler = null)
+    public static Result<TValue> OnSuccessTry<TValue>(this Result<TValue> input, Action<TValue> continuation)
     {
         try
         {
@@ -55,9 +40,7 @@ public static class ResultTrySuccessFailExtensions
         }
         catch (Exception e)
         {
-            catchHandler ??= ResultSettings.Current.DefaultTryCatchHandler;
-
-            return new Result<TValue>(input.Errors.Append(catchHandler(e)));
+            return new Result<TValue>(input.Errors.Append(new ExceptionalError(e)));
         }
     }
 
@@ -66,14 +49,9 @@ public static class ResultTrySuccessFailExtensions
     /// </summary>
     /// <param name="input">Source of conclusion</param>
     /// <param name="onFailAction">Action for invoke on fail</param>
-    /// <param name="catchHandler">
-    /// Transform exceptions to errors,
-    /// on default use <see cref="ResultSettings"/>.<see cref="ResultSettings.Current"/>
-    /// </param>
+
     /// <returns>Conclusion from <paramref name="input"/></returns>
-    public static Result OnFailTry(this Result input,
-        Action onFailAction,
-        Func<Exception, IError>? catchHandler = null)
+    public static Result OnFailTry(this Result input, Action onFailAction)
     {
         try
         {
@@ -81,9 +59,7 @@ public static class ResultTrySuccessFailExtensions
         }
         catch (Exception e)
         {
-            catchHandler ??= ResultSettings.Current.DefaultTryCatchHandler;
-
-            return new Result(input.Errors.Append(catchHandler(e)));
+            return new Result(input.Errors.Append(new ExceptionalError(e)));
         }
     }
 
@@ -93,14 +69,9 @@ public static class ResultTrySuccessFailExtensions
     /// <param name="input">Source of conclusion</param>
     /// <param name="onFailAction">Action for invoke on fail</param>
     /// <typeparam name="TValue">Type of result value on success</typeparam>
-    /// <param name="catchHandler">
-    /// Transform exceptions to errors,
-    /// on default use <see cref="ResultSettings"/>.<see cref="ResultSettings.Current"/>
-    /// </param>
+
     /// <returns>Conclusion from <paramref name="input"/></returns>
-    public static Result<TValue> OnFailTry<TValue>(this Result<TValue> input,
-        Action onFailAction,
-        Func<Exception, IError>? catchHandler = null)
+    public static Result<TValue> OnFailTry<TValue>(this Result<TValue> input, Action onFailAction)
     {
         try
         {
@@ -108,9 +79,7 @@ public static class ResultTrySuccessFailExtensions
         }
         catch (Exception e)
         {
-            catchHandler ??= ResultSettings.Current.DefaultTryCatchHandler;
-
-            return new Result<TValue>(input.Errors.Append(catchHandler(e)));
+            return new Result<TValue>(input.Errors.Append(new ExceptionalError(e)));
         }
     }
 
@@ -119,14 +88,10 @@ public static class ResultTrySuccessFailExtensions
     /// </summary>
     /// <param name="input">Source of conclusion</param>
     /// <param name="onFailAction">Action for invoke on fail</param>
-    /// <param name="catchHandler">
-    /// Transform exceptions to errors,
-    /// on default use <see cref="ResultSettings"/>.<see cref="ResultSettings.Current"/>
-    /// </param>
+
     /// <returns>Conclusion from <paramref name="input"/></returns>
     public static Result OnFailTry(this Result input,
-        Action<IEnumerable<IError>> onFailAction,
-        Func<Exception, IError>? catchHandler = null)
+        Action<IEnumerable<IError>> onFailAction)
     {
         try
         {
@@ -134,9 +99,7 @@ public static class ResultTrySuccessFailExtensions
         }
         catch (Exception e)
         {
-            catchHandler ??= ResultSettings.Current.DefaultTryCatchHandler;
-
-            return new Result(input.Errors.Append(catchHandler(e)));
+            return new Result(input.Errors.Append(new ExceptionalError(e)));
         }
     }
 
@@ -146,14 +109,10 @@ public static class ResultTrySuccessFailExtensions
     /// <param name="input">Source of conclusion</param>
     /// <param name="onFailAction">Action for invoke on fail</param>
     /// <typeparam name="TValue">Type of result value on success</typeparam>
-    /// <param name="catchHandler">
-    /// Transform exceptions to errors,
-    /// on default use <see cref="ResultSettings"/>.<see cref="ResultSettings.Current"/>
-    /// </param>
+
     /// <returns>Conclusion from <paramref name="input"/></returns>
     public static Result<TValue> OnFailTry<TValue>(this Result<TValue> input,
-        Action<IEnumerable<IError>> onFailAction,
-        Func<Exception, IError>? catchHandler = null)
+        Action<IEnumerable<IError>> onFailAction)
     {
         try
         {
@@ -161,9 +120,7 @@ public static class ResultTrySuccessFailExtensions
         }
         catch (Exception e)
         {
-            catchHandler ??= ResultSettings.Current.DefaultTryCatchHandler;
-
-            return new Result<TValue>(input.Errors.Append(catchHandler(e)));
+            return new Result<TValue>(input.Errors.Append(new ExceptionalError(e)));
         }
     }
 }
