@@ -20,7 +20,7 @@ public partial record Result
     /// <summary>
     /// Creates a failed result with the given errors
     /// </summary>
-    public static Result Fail(IEnumerable<IError> error) => new(error);
+    public static Result Fail(IEnumerable<IError> errors) => new(errors);
 
     /// <summary>
     /// Creates a failed result with the given error message.
@@ -47,7 +47,7 @@ public partial record Result
     /// <summary>
     /// Creates a failed result with the given errors
     /// </summary>
-    public static Result<TValue> Fail<TValue>(IEnumerable<IError> error) => new(error);
+    public static Result<TValue> Fail<TValue>(IEnumerable<IError> errors) => new(errors);
 
     /// <summary>
     /// Creates a failed result with the given error message.

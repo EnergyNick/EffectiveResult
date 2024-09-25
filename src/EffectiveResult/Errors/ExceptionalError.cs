@@ -1,3 +1,4 @@
+using System.Text;
 using EffectiveResult.Abstractions;
 
 namespace EffectiveResult;
@@ -34,5 +35,24 @@ public record ExceptionalError : Error, IExceptionalError
         : base(exception.Message, causedBy)
     {
         Exception = exception;
+    }
+
+    protected override bool PrintMembers(StringBuilder builder)
+    {
+        builder.Append("Message = '");
+        builder.Append(Message);
+        builder.Append('\'');
+
+        builder.Append("Exception = '");
+        builder.Append(Message);
+        builder.Append('\'');
+
+        if (CausedErrors.Any())
+        {
+            builder.Append(", CausedErrors = [ ");
+            builder.AppendJoin("; ", CausedErrors);
+            builder.Append(" ]");
+        }
+        return true;
     }
 }
