@@ -6,7 +6,7 @@ using EffectiveResult.Exceptions;
 
 namespace EffectiveResult;
 
-public sealed record Result<TValue> : IConclusion, IValueStorage<TValue>
+public sealed class Result<TValue> : IConclusion, IValueStorage<TValue>, IEquatable<Result<TValue>>
 {
     private readonly ImmutableArray<IError> _errors = ImmutableArray<IError>.Empty;
     private readonly TValue? _value;
@@ -56,6 +56,9 @@ public sealed record Result<TValue> : IConclusion, IValueStorage<TValue>
             throw new InvalidResultOperationException("Can't create failed result without errors");
     }
 
+    /// <summary>
+    /// Copy constructor for object cloning and also copy storing value, if exists
+    /// </summary>
     public Result(Result<TValue> other)
     {
         if (other.IsSuccess)
@@ -100,8 +103,10 @@ public sealed record Result<TValue> : IConclusion, IValueStorage<TValue>
             : new Result<TNewValue>(_errors);
     }
 
+    /// Convert to success result
     public static implicit operator Result<TValue>(in TValue value) => new(value);
 
+    /// Convert to failed result
     public static implicit operator Result<TValue>(Error error) => Result.Fail<TValue>(error);
 
     /// <summary>
@@ -128,21 +133,58 @@ public sealed record Result<TValue> : IConclusion, IValueStorage<TValue>
         errors = _errors;
     }
 
+    /// <summary>
+    /// Convert to human-readable representation
+    /// </summary>
+    /// <returns>Human-readable string based on result state</returns>
     [ExcludeFromCodeCoverage]
-    private bool PrintMembers(StringBuilder builder)
+    public override string ToString()
     {
-        builder.Append("IsSuccess = ");
+        var builder = new StringBuilder();
+
+        builder.Append("Result { State = ");
+        builder.Append(IsSuccess ? "Success, Value = '" : "Failed, Errors = [ ");
+
         if (IsSuccess)
         {
-            builder.Append("true, Value = ");
-            builder.Append(_value);
+            builder.Append(_value is not null ? _value.ToString() : "null");
+            builder.Append('\'');
         }
         else
         {
-            builder.Append("false, Errors = [ ");
-            builder.Append(string.Join("; ", _errors));
+            builder.AppendJoin("; ", _errors);
             builder.Append(" ]");
         }
-        return true;
+
+        builder.Append(" }");
+        return builder.ToString();
     }
+
+    /// <inheritdoc/>
+    public bool Equals(Result<TValue>? other)
+    {
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+
+        return (obj1: this, obj2: other) switch
+        {
+            { obj1.IsSuccess: true, obj2.IsSuccess: true } =>
+                EqualityComparer<TValue?>.Default.Equals(_value, other._value),
+            { obj1.IsFailed: true, obj2.IsFailed: true } =>
+                _errors.Equals(other._errors),
+            _ => false
+        };
+    }
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj) => Equals(obj as Result<TValue>);
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => HashCode.Combine(_value, _errors);
+
+    /// Compare two results by equality comparing
+    public static bool operator ==(Result<TValue>? left, Result<TValue>? right) => Equals(left, right);
+
+    /// Compare two results by equality comparing
+    public static bool operator !=(Result<TValue>? left, Result<TValue>? right) => !Equals(left, right);
 }

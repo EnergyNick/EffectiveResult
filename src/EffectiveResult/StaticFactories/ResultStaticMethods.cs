@@ -3,7 +3,7 @@ using EffectiveResult.Abstractions;
 
 namespace EffectiveResult;
 
-public partial record Result
+public partial class Result
 {
     private static readonly Result SuccessResult = new();
 
