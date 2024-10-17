@@ -43,7 +43,7 @@ public record ExceptionalError : Error, IExceptionalError
         builder.Append(Message);
         builder.Append('\'');
 
-        builder.Append("Exception = '");
+        builder.Append(", Exception = '");
         builder.Append(Message);
         builder.Append('\'');
 
