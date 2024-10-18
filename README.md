@@ -21,8 +21,10 @@ Result<int> successValuedRes = Result.Ok(5);
 Result<int> failedValueRes1 = Result.Fail<int>("Ooops!"); 
 // Error from exception
 Result<int> failedValueRes2 = Result.Fail<int>(new Exception("Bad situation!")); 
+```
 
-/// Result methods
+### Result class methods
+```csharp
 Result<int> countResult = Result.Ok(1000);
 
 // Throw, if failed

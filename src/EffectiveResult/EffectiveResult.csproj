@@ -4,7 +4,6 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -14,17 +13,27 @@
         <Copyright>Copyright © Nickolay Sikachin 2024</Copyright>
 
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <RepositoryUrl>https://github.com/EnergyNick/EffectiveResult</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/EnergyNick/EffectiveResult</PackageProjectUrl>
 
-        <PackageVersion>1.0.0-alpha</PackageVersion>
+        <PackageVersion>1.0.0-alpha-2</PackageVersion>
         <PackageIcon>icon-128.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageReleaseNotes>Initial pre-release version</PackageReleaseNotes>
-        <PackageTags>Result, Monad, Functional, Pattern, Error, Handling, Exception</PackageTags>
+        <PackageTags>Result Monad Functional Pattern Error Handling Exception</PackageTags>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="EffectiveResult.Core" Version="1.0.0-alpha" />
+        <PackageReference Include="EffectiveResult.Core" Version="1.0.0-alpha-2" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
     </ItemGroup>
 
     <ItemGroup>

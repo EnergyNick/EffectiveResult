@@ -6,6 +6,9 @@ using EffectiveResult.Exceptions;
 
 namespace EffectiveResult;
 
+/// <summary>
+/// An implementation of the result monad pattern for an alternative way of handling errors.
+/// </summary>
 public sealed partial class Result : IConclusion, IEquatable<Result>
 {
     private readonly ImmutableArray<IError> _errors = ImmutableArray<IError>.Empty;
