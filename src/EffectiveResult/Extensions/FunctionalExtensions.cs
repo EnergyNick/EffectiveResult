@@ -9,7 +9,8 @@ public static class FunctionalExtensions
     /// <returns>Result with merged status (Success only if all results are success)</returns>
     public static Result MergeInnerResult(this Result<Result> result) => result switch
     {
-        { IsSuccess: true, ValueOrDefault.IsSuccess: true } => result.ValueOrDefault,
+        { IsSuccess: true, ValueOrDefault.IsSuccess: true } =>
+            result.ValueOrDefault,
         { IsSuccess: true, ValueOrDefault.IsSuccess: false } =>
             Result.Fail(result.ValueOrDefault.Errors),
         _ => Result.Fail(result.Errors)
@@ -23,7 +24,8 @@ public static class FunctionalExtensions
     /// <returns>Result with merged status (Success only if all results are success)</returns>
     public static Result<TValue> MergeInnerResult<TValue>(this Result<Result<TValue>> result) => result switch
     {
-        { IsSuccess: true, ValueOrDefault.IsSuccess: true } => result.ValueOrDefault,
+        { IsSuccess: true, ValueOrDefault.IsSuccess: true } =>
+            result.ValueOrDefault,
         { IsSuccess: true, ValueOrDefault.IsSuccess: false } =>
             Result.Fail<TValue>(result.ValueOrDefault.Errors),
         _ => Result.Fail<TValue>(result.Errors)

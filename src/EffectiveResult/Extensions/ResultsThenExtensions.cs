@@ -1,9 +1,34 @@
-﻿using EffectiveResult.Abstractions;
-
-namespace EffectiveResult.Extensions;
+﻿namespace EffectiveResult.Extensions;
 
 public static class ResultsThenExtensions
 {
+    /// <summary>
+    /// Provide chaining method for action on success result
+    /// </summary>
+    /// <param name="input">Source result</param>
+    /// <param name="continuation">Action for invoke on success</param>
+    /// <returns>Conclusion from <paramref name="input"/></returns>
+    public static Result Then(this Result input, Action continuation)
+    {
+        return input.IsSuccess
+            ? Result.Try(continuation)
+            : input;
+    }
+
+    /// <summary>
+    /// Provide chaining method for action on success result
+    /// </summary>
+    /// <param name="input">Source result</param>
+    /// <param name="continuation">Action for invoke on success</param>
+    /// <typeparam name="TValue">Type of result value on success</typeparam>
+    /// <returns>Result from <paramref name="input"/></returns>
+    public static Result Then<TValue>(this Result<TValue> input, Action<TValue> continuation)
+    {
+        return input.IsSuccess
+            ? Result.Try(() => continuation(input.Value))
+            : input.ToResult();
+    }
+
     /// <summary>
     /// Provide chaining method for next operation on success result.
     /// </summary>
@@ -14,7 +39,7 @@ public static class ResultsThenExtensions
     public static Result<TOutput> Then<TOutput>(this Result input, Func<TOutput> continuation)
     {
         return input.IsSuccess
-            ? continuation().MakeResult()
+            ? Result.Try(continuation)
             : input.ToResult<TOutput>();
     }
 
@@ -57,7 +82,7 @@ public static class ResultsThenExtensions
         Func<TInput, TOutput> continuation)
     {
         return input.IsSuccess
-            ? continuation(input.ValueOrDefault!).MakeResult()
+            ? Result.Try(() => continuation(input.Value))
             : input.ToResult<TOutput>();
     }
 
@@ -72,7 +97,7 @@ public static class ResultsThenExtensions
         Func<TInput, Result> continuation)
     {
         return input.IsSuccess
-            ? continuation(input.ValueOrDefault!)
+            ? continuation(input.Value)
             : input.ToResult();
     }
 
@@ -88,65 +113,7 @@ public static class ResultsThenExtensions
         Func<TInput, Result<TOutput>> continuation)
     {
         return input.IsSuccess
-            ? continuation(input.ValueOrDefault!)
+            ? continuation(input.Value)
             : input.ToResult<TOutput>();
-    }
-
-    /// <summary>
-    /// Provide chaining method for next operation on failed result.
-    /// </summary>
-    /// <param name="input">Source result</param>
-    /// <param name="continuation">Function for invoke on fail</param>
-    /// <typeparam name="TValue">Type of "<paramref name="continuation"/>" result</typeparam>
-    /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
-    public static Result<TValue> ThenOnFail<TValue>(this Result<TValue> input,
-        Func<IReadOnlyCollection<IError>, TValue> continuation)
-    {
-        return input.IsFailed
-            ? continuation(input.Errors).MakeResult()
-            : input;
-    }
-
-    /// <summary>
-    /// Provide chaining method for next operation on failed result.
-    /// </summary>
-    /// <param name="input">Source result</param>
-    /// <param name="continuation">Function for invoke on fail</param>
-    /// <typeparam name="TValue">Type of "<paramref name="continuation"/>" result</typeparam>
-    /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
-    public static Result<TValue> ThenOnFail<TValue>(this Result<TValue> input,
-        Func<IReadOnlyCollection<IError>, Result<TValue>> continuation)
-    {
-        return input.IsFailed
-            ? continuation(input.Errors)
-            : input;
-    }
-
-    /// <summary>
-    /// Provide chaining method for next operation on failed result.
-    /// </summary>
-    /// <param name="input">Source result</param>
-    /// <param name="continuation">Function for invoke on fail</param>
-    /// <typeparam name="TValue">Type of "<paramref name="continuation"/>" result</typeparam>
-    /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
-    public static Result<TValue> ThenOnFail<TValue>(this Result<TValue> input, Func<TValue> continuation)
-    {
-        return input.IsFailed
-            ? continuation().MakeResult()
-            : input;
-    }
-
-    /// <summary>
-    /// Provide chaining method for next operation on failed result.
-    /// </summary>
-    /// <param name="input">Source result</param>
-    /// <param name="continuation">Function for invoke on fail</param>
-    /// <typeparam name="TValue">Type of "<paramref name="continuation"/>" result</typeparam>
-    /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
-    public static Result<TValue> ThenOnFail<TValue>(this Result<TValue> input, Func<Result<TValue>> continuation)
-    {
-        return input.IsFailed
-            ? continuation()
-            : input;
     }
 }

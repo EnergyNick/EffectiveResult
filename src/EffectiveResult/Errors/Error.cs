@@ -35,12 +35,14 @@ public record Error : IError
     [ExcludeFromCodeCoverage]
     protected virtual bool PrintMembers(StringBuilder builder)
     {
-        builder.Append("Message = ");
+        builder.Append("Message = '");
         builder.Append(Message);
+        builder.Append('\'');
+
         if (_causedErrors.Any())
         {
             builder.Append(", CausedErrors = [ ");
-            builder.Append(string.Join("; ", _causedErrors));
+            builder.AppendJoin("; ", _causedErrors);
             builder.Append(" ]");
         }
         return true;

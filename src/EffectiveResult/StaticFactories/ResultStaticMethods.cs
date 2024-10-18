@@ -1,9 +1,9 @@
+using System.Collections.Immutable;
 using EffectiveResult.Abstractions;
-using EffectiveResult.Settings;
 
 namespace EffectiveResult;
 
-public partial record Result
+public partial class Result
 {
     private static readonly Result SuccessResult = new();
 
@@ -20,7 +20,7 @@ public partial record Result
     /// <summary>
     /// Creates a failed result with the given errors
     /// </summary>
-    public static Result Fail(IEnumerable<IError> error) => new(error);
+    public static Result Fail(IEnumerable<IError> errors) => new(errors);
 
     /// <summary>
     /// Creates a failed result with the given error message.
@@ -47,7 +47,7 @@ public partial record Result
     /// <summary>
     /// Creates a failed result with the given errors
     /// </summary>
-    public static Result<TValue> Fail<TValue>(IEnumerable<IError> error) => new(error);
+    public static Result<TValue> Fail<TValue>(IEnumerable<IError> errors) => new(errors);
 
     /// <summary>
     /// Creates a failed result with the given error message.
@@ -63,10 +63,8 @@ public partial record Result
 
     /// <summary>
     /// Executes the action and catch all exceptions, If they will be thrown within the action.
-    /// Exception transforming to Error by <see cref="catchHandler"/>
-    /// or by default catch handler from <see cref="ResultSettings"/>.<see cref="ResultSettings.Current"/>
     /// </summary>
-    public static Result Try(Action action, Func<Exception, IError>? catchHandler = null)
+    public static Result Try(Action action)
     {
         try
         {
@@ -75,18 +73,14 @@ public partial record Result
         }
         catch (Exception e)
         {
-            catchHandler ??= ResultSettings.Current.DefaultTryCatchHandler;
-
-            return Fail(catchHandler(e));
+            return Fail(e);
         }
     }
 
     /// <summary>
     /// Executes the async action and catch all exceptions, If they will be thrown within the action.
-    /// Exception transforming to Error by <see cref="catchHandler"/>
-    /// or by default catch handler from <see cref="ResultSettings"/>.<see cref="ResultSettings.Current"/>
     /// </summary>
-    public static async Task<Result> TryAsync(Func<Task> action, Func<Exception, IError>? catchHandler = null)
+    public static async Task<Result> TryAsync(Func<Task> action)
     {
         try
         {
@@ -95,18 +89,14 @@ public partial record Result
         }
         catch (Exception e)
         {
-            catchHandler ??= ResultSettings.Current.DefaultTryCatchHandler;
-
-            return Fail(catchHandler(e));
+            return Fail(e);
         }
     }
 
     /// <summary>
     /// Executes the action with return value and catch all exceptions, If they will be thrown within the action.
-    /// Exception transforming to Error by <see cref="catchHandler"/>
-    /// or by default catch handler from <see cref="ResultSettings"/>.<see cref="ResultSettings.Current"/>
     /// </summary>
-    public static Result<T> Try<T>(Func<T> action, Func<Exception, IError>? catchHandler = null)
+    public static Result<T> Try<T>(Func<T> action)
     {
         try
         {
@@ -114,18 +104,14 @@ public partial record Result
         }
         catch (Exception e)
         {
-            catchHandler ??= ResultSettings.Current.DefaultTryCatchHandler;
-
-            return Fail<T>(catchHandler(e));
+            return Fail<T>(e);
         }
     }
 
     /// <summary>
     /// Executes the async action with return value and catch all exceptions, If they will be thrown within the action.
-    /// Exception transforming to Error by <see cref="catchHandler"/>
-    /// or by default catch handler from <see cref="ResultSettings"/>.<see cref="ResultSettings.Current"/>
     /// </summary>
-    public static async Task<Result<T>> TryAsync<T>(Func<Task<T>> action, Func<Exception, IError>? catchHandler = null)
+    public static async Task<Result<T>> TryAsync<T>(Func<Task<T>> action)
     {
         try
         {
@@ -133,9 +119,7 @@ public partial record Result
         }
         catch (Exception e)
         {
-            catchHandler ??= ResultSettings.Current.DefaultTryCatchHandler;
-
-            return Fail<T>(catchHandler(e));
+            return Fail<T>(e);
         }
     }
 
@@ -212,7 +196,10 @@ public partial record Result
     /// <returns>Result with combined status of <see cref="results"/></returns>
     public static Result Combine(IEnumerable<Result> results)
     {
-        var failed = results.Where(x => x.IsFailed).SelectMany(x => x.Errors).ToArray();
+        var failed = results
+            .Where(x => x.IsFailed)
+            .SelectMany(x => x.Errors)
+            .ToImmutableArray();
 
         return failed.Length == 0
             ? Ok()
@@ -233,7 +220,7 @@ public partial record Result
     /// <returns>Result with combined status of <see cref="results"/></returns>
     public static Result<IEnumerable<TValue>> Combine<TValue>(IEnumerable<Result<TValue>> results)
     {
-        var enumerated = results as Result<TValue>[] ?? results.ToArray();
+        var enumerated = results as ICollection<Result<TValue>> ?? results.ToArray();
         var failed = enumerated.Any(x => x.IsFailed);
 
         return failed
@@ -248,4 +235,10 @@ public partial record Result
     /// <returns>Result with combined status of <see cref="results"/></returns>
     public static Result<IEnumerable<TValue>> Combine<TValue>(params Result<TValue>[] results) =>
         Combine(results.AsEnumerable());
+
+    /// <summary>
+    /// Create result builder for more complex result creation
+    /// </summary>
+    /// <returns>Get default result builder</returns>
+    public static ResultBuilder Build() => new();
 }
