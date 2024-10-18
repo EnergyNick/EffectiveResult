@@ -235,4 +235,10 @@ public partial class Result
     /// <returns>Result with combined status of <see cref="results"/></returns>
     public static Result<IEnumerable<TValue>> Combine<TValue>(params Result<TValue>[] results) =>
         Combine(results.AsEnumerable());
+
+    /// <summary>
+    /// Create result builder for more complex result creation
+    /// </summary>
+    /// <returns>Get default result builder</returns>
+    public static ResultBuilder Build() => new();
 }
