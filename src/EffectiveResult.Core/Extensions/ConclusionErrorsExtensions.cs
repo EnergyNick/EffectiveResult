@@ -71,6 +71,7 @@ public static class ConclusionErrorsExtensions
         var error = conclusion.Errors
             .OfType<IExceptionalError>()
             .FirstOrDefault(e => e.Exception is TException ex && (filter?.Invoke(ex) ?? true));
+
         exception = error?.Exception as TException;
         return error != null;
     }
