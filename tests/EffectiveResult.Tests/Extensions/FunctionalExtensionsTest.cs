@@ -14,8 +14,8 @@ public class FunctionalExtensionsTest
         var valuedResult = Result.Ok(Result.Ok(data));
 
         // Act
-        var mergedResult = result.MergeInnerResult();
-        var mergedValueResult = valuedResult.MergeInnerResult();
+        var mergedResult = result.Bind();
+        var mergedValueResult = valuedResult.Bind();
 
         // Assert
         mergedResult.ShouldBeSuccess();
@@ -31,8 +31,8 @@ public class FunctionalExtensionsTest
         var valuedResult = Result.Fail<Result<string>>(error);
 
         // Act
-        var mergedResult = result.MergeInnerResult();
-        var mergedValueResult = valuedResult.MergeInnerResult();
+        var mergedResult = result.Bind();
+        var mergedValueResult = valuedResult.Bind();
 
         // Assert
         mergedResult.ShouldBeFailed(error);
@@ -48,8 +48,8 @@ public class FunctionalExtensionsTest
         var valuedResult = Result.Ok(Result.Fail<string>(error));
 
         // Act
-        var mergedResult = result.MergeInnerResult();
-        var mergedValueResult = valuedResult.MergeInnerResult();
+        var mergedResult = result.Bind();
+        var mergedValueResult = valuedResult.Bind();
 
         // Assert
         mergedResult.ShouldBeFailed(error);

@@ -6,18 +6,22 @@ using EffectiveResult.Exceptions;
 
 namespace EffectiveResult;
 
+/// <summary>
+/// An implementation of the result monad pattern for an alternative way of handling errors.
+/// Can store value on success state.
+/// </summary>
 public sealed class Result<TValue> : IConclusion, IValueStorage<TValue>, IEquatable<Result<TValue>>
 {
     private readonly ImmutableArray<IError> _errors = ImmutableArray<IError>.Empty;
     private readonly TValue? _value;
 
     /// <summary>
-    /// Return current result value (If result has failed status, will be returned default value)
+    /// Return current result value.<br/>If result has failed status, will be returned default value
     /// </summary>
     public ref readonly TValue? ValueOrDefault => ref _value;
 
     /// <summary>
-    /// Return current result value (If result has failed status, an exception will be thrown)
+    /// Return current result value.<br/>If result has failed status, an exception will be thrown
     /// </summary>
     /// <exception cref="OperationOnFailedResultException">Thrown if result has failed status</exception>
     public ref readonly TValue Value
@@ -42,7 +46,7 @@ public sealed class Result<TValue> : IConclusion, IValueStorage<TValue>, IEquata
     /// <inheritdoc />
     public IReadOnlyCollection<IError> Errors => _errors;
 
-    internal Result(in TValue value) => _value = value;
+    internal Result(in TValue? value) => _value = value;
 
     internal Result(IError error) => _errors = ImmutableArray.Create(error);
 
@@ -88,20 +92,25 @@ public sealed class Result<TValue> : IConclusion, IValueStorage<TValue>, IEquata
     public Result ToResult() => new(_errors, IsFailed);
 
     /// <summary>
+    /// Provide conversion to <see cref="Result{TNewValue}"/> with same reasons
+    /// </summary>
+    /// <value>New value of result, can be null only when result is false</value>
+    /// <returns>Result with provided value, only if source is success</returns>
+    public Result<TNewValue> ToResult<TNewValue>(TNewValue? value = default) =>
+        IsSuccess
+            ? new Result<TNewValue>(value)
+            : new Result<TNewValue>(_errors);
+
+    /// <summary>
     /// Provide conversion to <see cref="Result{TValue}"/> with value changing
     /// </summary>
     /// <param name="converter"></param>
     /// <returns>New result with converted value, if source is success</returns>
     /// <exception cref="ArgumentNullOnSuccessException">Can be thrown, if result is success and not provided converter</exception>
-    public Result<TNewValue> ToResult<TNewValue>(Func<TValue, TNewValue>? converter = null)
-    {
-        if (IsSuccess && converter is null)
-            throw new ArgumentNullOnSuccessException(nameof(converter));
-
-        return IsSuccess
+    public Result<TNewValue> ToResult<TNewValue>(Func<TValue, TNewValue> converter) =>
+        IsSuccess
             ? new Result<TNewValue>(converter!(_value!))
             : new Result<TNewValue>(_errors);
-    }
 
     /// Convert to success result
     public static implicit operator Result<TValue>(in TValue value) => new(value);

@@ -7,7 +7,7 @@ public static class FunctionalExtensions
     /// </summary>
     /// <param name="result">Source with inner result</param>
     /// <returns>Result with merged status (Success only if all results are success)</returns>
-    public static Result MergeInnerResult(this Result<Result> result) => result switch
+    public static Result Bind(this Result<Result> result) => result switch
     {
         { IsSuccess: true, ValueOrDefault.IsSuccess: true } =>
             result.ValueOrDefault,
@@ -22,7 +22,7 @@ public static class FunctionalExtensions
     /// <param name="result">Source with inner result</param>
     /// <typeparam name="TValue">Type of inner result value</typeparam>
     /// <returns>Result with merged status (Success only if all results are success)</returns>
-    public static Result<TValue> MergeInnerResult<TValue>(this Result<Result<TValue>> result) => result switch
+    public static Result<TValue> Bind<TValue>(this Result<Result<TValue>> result) => result switch
     {
         { IsSuccess: true, ValueOrDefault.IsSuccess: true } =>
             result.ValueOrDefault,

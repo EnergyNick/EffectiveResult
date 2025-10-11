@@ -1,4 +1,6 @@
 using System.Collections.Immutable;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using EffectiveResult.Abstractions;
 
 namespace EffectiveResult;
@@ -10,55 +12,75 @@ public partial class Result
     /// <summary>
     /// Get empty result with success status
     /// </summary>
+    [DebuggerStepThrough]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Result Ok() => SuccessResult;
 
     /// <summary>
     /// Creates a failed result with the given error
     /// </summary>
+    [DebuggerStepThrough]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Result Fail(IError error) => new(error);
 
     /// <summary>
     /// Creates a failed result with the given errors
     /// </summary>
+    [DebuggerStepThrough]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Result Fail(IEnumerable<IError> errors) => new(errors);
 
     /// <summary>
     /// Creates a failed result with the given error message.
     /// Message will be transformed to <see cref="IError"/>
     /// </summary>
+    [DebuggerStepThrough]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Result Fail(string errorMessage) => Fail(new Error(errorMessage));
 
     /// <summary>
     /// Creates a failed result with the given exception.
     /// Message will be transformed to <see cref="ExceptionalError"/>
     /// </summary>
+    [DebuggerStepThrough]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Result Fail(Exception exception) => Fail(new ExceptionalError(exception));
 
     /// <summary>
     /// Creates a success result with the given value
     /// </summary>
+    [DebuggerStepThrough]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Result<TValue> Ok<TValue>(in TValue value) => new(value);
 
     /// <summary>
     /// Creates a failed result with the given error
     /// </summary>
+    [DebuggerStepThrough]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Result<TValue> Fail<TValue>(IError error) => new(error);
 
     /// <summary>
     /// Creates a failed result with the given errors
     /// </summary>
+    [DebuggerStepThrough]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Result<TValue> Fail<TValue>(IEnumerable<IError> errors) => new(errors);
 
     /// <summary>
     /// Creates a failed result with the given error message.
     /// Message will be transformed to <see cref="Error"/>
     /// </summary>
+    [DebuggerStepThrough]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Result<TValue> Fail<TValue>(string errorMessage) => Fail<TValue>(new Error(errorMessage));
 
     /// <summary>
     /// Creates a failed result with the given exception.
     /// Message will be transformed to <see cref="ExceptionalError"/>
     /// </summary>
+    [DebuggerStepThrough]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Result<TValue> Fail<TValue>(Exception exception) => Fail<TValue>(new ExceptionalError(exception));
 
     /// <summary>

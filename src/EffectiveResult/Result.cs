@@ -47,15 +47,10 @@ public sealed partial class Result : IConclusion, IEquatable<Result>
     /// </summary>
     /// <value>New value of result, can be null only when result is false</value>
     /// <returns>Result with provided value, only if source is success</returns>
-    public Result<TNewValue> ToResult<TNewValue>(TNewValue value)
-    {
-        if (IsSuccess && value is null)
-            throw new ArgumentNullOnSuccessException(nameof(value));
-
-        return IsSuccess
-            ? new Result<TNewValue>(value!)
+    public Result<TNewValue> ToResult<TNewValue>(TNewValue? value = default) =>
+        IsSuccess
+            ? new Result<TNewValue>(value)
             : new Result<TNewValue>(_errors);
-    }
 
     /// <summary>
     /// Provide conversion to <see cref="Result{TNewValue}"/> with same reasons
@@ -63,15 +58,10 @@ public sealed partial class Result : IConclusion, IEquatable<Result>
     /// <value>New value of result, can be null only when result is false</value>
     /// <returns>Result with provided value, only if source is success</returns>
     /// <exception cref="ArgumentNullOnSuccessException">Can be thrown, if result is success and not provided new value</exception>
-    public Result<TNewValue> ToResult<TNewValue>(Func<TNewValue>? valueFactory = null)
-    {
-        if (IsSuccess && valueFactory is null)
-            throw new ArgumentNullOnSuccessException(nameof(valueFactory));
-
-        return IsSuccess
+    public Result<TNewValue> ToResult<TNewValue>(Func<TNewValue> valueFactory) =>
+        IsSuccess
             ? new Result<TNewValue>(valueFactory!())
             : new Result<TNewValue>(_errors);
-    }
 
     /// Convert to failed result
     public static implicit operator Result(Error error) => Result.Fail(error);
