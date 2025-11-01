@@ -1,5 +1,4 @@
-﻿using EffectiveResult.Abstractions;
-using EffectiveResult.Extensions;
+﻿using EffectiveResult.Extensions;
 using EffectiveResult.TestsCommon.Helpers;
 
 namespace EffectiveResult.Tests.Extensions;
@@ -47,8 +46,8 @@ public class ThenFailExtensionsTests
         var error = new Error("Bad");
         var result = Result.Fail(error);
 
-        IEnumerable<IError>? received = null;
-        Action<IEnumerable<IError>> action = errors => received = errors;
+        IEnumerable<Error>? received = null;
+        Action<IEnumerable<Error>> action = errors => received = errors;
 
         // Act
         var thenResult = result.ThenOnFail(action);
@@ -64,8 +63,8 @@ public class ThenFailExtensionsTests
         // Arrange
         var result = Result.Ok();
 
-        IEnumerable<IError>? received = null;
-        Action<IEnumerable<IError>> action = errors => received = errors;
+        IEnumerable<Error>? received = null;
+        Action<IEnumerable<Error>> action = errors => received = errors;
 
         // Act
         var thenResult = result.ThenOnFail(action);
@@ -155,7 +154,7 @@ public class ThenFailExtensionsTests
 
         var internalValue = "Hello there!";
         var isInvoked = false;
-        var action = (IReadOnlyCollection<IError> errors) =>
+        var action = (IReadOnlyCollection<Error> errors) =>
         {
             isInvoked = true;
             return internalValue;
@@ -163,7 +162,7 @@ public class ThenFailExtensionsTests
 
         var internalResult = Result.Ok(internalValue);
         var isInvokedResult = false;
-        var actionResult = (IReadOnlyCollection<IError> errors) =>
+        var actionResult = (IReadOnlyCollection<Error> errors) =>
         {
             isInvokedResult = true;
             return internalResult;
@@ -189,7 +188,7 @@ public class ThenFailExtensionsTests
 
         var internalValue = "Hello there!";
         var isInvoked = false;
-        var action = (IReadOnlyCollection<IError> errors) =>
+        var action = (IReadOnlyCollection<Error> errors) =>
         {
             isInvoked = true;
             return internalValue;
@@ -197,7 +196,7 @@ public class ThenFailExtensionsTests
 
         var internalResult = Result.Ok(internalValue);
         var isInvokedResult = false;
-        var actionResult = (IReadOnlyCollection<IError> errors) =>
+        var actionResult = (IReadOnlyCollection<Error> errors) =>
         {
             isInvokedResult = true;
             return internalResult;
@@ -223,8 +222,8 @@ public class ThenFailExtensionsTests
         // Arrange
         var result = Result.Ok();
 
-        IExceptionalError? received = null;
-        Action<IExceptionalError> action = errors => received = errors;
+        ExceptionalError? received = null;
+        Action<ExceptionalError> action = errors => received = errors;
 
         // Act
         var thenResult = result.ThenOnFailWithException<Exception>(action);
@@ -242,8 +241,8 @@ public class ThenFailExtensionsTests
         var error = new ExceptionalError(exception);
         var result = Result.Fail(error);
 
-        IExceptionalError? received = null;
-        Action<IExceptionalError> action = errors => received = errors;
+        ExceptionalError? received = null;
+        Action<ExceptionalError> action = errors => received = errors;
 
         // Act
         var thenResult = result.ThenOnFailWithException<ArgumentException>(action);
@@ -261,8 +260,8 @@ public class ThenFailExtensionsTests
         var error = new ExceptionalError(exception);
         var result = Result.Fail(error);
 
-        IExceptionalError? received = null;
-        Action<IExceptionalError> action = errors => received = errors;
+        ExceptionalError? received = null;
+        Action<ExceptionalError> action = errors => received = errors;
 
         // Act
         var thenResult = result.ThenOnFailWithException<ArgumentException>(action);

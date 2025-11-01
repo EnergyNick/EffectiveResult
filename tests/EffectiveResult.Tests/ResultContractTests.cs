@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using EffectiveResult.Abstractions;
 using EffectiveResult.Exceptions;
 using EffectiveResult.TestsCommon.Helpers;
 
@@ -30,7 +29,7 @@ public class ResultContractTests
     public void ResultConstruction_WhenCreateFailedResult_ShouldBeInValidState()
     {
         // Arrange
-        IError error = new Error("Very bad");
+        var error = new Error("Very bad");
 
         // Act
         var result = new Result(error);
@@ -47,9 +46,9 @@ public class ResultContractTests
     public void ResultConstruction_WhenCreateFailedResultWithErrors_ShouldBeInValidState()
     {
         // Arrange
-        var errors = new IError[]
+        var errors = new Error[]
         {
-            new Error("Very bad"),
+            new("Very bad"),
             new ExceptionalError(new Exception())
         };
 
@@ -68,7 +67,7 @@ public class ResultContractTests
     public void ResultConstruction_WhenCreateFailedResultWithNoErrors_ShouldBeThrown()
     {
         // Arrange
-        var errors = Array.Empty<IError>();
+        var errors = Array.Empty<Error>();
 
         // Act
         var resultArray = () => new Result(errors);
@@ -83,7 +82,7 @@ public class ResultContractTests
     public void ResultConstruction_WhenCloneWithCopyConstructor_ShouldBeEquals()
     {
         // Arrange
-        IError error = new Error("So bad");
+        var error = new Error("So bad");
         var value = new List<int> { 1, 2, 3, 4, 5 };
 
         var successResult = new Result<List<int>>(value);
@@ -190,7 +189,7 @@ public class ResultContractTests
         var data = 145;
 
         var error = new Error("Bad data");
-        var errors = new IError[] { error };
+        var errors = new Error[] { error };
 
         var result = new Result(errors);
         var structResult = new Result<int>(errors);
@@ -233,10 +232,10 @@ public class ResultContractTests
         var classResultCopyAction = () => structResult.ToResult<string>();
 
         // Assert
-        resultCopyAction.Should().Throw<ArgumentNullOnSuccessException>();
-        resultFactoryCopyAction.Should().Throw<ArgumentNullOnSuccessException>();
-        structResultCopyAction.Should().Throw<ArgumentNullOnSuccessException>();
-        classResultCopyAction.Should().Throw<ArgumentNullOnSuccessException>();
+        resultCopyAction.Should().NotThrow();
+        resultFactoryCopyAction.Should().NotThrow();
+        structResultCopyAction.Should().NotThrow();
+        classResultCopyAction.Should().NotThrow();
     }
 
     [Fact]

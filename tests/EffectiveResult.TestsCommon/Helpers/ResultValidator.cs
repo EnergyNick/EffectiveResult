@@ -50,10 +50,12 @@ public static class ResultValidator
         ReferenceEquals(result.Value, expected).Should().BeTrue();
     }
 
-    public static void ShouldBeFailed(this IConclusion result, params IError[] expectedErrors) =>
-        result.ShouldBeFailed(expectedErrors as ICollection<IError>);
+    public static void ShouldBeFailed(this IConclusion result, params Error[] expectedErrors)
+    {
+        result.ShouldBeFailed(expectedErrors as ICollection<Error>);
+    }
 
-    public static void ShouldBeFailed(this IConclusion result, IEnumerable<IError>? expectedErrors = null)
+    public static void ShouldBeFailed(this IConclusion result, IEnumerable<Error>? expectedErrors = null)
     {
         result.IsSuccess.Should().BeFalse();
         result.IsFailed.Should().BeTrue();
@@ -61,14 +63,18 @@ public static class ResultValidator
 
         var expectedErrorsArray = expectedErrors?.ToArray();
         if (expectedErrorsArray is { Length: > 0 })
+        {
             result.Errors.Should().BeEquivalentTo(expectedErrorsArray);
+        }
     }
 
-    public static void ShouldBeFailed<TResult, TValue>(this TResult result, params IError[] expectedErrors)
-        where TResult : IConclusion, IValueStorage<TValue> =>
-        result.ShouldBeFailed(expectedErrors as ICollection<IError>);
+    public static void ShouldBeFailed<TResult, TValue>(this TResult result, params Error[] expectedErrors)
+        where TResult : IConclusion, IValueStorage<TValue>
+    {
+        result.ShouldBeFailed(expectedErrors as ICollection<Error>);
+    }
 
-    public static void ShouldBeFailed<TResult, TValue>(this TResult result, IEnumerable<IError>? expectedErrors = null)
+    public static void ShouldBeFailed<TResult, TValue>(this TResult result, IEnumerable<Error>? expectedErrors = null)
         where TResult : IConclusion, IValueStorage<TValue>
     {
         result.IsSuccess.Should().BeFalse();
@@ -77,7 +83,9 @@ public static class ResultValidator
 
         var expectedErrorsArray = expectedErrors?.ToArray();
         if (expectedErrorsArray is { Length: > 0 })
+        {
             result.Errors.Should().BeEquivalentTo(expectedErrorsArray);
+        }
 
         result.Invoking(x => x.Value).Should().Throw<OperationOnFailedResultException>();
     }

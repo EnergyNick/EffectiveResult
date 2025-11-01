@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using EffectiveResult.Abstractions;
 using EffectiveResult.Exceptions;
 using EffectiveResult.TestsCommon.Helpers;
 
@@ -99,10 +98,10 @@ public class StaticFactoriesTests
     {
         // Arrange
         var exception = new Exception("Test");
-        var errors = new IError[]
+        var errors = new Error[]
         {
-            new Error("Very bad"),
-            new Error("So bad, but why..."),
+            new("Very bad"),
+            new("So bad, but why..."),
             new ExceptionalError(exception)
         };
 
@@ -119,7 +118,7 @@ public class StaticFactoriesTests
     public void FailMethod_WhenInvokeWithEmptyErrors_ShouldThrowResultException()
     {
         // Arrange
-        var errors = Enumerable.Empty<IError>();
+        var errors = Enumerable.Empty<Error>();
 
         // Act
         var resultAction = () => Result.Fail(errors);
@@ -201,7 +200,7 @@ public class StaticFactoriesTests
         var method = () => Task.CompletedTask;
 
         // Act
-        var resultAction = async () => await Result.TryAsync(method);
+        var resultAction = async () => await Result.TryAsync(method).ConfigureAwait(false);
 
         // Assert
         await method.Should().NotThrowAsync();
@@ -384,10 +383,10 @@ public class StaticFactoriesTests
     {
         // Arrange
         var exception = new Exception("Test");
-        var errors = new IError[]
+        var errors = new Error[]
         {
-            new Error("Very bad"),
-            new Error("So bad, but why..."),
+            new("Very bad"),
+            new("So bad, but why..."),
             new ExceptionalError(exception)
         };
         var value = "Hello world!";
