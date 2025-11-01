@@ -1,7 +1,6 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using EffectiveResult.Abstractions;
 
 namespace EffectiveResult;
 
@@ -21,18 +20,18 @@ public partial class Result
     /// </summary>
     [DebuggerStepThrough]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result Fail(IError error) => new(error);
+    public static Result Fail(Error error) => new(error);
 
     /// <summary>
     /// Creates a failed result with the given errors
     /// </summary>
     [DebuggerStepThrough]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result Fail(IEnumerable<IError> errors) => new(errors);
+    public static Result Fail(IEnumerable<Error> errors) => new(errors);
 
     /// <summary>
     /// Creates a failed result with the given error message.
-    /// Message will be transformed to <see cref="IError"/>
+    /// Message will be transformed to <see cref="Error"/>
     /// </summary>
     [DebuggerStepThrough]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -58,14 +57,14 @@ public partial class Result
     /// </summary>
     [DebuggerStepThrough]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result<TValue> Fail<TValue>(IError error) => new(error);
+    public static Result<TValue> Fail<TValue>(Error error) => new(error);
 
     /// <summary>
     /// Creates a failed result with the given errors
     /// </summary>
     [DebuggerStepThrough]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result<TValue> Fail<TValue>(IEnumerable<IError> errors) => new(errors);
+    public static Result<TValue> Fail<TValue>(IEnumerable<Error> errors) => new(errors);
 
     /// <summary>
     /// Creates a failed result with the given error message.
@@ -106,7 +105,7 @@ public partial class Result
     {
         try
         {
-            await action();
+            await action().ConfigureAwait(false);
             return Ok();
         }
         catch (Exception e)
@@ -137,7 +136,7 @@ public partial class Result
     {
         try
         {
-            return Ok(await action());
+            return Ok(await action().ConfigureAwait(false));
         }
         catch (Exception e)
         {
@@ -148,7 +147,7 @@ public partial class Result
     /// <summary>
     /// Create result with status depending on condition
     /// </summary>
-    public static Result OkIf(bool condition, IError error) => condition ? Ok() : Fail(error);
+    public static Result OkIf(bool condition, Error error) => condition ? Ok() : Fail(error);
 
     /// <summary>
     /// Create result with status depending on condition
@@ -163,7 +162,7 @@ public partial class Result
     /// <summary>
     /// Create result with status depending on condition
     /// </summary>
-    public static Result FailIf(bool condition, IError error) => condition ? Fail(error) : Ok();
+    public static Result FailIf(bool condition, Error error) => condition ? Fail(error) : Ok();
 
     /// <summary>
     /// Create result with status depending on condition
@@ -178,7 +177,7 @@ public partial class Result
     /// <summary>
     /// Create result with status depending on condition
     /// </summary>
-    public static Result<TValue> OkIf<TValue>(bool condition, IError error, TValue valueIfSuccess) =>
+    public static Result<TValue> OkIf<TValue>(bool condition, Error error, TValue valueIfSuccess) =>
         condition ? Ok(valueIfSuccess) : Fail<TValue>(error);
 
     /// <summary>
@@ -196,7 +195,7 @@ public partial class Result
     /// <summary>
     /// Create result with status depending on condition
     /// </summary>
-    public static Result<TValue> FailIf<TValue>(bool condition, IError error, TValue valueIfSuccess) =>
+    public static Result<TValue> FailIf<TValue>(bool condition, Error error, TValue valueIfSuccess) =>
         condition ? Fail<TValue>(error) : Ok(valueIfSuccess);
 
     /// <summary>
@@ -242,7 +241,7 @@ public partial class Result
     /// <returns>Result with combined status of <see cref="results"/></returns>
     public static Result<IEnumerable<TValue>> Combine<TValue>(IEnumerable<Result<TValue>> results)
     {
-        var enumerated = results as ICollection<Result<TValue>> ?? results.ToArray();
+        var enumerated = results as ICollection<Result<TValue>> ?? [.. results];
         var failed = enumerated.Any(x => x.IsFailed);
 
         return failed

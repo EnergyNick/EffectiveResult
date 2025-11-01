@@ -10,26 +10,30 @@ namespace EffectiveResult;
 /// An implementation of the result monad pattern for an alternative way of handling errors.
 /// Can store value on success state.
 /// </summary>
-public sealed class Result<TValue> : IConclusion, IValueStorage<TValue>, IEquatable<Result<TValue>>
+public sealed class Result<TValue>
+    : IConclusion, IValueStorage<TValue>, IReferenceValueStorage<TValue>, IEquatable<Result<TValue>>
 {
-    private readonly ImmutableArray<IError> _errors = ImmutableArray<IError>.Empty;
+    private readonly ImmutableArray<Error> _errors = [];
     private readonly TValue? _value;
 
-    /// <summary>
-    /// Return current result value.<br/>If result has failed status, will be returned default value
-    /// </summary>
-    public ref readonly TValue? ValueOrDefault => ref _value;
+    /// <inheritdoc />
+    public TValue? ValueOrDefault => _value;
 
-    /// <summary>
-    /// Return current result value.<br/>If result has failed status, an exception will be thrown
-    /// </summary>
-    /// <exception cref="OperationOnFailedResultException">Thrown if result has failed status</exception>
-    public ref readonly TValue Value
+    /// <inheritdoc />
+    public TValue Value => IsSuccess ? _value! : throw new OperationOnFailedResultException("Get value");
+
+    /// <inheritdoc />
+    public ref readonly TValue? ValueOrDefaultRef => ref _value;
+
+    /// <inheritdoc />
+    public ref readonly TValue ValueRef
     {
         get
         {
             if (IsFailed)
+            {
                 throw new OperationOnFailedResultException("Get value");
+            }
 
             return ref _value!;
         }
@@ -44,20 +48,32 @@ public sealed class Result<TValue> : IConclusion, IValueStorage<TValue>, IEquata
     public bool IsFailed => _errors.Length != 0;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<IError> Errors => _errors;
+    public IReadOnlyCollection<Error> Errors => _errors;
 
     internal Result(in TValue? value) => _value = value;
 
-    internal Result(IError error) => _errors = ImmutableArray.Create(error);
+    internal Result(Error error) => _errors = [error];
 
-    internal Result(IEnumerable<IError> errors, bool isFailed = true)
+    internal Result(IEnumerable<Error> errors, bool isFailed = true)
     {
-        _errors = errors is IError[] arrayErrors
-            ? ImmutableArray.Create(arrayErrors)
-            : errors.ToImmutableArray();
+        _errors = errors is Error[] arrayErrors
+            ? [..arrayErrors]
+            : [..errors];
 
         if (isFailed && _errors.Length == 0)
+        {
             throw new InvalidResultOperationException("Can't create failed result without errors");
+        }
+    }
+
+    internal Result(in ImmutableArray<Error> errors, bool isFailed = true)
+    {
+        _errors = errors;
+
+        if (isFailed && _errors.Length == 0)
+        {
+            throw new InvalidResultOperationException("Can't create failed result without errors");
+        }
     }
 
     /// <summary>
@@ -66,7 +82,9 @@ public sealed class Result<TValue> : IConclusion, IValueStorage<TValue>, IEquata
     public Result(Result<TValue> other)
     {
         if (other.IsSuccess)
+        {
             _value = other._value;
+        }
 
         _errors = other._errors;
     }
@@ -86,6 +104,17 @@ public sealed class Result<TValue> : IConclusion, IValueStorage<TValue>, IEquata
     public TValue GetValueOrDefault(Func<TValue> defaultValueFactory) => IsSuccess ? _value! : defaultValueFactory();
 
     /// <summary>
+    /// TryGet patter realization, return value, if result is success
+    /// </summary>
+    /// <param name="value">Value or default</param>
+    /// <returns>Is result success</returns>
+    public bool TryGetValue([NotNullWhen(true)] out TValue? value)
+    {
+        value = ValueOrDefault;
+        return IsSuccess;
+    }
+
+    /// <summary>
     /// Provide conversion to <see cref="Result"/> with same reasons
     /// </summary>
     /// <returns>Copy of current result with new value</returns>
@@ -96,9 +125,9 @@ public sealed class Result<TValue> : IConclusion, IValueStorage<TValue>, IEquata
     /// </summary>
     /// <value>New value of result, can be null only when result is false</value>
     /// <returns>Result with provided value, only if source is success</returns>
-    public Result<TNewValue> ToResult<TNewValue>(TNewValue? value = default) =>
+    public Result<TNewValue> ToResult<TNewValue>(TNewValue? valueIfSuccess = default) =>
         IsSuccess
-            ? new Result<TNewValue>(value)
+            ? new Result<TNewValue>(valueIfSuccess)
             : new Result<TNewValue>(_errors);
 
     /// <summary>
@@ -109,7 +138,7 @@ public sealed class Result<TValue> : IConclusion, IValueStorage<TValue>, IEquata
     /// <exception cref="ArgumentNullOnSuccessException">Can be thrown, if result is success and not provided converter</exception>
     public Result<TNewValue> ToResult<TNewValue>(Func<TValue, TNewValue> converter) =>
         IsSuccess
-            ? new Result<TNewValue>(converter!(_value!))
+            ? new Result<TNewValue>(converter(_value!))
             : new Result<TNewValue>(_errors);
 
     /// Convert to success result
@@ -123,7 +152,7 @@ public sealed class Result<TValue> : IConclusion, IValueStorage<TValue>, IEquata
     /// </summary>
     /// <param name="isSuccess">Status of result</param>
     /// <param name="errors">Errors on fail or empty collection on success</param>
-    public void Deconstruct(out bool isSuccess, out IReadOnlyCollection<IError> errors)
+    public void Deconstruct(out bool isSuccess, out IReadOnlyCollection<Error> errors)
     {
         isSuccess = IsSuccess;
         errors = _errors;
@@ -135,7 +164,7 @@ public sealed class Result<TValue> : IConclusion, IValueStorage<TValue>, IEquata
     /// <param name="isSuccess">Status of result</param>
     /// <param name="valueOrDefault">Value on success or default value on fail</param>
     /// <param name="errors">Errors on fail or empty collection on success</param>
-    public void Deconstruct(out bool isSuccess, out TValue? valueOrDefault, out IReadOnlyCollection<IError> errors)
+    public void Deconstruct(out bool isSuccess, out TValue? valueOrDefault, out IReadOnlyCollection<Error> errors)
     {
         isSuccess = IsSuccess;
         valueOrDefault = _value;
@@ -172,8 +201,15 @@ public sealed class Result<TValue> : IConclusion, IValueStorage<TValue>, IEquata
     /// <inheritdoc/>
     public bool Equals(Result<TValue>? other)
     {
-        if (other is null) return false;
-        if (ReferenceEquals(this, other)) return true;
+        if (other is null)
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, other))
+        {
+            return true;
+        }
 
         return (obj1: this, obj2: other) switch
         {

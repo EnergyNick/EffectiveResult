@@ -1,24 +1,22 @@
-﻿using EffectiveResult.Abstractions;
-
-namespace EffectiveResult;
+﻿namespace EffectiveResult;
 
 /// <summary>
 /// Mutable builder for result errors
 /// </summary>
 public sealed class ResultBuilder
 {
-    private readonly List<IError> _errors;
+    private readonly List<Error> _errors;
 
-    internal ResultBuilder() => _errors = new List<IError>();
+    internal ResultBuilder() => _errors = [];
 
-    internal ResultBuilder(int capacity) => _errors = new List<IError>(capacity);
+    internal ResultBuilder(int capacity) => _errors = new List<Error>(capacity);
 
-    internal ResultBuilder(IEnumerable<IError> errors) => _errors = new List<IError>(errors);
+    internal ResultBuilder(IEnumerable<Error> errors) => _errors = [..errors];
 
     /// <summary>
     /// Add new error to builder state
     /// </summary>
-    public ResultBuilder AppendError(IError error)
+    public ResultBuilder AppendError(Error error)
     {
         _errors.Add(error);
         return this;
@@ -45,7 +43,7 @@ public sealed class ResultBuilder
     /// <summary>
     /// Add new errors to builder state
     /// </summary>
-    public ResultBuilder AppendErrors(IEnumerable<IError> errors)
+    public ResultBuilder AppendErrors(IEnumerable<Error> errors)
     {
         _errors.AddRange(errors);
         return this;
@@ -54,7 +52,7 @@ public sealed class ResultBuilder
     /// <summary>
     /// Add new errors to builder state
     /// </summary>
-    public ResultBuilder AppendErrors(params IError[] errors)
+    public ResultBuilder AppendErrors(params Error[] errors)
     {
         _errors.AddRange(errors);
         return this;
@@ -98,7 +96,7 @@ public sealed class ResultBuilder
     /// <param name="valueIfSuccess">Value for result, if current builder state is success</param>
     /// <returns>Success or fail result based on result builder state</returns>
     public Result<TValue> ToResult<TValue>(in TValue valueIfSuccess) =>
-        _errors.Any()
+        _errors.Count != 0
             ? new Result<TValue>(_errors)
             : new Result<TValue>(valueIfSuccess);
 
@@ -108,7 +106,7 @@ public sealed class ResultBuilder
     /// <param name="valueFactoryIfSuccess">Value factory for result, if current builder state is success</param>
     /// <returns>Success or fail result based on result builder state</returns>
     public Result<TValue> ToResult<TValue>(Func<TValue> valueFactoryIfSuccess) =>
-        _errors.Any()
+        _errors.Count != 0
             ? new Result<TValue>(_errors)
             : new Result<TValue>(valueFactoryIfSuccess());
 
@@ -129,11 +127,11 @@ public sealed class ResultBuilder
     /// Create builder with initial errors
     /// </summary>
     /// <returns>New builder with added errors</returns>
-    public static ResultBuilder Create(IEnumerable<IError> errors) => new(errors);
+    public static ResultBuilder Create(IEnumerable<Error> errors) => new(errors);
 
     /// <summary>
     /// Create builder with initial errors
     /// </summary>
     /// <returns>New builder with added errors</returns>
-    public static ResultBuilder Create(params IError[] errors) => new(errors);
+    public static ResultBuilder Create(params Error[] errors) => new(errors);
 }

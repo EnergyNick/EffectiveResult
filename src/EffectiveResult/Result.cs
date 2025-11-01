@@ -11,7 +11,7 @@ namespace EffectiveResult;
 /// </summary>
 public sealed partial class Result : IConclusion, IEquatable<Result>
 {
-    private readonly ImmutableArray<IError> _errors = ImmutableArray<IError>.Empty;
+    private readonly ImmutableArray<Error> _errors = [];
 
     /// <inheritdoc />
     public bool IsSuccess => _errors.Length == 0;
@@ -20,21 +20,33 @@ public sealed partial class Result : IConclusion, IEquatable<Result>
     public bool IsFailed => _errors.Length != 0;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<IError> Errors => _errors;
+    public IReadOnlyCollection<Error> Errors => _errors;
 
     internal Result()
     { }
 
-    internal Result(IError error) => _errors = ImmutableArray.Create(error);
+    internal Result(Error error) => _errors = [error];
 
-    internal Result(IEnumerable<IError> errors, bool isMustBeFailed = true)
+    internal Result(in ImmutableArray<Error> errors, bool isFailed = true)
     {
-        _errors = errors is IError[] arrayErrors
-            ? ImmutableArray.Create(arrayErrors)
-            : errors.ToImmutableArray();
+        _errors = errors;
+
+        if (isFailed && _errors.Length == 0)
+        {
+            throw new InvalidResultOperationException("Can't create failed result without errors");
+        }
+    }
+
+    internal Result(IEnumerable<Error> errors, bool isMustBeFailed = true)
+    {
+        _errors = errors is Error[] arrayErrors
+            ? [..arrayErrors]
+            : [..errors];
 
         if (isMustBeFailed && _errors.Length == 0)
+        {
             throw new InvalidResultOperationException("Can't create failed result without errors");
+        }
     }
 
     /// <summary>
@@ -60,7 +72,7 @@ public sealed partial class Result : IConclusion, IEquatable<Result>
     /// <exception cref="ArgumentNullOnSuccessException">Can be thrown, if result is success and not provided new value</exception>
     public Result<TNewValue> ToResult<TNewValue>(Func<TNewValue> valueFactory) =>
         IsSuccess
-            ? new Result<TNewValue>(valueFactory!())
+            ? new Result<TNewValue>(valueFactory())
             : new Result<TNewValue>(_errors);
 
     /// Convert to failed result
@@ -71,7 +83,7 @@ public sealed partial class Result : IConclusion, IEquatable<Result>
     /// </summary>
     /// <param name="isSuccess">Status of result</param>
     /// <param name="errors">Errors on fail or empty collection on success</param>
-    public void Deconstruct(out bool isSuccess, out IReadOnlyCollection<IError> errors)
+    public void Deconstruct(out bool isSuccess, out IReadOnlyCollection<Error> errors)
     {
         isSuccess = IsSuccess;
         errors = _errors;
@@ -104,8 +116,15 @@ public sealed partial class Result : IConclusion, IEquatable<Result>
     /// <inheritdoc/>
     public bool Equals(Result? other)
     {
-        if (other is null) return false;
-        if (ReferenceEquals(this, other)) return true;
+        if (other is null)
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, other))
+        {
+            return true;
+        }
 
         return (obj1: this, obj2: other) switch
         {

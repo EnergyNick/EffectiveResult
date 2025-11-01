@@ -6,16 +6,16 @@ namespace EffectiveResult.Extensions;
 public static class ConclusionErrorsExtensions
 {
     /// <summary>
-    /// Check, if in array of <see cref="IError"/> contains error of <see cref="TError"/> type.
+    /// Check, if in array of <see cref="Error"/> contains error of <see cref="TError"/> type.
     /// </summary>
     /// <param name="errors">Source of errors</param>
     /// <param name="predicate">Additional error predicate</param>
     /// <typeparam name="TError">Type of error</typeparam>
     /// <returns>True, if exists in enumerable</returns>
-    public static bool HasErrorsOfType<TError>(this IEnumerable<IError> errors, Predicate<TError>? predicate = null)
-        where TError : IError
+    public static bool HasErrorsOfType<TError>(this IEnumerable<Error> errors, Predicate<TError>? predicate = null)
+        where TError : Error
     {
-        var enumeratedReasons = errors as ICollection<IError> ?? errors.ToArray();
+        var enumeratedReasons = errors as ICollection<Error> ?? [.. errors];
 
         return enumeratedReasons.Any(reason =>
             reason is TError reasonOfType
@@ -23,16 +23,16 @@ public static class ConclusionErrorsExtensions
     }
 
     /// <summary>
-    /// Check, if in array of <see cref="IError"/> contains error of <see cref="TError"/> type and in caused errors.
+    /// Check, if in array of <see cref="Error"/> contains error of <see cref="TError"/> type and in caused errors.
     /// </summary>
     /// <param name="errors">Source of errors</param>
     /// <param name="predicate">Additional error predicate</param>
     /// <typeparam name="TError">Type of error</typeparam>
     /// <returns>True, if exists in enumerable</returns>
-    public static bool HasErrorsOfTypeRecursively<TError>(this IEnumerable<IError> errors, Predicate<TError>? predicate = null)
-        where TError : IError
+    public static bool HasErrorsOfTypeRecursively<TError>(this IEnumerable<Error> errors, Predicate<TError>? predicate = null)
+        where TError : Error
     {
-        var enumeratedReasons = errors as ICollection<IError> ?? errors.ToArray();
+        var enumeratedReasons = errors as ICollection<Error> ?? [.. errors];
 
         var anyErrors = enumeratedReasons.Any(reason =>
             reason is TError reasonOfType
@@ -69,7 +69,7 @@ public static class ConclusionErrorsExtensions
         where TException : Exception
     {
         var error = conclusion.Errors
-            .OfType<IExceptionalError>()
+            .OfType<ExceptionalError>()
             .FirstOrDefault(e => e.Exception is TException ex && (filter?.Invoke(ex) ?? true));
 
         exception = error?.Exception as TException;
@@ -100,7 +100,7 @@ public static class ConclusionErrorsExtensions
         where TException : Exception
     {
         return conclusion.Errors
-            .OfType<IExceptionalError>()
+            .OfType<ExceptionalError>()
             .Where(e => e.Exception is TException ex && (filter?.Invoke(ex) ?? true))
             .Select(x => (TException)x.Exception);
     }

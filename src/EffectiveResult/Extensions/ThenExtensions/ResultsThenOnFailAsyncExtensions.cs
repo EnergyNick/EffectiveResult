@@ -1,6 +1,4 @@
-﻿using EffectiveResult.Abstractions;
-
-namespace EffectiveResult.Extensions;
+﻿namespace EffectiveResult.Extensions;
 
 public static partial class ResultsThenOnFailAsyncExtensions
 {
@@ -23,7 +21,7 @@ public static partial class ResultsThenOnFailAsyncExtensions
     /// <param name="input">Source of conclusion</param>
     /// <param name="onFailAction">Action for invoke on fail</param>
     /// <returns>Result from <paramref name="input"/></returns>
-    public static async Task<Result> ThenOnFailAsync(this Result input, Func<IEnumerable<IError>, Task> onFailAction)
+    public static async Task<Result> ThenOnFailAsync(this Result input, Func<IEnumerable<Error>, Task> onFailAction)
     {
         return input.IsFailed
             ? await Result.TryAsync(() => onFailAction(input.Errors))
@@ -39,7 +37,7 @@ public static partial class ResultsThenOnFailAsyncExtensions
     /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
     public static async Task<Result<TValue>> ThenOnFailAsync<TValue>(
         this Result<TValue> input,
-        Func<IReadOnlyCollection<IError>, Task<TValue>> continuation)
+        Func<IReadOnlyCollection<Error>, Task<TValue>> continuation)
     {
         return input.IsFailed
             ? await Result.TryAsync(() => continuation(input.Errors))
@@ -55,7 +53,7 @@ public static partial class ResultsThenOnFailAsyncExtensions
     /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
     public static async Task<Result<TValue>> ThenOnFailAsync<TValue>(
         this Result<TValue> input,
-        Func<IReadOnlyCollection<IError>, Task<Result<TValue>>> continuation)
+        Func<IReadOnlyCollection<Error>, Task<Result<TValue>>> continuation)
     {
         return input.IsFailed
             ? await continuation(input.Errors)
@@ -103,17 +101,19 @@ public static partial class ResultsThenOnFailAsyncExtensions
     /// <returns>Result from <paramref name="input"/></returns>
     public static async Task<Result> ThenOnFailWithExceptionAsync<TException>(
         this Result input,
-        Func<IExceptionalError, Task> onFailAction)
+        Func<ExceptionalError, Task> onFailAction)
         where TException : Exception
     {
         if (input.IsFailed)
         {
             var exceptionalError = input.Errors
-                .OfType<IExceptionalError>()
+                .OfType<ExceptionalError>()
                 .FirstOrDefault(x => x.Exception is TException);
 
             if (exceptionalError is not null)
+            {
                 return await Result.TryAsync(() => onFailAction(exceptionalError));
+            }
         }
 
         return input;

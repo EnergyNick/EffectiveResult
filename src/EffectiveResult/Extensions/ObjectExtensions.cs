@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using EffectiveResult.Abstractions;
 
 namespace EffectiveResult.Extensions;
 
@@ -17,14 +16,14 @@ public static class ObjectExtensions
     /// Create failed result from error
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result MakeFailedResult(this IError error) =>
+    public static Result MakeFailedResult(this Error error) =>
         Result.Fail(error);
 
     /// <summary>
     /// Create failed typed result from error
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result<TValue> MakeFailedResult<TValue>(this IError error) =>
+    public static Result<TValue> MakeFailedResult<TValue>(this Error error) =>
         Result.Fail<TValue>(error);
 
     /// <summary>

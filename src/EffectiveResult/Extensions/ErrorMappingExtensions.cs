@@ -1,6 +1,4 @@
-﻿using EffectiveResult.Abstractions;
-
-namespace EffectiveResult.Extensions;
+﻿namespace EffectiveResult.Extensions;
 
 public static class ErrorMappingExtensions
 {
@@ -10,8 +8,9 @@ public static class ErrorMappingExtensions
     /// <param name="input">Source result</param>
     /// <param name="errorMapper">Function for invoke on fail</param>
     /// <returns>Result from <see cref="input"/> on success or result with mapped errors</returns>
-    public static Result MapErrorsOnFailed(this Result input,
-        Func<IReadOnlyCollection<IError>, IEnumerable<IError>> errorMapper)
+    public static Result MapErrorsOnFailed(
+        this Result input,
+        Func<IReadOnlyCollection<Error>, IEnumerable<Error>> errorMapper)
     {
         return input.IsFailed
             ? new Result(errorMapper(input.Errors))
@@ -25,8 +24,9 @@ public static class ErrorMappingExtensions
     /// <param name="errorMapper">Function for invoke on fail</param>
     /// <typeparam name="TValue">Type of "<paramref name="input"/>" result</typeparam>
     /// <returns>Result from <see cref="input"/> on success or result with mapped errors</returns>
-    public static Result<TValue> MapErrorsOnFailed<TValue>(this Result<TValue> input,
-        Func<IReadOnlyCollection<IError>, IEnumerable<IError>> errorMapper)
+    public static Result<TValue> MapErrorsOnFailed<TValue>(
+        this Result<TValue> input,
+        Func<IReadOnlyCollection<Error>, IEnumerable<Error>> errorMapper)
     {
         return input.IsFailed
             ? new Result<TValue>(errorMapper(input.Errors))
