@@ -1,22 +1,22 @@
 ﻿using EffectiveResult.Extensions;
 using EffectiveResult.TestsCommon.Helpers;
 
-namespace EffectiveResult.Tests.Extensions;
+namespace EffectiveResult.Tests.Extensions.ThenExtensions;
 
-public class ThenFailExtensionsTests
+public class ThenFailAsyncExtensionsTests
 {
     [Fact]
-    public void ThenOnFailExtension_WhenInvokeOnFailedResult_ShouldBeInvoked()
+    public async Task ThenOnFailAsyncExtension_WhenInvokeOnFailedResult_ShouldBeInvoked()
     {
         // Arrange
         var error = new Error("Bad");
         var result = Result.Fail(error);
 
         var flag = false;
-        Action action = () => flag = true;
+        var action = async () => flag = true;
 
         // Act
-        var thenResult = result.ThenOnFail(action);
+        var thenResult = await result.ThenOnFailAsync(action);
 
         // Assert
         thenResult.ShouldBeSuccess();
@@ -24,15 +24,15 @@ public class ThenFailExtensionsTests
     }
 
     [Fact]
-    public void ThenOnFailExtension_WhenInvokeOnSuccessResult_ShouldNotBeInvoked()
+    public async Task ThenOnFailAsyncExtension_WhenInvokeOnSuccessResult_ShouldNotBeInvoked()
     {
         // Arrange
         var result = Result.Ok();
         var flag = false;
-        Action action = () => flag = true;
+        var action = async () => flag = true;
 
         // Act
-        var thenResult = result.ThenOnFail(action);
+        var thenResult = await result.ThenOnFailAsync(action);
 
         // Assert
         thenResult.Should().Be(result);
@@ -40,17 +40,17 @@ public class ThenFailExtensionsTests
     }
 
     [Fact]
-    public void ThenOnFailExtension_WhenInvokeOnFailedResultWithArgumentAction_ShouldBeInvoked()
+    public async Task ThenOnFailAsyncExtension_WhenInvokeOnFailedResultWithArgumentAction_ShouldBeInvoked()
     {
         // Arrange
         var error = new Error("Bad");
         var result = Result.Fail(error);
 
         IEnumerable<Error>? received = null;
-        Action<IEnumerable<Error>> action = errors => received = errors;
+        Func<IEnumerable<Error>, Task> action = async errors => received = errors;
 
         // Act
-        var thenResult = result.ThenOnFail(action);
+        var thenResult = await result.ThenOnFailAsync(action);
 
         // Assert
         thenResult.ShouldBeSuccess();
@@ -58,16 +58,16 @@ public class ThenFailExtensionsTests
     }
 
     [Fact]
-    public void ThenOnFailExtension_WhenInvokeOnSuccessResultWithArgumentAction_ShouldBeNotInvoked()
+    public async Task ThenOnFailAsyncExtension_WhenInvokeOnSuccessResultWithArgumentAction_ShouldBeNotInvoked()
     {
         // Arrange
         var result = Result.Ok();
 
         IEnumerable<Error>? received = null;
-        Action<IEnumerable<Error>> action = errors => received = errors;
+        Func<IEnumerable<Error>, Task> action = async errors => received = errors;
 
         // Act
-        var thenResult = result.ThenOnFail(action);
+        var thenResult = await result.ThenOnFailAsync(action);
 
         // Assert
         thenResult.Should().Be(result);
@@ -75,7 +75,7 @@ public class ThenFailExtensionsTests
     }
 
     [Fact]
-    public void ThenOnFailExtension_WhenInvokeOnSuccessResultWithFuncFactory_ShouldNotBeInvoked()
+    public async Task ThenOnFailAsyncExtension_WhenInvokeOnSuccessResultWithFuncFactory_ShouldNotBeInvoked()
     {
         // Arrange
         var value = "Good time need good result";
@@ -83,7 +83,7 @@ public class ThenFailExtensionsTests
 
         var internalValue = "Hello there!";
         var isInvoked = false;
-        var action = () =>
+        var action = async () =>
         {
             isInvoked = true;
             return internalValue;
@@ -91,15 +91,15 @@ public class ThenFailExtensionsTests
 
         var internalResult = Result.Ok(internalValue);
         var isInvokedResult = false;
-        var actionResult = () =>
+        var actionResult = async () =>
         {
             isInvokedResult = true;
             return internalResult;
         };
 
         // Act
-        var firstResult = result.ThenOnFail(action);
-        var secondResult = result.ThenOnFail(actionResult);
+        var firstResult = await result.ThenOnFailAsync(action);
+        var secondResult = await result.ThenOnFailAsync(actionResult);
 
         // Assert
         firstResult.Should().Be(result);
@@ -109,7 +109,7 @@ public class ThenFailExtensionsTests
     }
 
     [Fact]
-    public void ThenOnFailExtension_WhenInvokeOnFailedResultWithFuncFactory_ShouldBeInvokedAndReturnNewResult()
+    public async Task ThenOnFailAsyncExtension_WhenInvokeOnFailedResultWithFuncFactory_ShouldBeInvokedAndReturnNewResult()
     {
         // Arrange
         var error = new Error("Deadlocker");
@@ -117,7 +117,7 @@ public class ThenFailExtensionsTests
 
         var internalValue = "Hello there!";
         var isInvoked = false;
-        var action = () =>
+        var action = async () =>
         {
             isInvoked = true;
             return internalValue;
@@ -125,15 +125,15 @@ public class ThenFailExtensionsTests
 
         var internalResult = Result.Ok(internalValue);
         var isInvokedResult = false;
-        var actionResult = () =>
+        var actionResult = async () =>
         {
             isInvokedResult = true;
             return internalResult;
         };
 
         // Act
-        var firstResult = result.ThenOnFail(action);
-        var secondResult = result.ThenOnFail(actionResult);
+        var firstResult = await result.ThenOnFailAsync(action);
+        var secondResult = await result.ThenOnFailAsync(actionResult);
 
         // Assert
         firstResult.Should().NotBe(result);
@@ -146,7 +146,7 @@ public class ThenFailExtensionsTests
     }
 
     [Fact]
-    public void ThenOnFailExtension_WhenInvokeOnSuccessResultWithFuncByErrors_ShouldNotBeInvoked()
+    public async Task ThenOnFailAsyncExtension_WhenInvokeOnSuccessResultWithFuncByErrors_ShouldNotBeInvoked()
     {
         // Arrange
         var value = "Good time need good result";
@@ -154,7 +154,7 @@ public class ThenFailExtensionsTests
 
         var internalValue = "Hello there!";
         var isInvoked = false;
-        var action = (IReadOnlyCollection<Error> errors) =>
+        var action = async (IReadOnlyCollection<Error> errors) =>
         {
             isInvoked = true;
             return internalValue;
@@ -162,15 +162,15 @@ public class ThenFailExtensionsTests
 
         var internalResult = Result.Ok(internalValue);
         var isInvokedResult = false;
-        var actionResult = (IReadOnlyCollection<Error> errors) =>
+        var actionResult = async (IReadOnlyCollection<Error> errors) =>
         {
             isInvokedResult = true;
             return internalResult;
         };
 
         // Act
-        var firstResult = result.ThenOnFail(action);
-        var secondResult = result.ThenOnFail(actionResult);
+        var firstResult = await result.ThenOnFailAsync(action);
+        var secondResult = await result.ThenOnFailAsync(actionResult);
 
         // Assert
         firstResult.Should().Be(result);
@@ -180,7 +180,7 @@ public class ThenFailExtensionsTests
     }
 
     [Fact]
-    public void ThenOnFailExtension_WhenInvokeOnFailedResultWithFuncByErrors_ShouldBeInvokedAndReturnNewResult()
+    public async Task ThenOnFailAsyncExtension_WhenInvokeOnFailedResultWithFuncByErrors_ShouldBeInvokedAndReturnNewResult()
     {
         // Arrange
         var error = new Error("Deadlocker");
@@ -188,7 +188,7 @@ public class ThenFailExtensionsTests
 
         var internalValue = "Hello there!";
         var isInvoked = false;
-        var action = (IReadOnlyCollection<Error> errors) =>
+        var action = async (IReadOnlyCollection<Error> errors) =>
         {
             isInvoked = true;
             return internalValue;
@@ -196,15 +196,15 @@ public class ThenFailExtensionsTests
 
         var internalResult = Result.Ok(internalValue);
         var isInvokedResult = false;
-        var actionResult = (IReadOnlyCollection<Error> errors) =>
+        var actionResult = async (IReadOnlyCollection<Error> errors) =>
         {
             isInvokedResult = true;
             return internalResult;
         };
 
         // Act
-        var firstResult = result.ThenOnFail(action);
-        var secondResult = result.ThenOnFail(actionResult);
+        var firstResult = await result.ThenOnFailAsync(action);
+        var secondResult = await result.ThenOnFailAsync(actionResult);
 
         // Assert
         firstResult.Should().NotBe(result);
@@ -217,16 +217,16 @@ public class ThenFailExtensionsTests
     }
 
     [Fact]
-    public void ThenOnFailWithExceptionExtension_WhenInvokeOnSuccessResult_ShouldBeNotInvoked()
+    public async Task ThenOnFailWithExceptionExtension_WhenInvokeOnSuccessResult_ShouldBeNotInvoked()
     {
         // Arrange
         var result = Result.Ok();
 
         ExceptionalError? received = null;
-        Action<ExceptionalError> action = errors => received = errors;
+        Func<ExceptionalError, Task> action = async errors => received = errors;
 
         // Act
-        var thenResult = result.ThenOnFailWithException<Exception>(action);
+        var thenResult = await result.ThenOnFailWithExceptionAsync<Exception>(action);
 
         // Assert
         thenResult.Should().Be(result);
@@ -234,7 +234,7 @@ public class ThenFailExtensionsTests
     }
 
     [Fact]
-    public void ThenOnFailWithExceptionExtension_WhenInvokeOnFailedResultWithoutExpectedException_ShouldBeNotInvoked()
+    public async Task ThenOnFailWithExceptionExtension_WhenInvokeOnFailedResultWithoutExpectedException_ShouldBeNotInvoked()
     {
         // Arrange
         var exception = new Exception("Bad");
@@ -242,10 +242,10 @@ public class ThenFailExtensionsTests
         var result = Result.Fail(error);
 
         ExceptionalError? received = null;
-        Action<ExceptionalError> action = errors => received = errors;
+        Func<ExceptionalError, Task> action = async errors => received = errors;
 
         // Act
-        var thenResult = result.ThenOnFailWithException<ArgumentException>(action);
+        var thenResult = await result.ThenOnFailWithExceptionAsync<ArgumentException>(action);
 
         // Assert
         thenResult.Should().Be(result);
@@ -253,7 +253,7 @@ public class ThenFailExtensionsTests
     }
 
     [Fact]
-    public void ThenOnFailWithExceptionExtension_WhenInvokeOnFailedResultWithExpectedException_ShouldBeInvoked()
+    public async Task ThenOnFailWithExceptionExtension_WhenInvokeOnFailedResultWithExpectedException_ShouldBeInvoked()
     {
         // Arrange
         var exception = new ArgumentException("Fault!");
@@ -261,10 +261,10 @@ public class ThenFailExtensionsTests
         var result = Result.Fail(error);
 
         ExceptionalError? received = null;
-        Action<ExceptionalError> action = errors => received = errors;
+        Func<ExceptionalError, Task> action = async errors => received = errors;
 
         // Act
-        var thenResult = result.ThenOnFailWithException<ArgumentException>(action);
+        var thenResult = await result.ThenOnFailWithExceptionAsync<ArgumentException>(action);
 
         // Assert
         thenResult.ShouldBeSuccess();

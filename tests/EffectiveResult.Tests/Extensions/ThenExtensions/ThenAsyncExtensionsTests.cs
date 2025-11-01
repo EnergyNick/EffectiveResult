@@ -1,20 +1,20 @@
 ﻿using EffectiveResult.Extensions;
 using EffectiveResult.TestsCommon.Helpers;
 
-namespace EffectiveResult.Tests.Extensions;
+namespace EffectiveResult.Tests.Extensions.ThenExtensions;
 
-public class ThenExtensionsTests
+public class ThenAsyncExtensionsTests
 {
     [Fact]
-    public void ThenExtension_WhenInvokeOnSuccessResult_ShouldBeInvoked()
+    public async Task ThenAsyncExtension_WhenInvokeOnSuccessResult_ShouldBeInvoked()
     {
         // Arrange
         var result = Result.Ok();
         var flag = false;
-        Action action = () => flag = true;
+        Func<Task> action = async () => flag = true;
 
         // Act
-        var thenResult = result.Then(action);
+        var thenResult = await result.ThenAsync(action);
 
         // Assert
         thenResult.Should().Be(result);
@@ -22,17 +22,17 @@ public class ThenExtensionsTests
     }
 
     [Fact]
-    public void ThenExtension_WhenInvokeOnFailedResult_ShouldNotBeInvoked()
+    public async Task ThenAsyncExtension_WhenInvokeOnFailedResult_ShouldNotBeInvoked()
     {
         // Arrange
         var error = new Error("Bad");
         var result = Result.Fail(error);
 
         var flag = false;
-        Action action = () => flag = true;
+        Func<Task> action = async () => flag = true;
 
         // Act
-        var thenResult = result.Then(action);
+        var thenResult = await result.ThenAsync(action);
 
         // Assert
         thenResult.Should().Be(result);
@@ -40,17 +40,17 @@ public class ThenExtensionsTests
     }
 
     [Fact]
-    public void ThenExtension_WhenInvokeOnSuccessTypedResult_ShouldBeInvoked()
+    public async Task ThenAsyncExtension_WhenInvokeOnSuccessTypedResult_ShouldBeInvoked()
     {
         // Arrange
         var value = "Hello there!";
         var result = Result.Ok(value);
 
         string? expected = null;
-        Action<string> action = x => expected = x;
+        var action = async (string x) => expected = x;
 
         // Act
-        var thenResult = result.Then(action);
+        var thenResult = await result.ThenAsync(action);
 
         // Assert
         thenResult.ShouldBeSuccess();
@@ -58,17 +58,17 @@ public class ThenExtensionsTests
     }
 
     [Fact]
-    public void ThenExtension_WhenInvokeOnFailedTypedResult_ShouldNotBeInvoked()
+    public async Task ThenAsyncExtension_WhenInvokeOnFailedTypedResult_ShouldNotBeInvoked()
     {
         // Arrange
         var error = new Error("Deadlock");
         var result = Result.Fail<string>(error);
 
         string? expected = null;
-        Action<string> action = x => expected = x;
+        var action = async (string x) => expected = x;
 
         // Act
-        var thenResult = result.Then(action);
+        var thenResult = await result.ThenAsync(action);
 
         // Assert
         thenResult.ShouldBeFailed();
@@ -76,40 +76,40 @@ public class ThenExtensionsTests
     }
 
     [Fact]
-    public void ThenExtension_WhenInvokeOnSuccessResultAndFunc_ShouldBeInvokedAndReturnTypedResult()
+    public async Task ThenAsyncExtension_WhenInvokeOnSuccessResultAndFunc_ShouldBeInvokedAndReturnTypedResult()
     {
         // Arrange
         var result = Result.Ok();
 
         var value = "Hello there!";
-        var action = () => value;
+        var action = async () => value;
 
         // Act
-        var thenResult = result.Then(action);
+        var thenResult = await result.ThenAsync(action);
 
         // Assert
         thenResult.ShouldBeSuccessAndReferenceEqualsValue(value);
     }
 
     [Fact]
-    public void ThenExtension_WhenInvokeOnFailedResultAndFunc_ShouldNotBeInvoked()
+    public async Task ThenAsyncExtension_WhenInvokeOnFailedResultAndFunc_ShouldNotBeInvoked()
     {
         // Arrange
         var error = new Error("Deadlock");
         var result = Result.Fail(error);
 
         var value = "Hello there!";
-        var action = () => value;
+        var action = async () => value;
 
         // Act
-        var thenResult = result.Then(action);
+        var thenResult = await result.ThenAsync(action);
 
         // Assert
         thenResult.ShouldBeFailed(error);
     }
 
     [Fact]
-    public void ThenExtension_WhenInvokeOnSuccessResultWithFuncReturningResult_ShouldBeInvoked()
+    public async Task ThenAsyncExtension_WhenInvokeOnSuccessResultWithFuncReturningResult_ShouldBeInvoked()
     {
         // Arrange
         var result = Result.Ok();
@@ -118,12 +118,12 @@ public class ThenExtensionsTests
         var internalSuccessResult = Result.Ok();
         var internalFailedResult = Result.Fail(internalError);
 
-        var successAction = () => internalSuccessResult;
-        var failedAction = () => internalFailedResult;
+        var successAction = async () => internalSuccessResult;
+        var failedAction = async () => internalFailedResult;
 
         // Act
-        var thenSuccessResult = result.Then(successAction);
-        var thenFailedResult = result.Then(failedAction);
+        var thenSuccessResult = await result.ThenAsync(successAction);
+        var thenFailedResult = await result.ThenAsync(failedAction);
 
         // Assert
         thenSuccessResult.Should().Be(internalSuccessResult);
@@ -131,7 +131,7 @@ public class ThenExtensionsTests
     }
 
     [Fact]
-    public void ThenExtension_WhenInvokeOnFailedResultWithFuncReturningResult_ShouldNotBeInvoked()
+    public async Task ThenAsyncExtension_WhenInvokeOnFailedResultWithFuncReturningResult_ShouldNotBeInvoked()
     {
         // Arrange
         var error = new Error("Bad");
@@ -141,12 +141,12 @@ public class ThenExtensionsTests
         var internalSuccessResult = Result.Ok();
         var internalFailedResult = Result.Fail(internalError);
 
-        var successAction = () => internalSuccessResult;
-        var failedAction = () => internalFailedResult;
+        var successAction = async () => internalSuccessResult;
+        var failedAction = async () => internalFailedResult;
 
         // Act
-        var thenSuccessResult = result.Then(successAction);
-        var thenFailedResult = result.Then(failedAction);
+        var thenSuccessResult = await result.ThenAsync(successAction);
+        var thenFailedResult = await result.ThenAsync(failedAction);
 
         // Assert
         thenSuccessResult.Should().Be(result);
@@ -154,7 +154,7 @@ public class ThenExtensionsTests
     }
 
     [Fact]
-    public void ThenExtension_WhenInvokeOnSuccessResultAndFuncWithResultReturn_ShouldBeInvokedAndReturnTypedResult()
+    public async Task ThenAsyncExtension_WhenInvokeOnSuccessResultAndFuncWithResultReturn_ShouldBeInvokedAndReturnTypedResult()
     {
         // Arrange
         var result = Result.Ok();
@@ -164,12 +164,12 @@ public class ThenExtensionsTests
 
         var expectedSuccessResult = Result.Ok(value);
         var expectedFailedResult = Result.Fail<string>(error);
-        var successAction = () => expectedSuccessResult;
-        var failedAction = () => expectedFailedResult;
+        var successAction = async () => expectedSuccessResult;
+        var failedAction = async () => expectedFailedResult;
 
         // Act
-        var thenResultSuccess = result.Then(successAction);
-        var thenResultFailed = result.Then(failedAction);
+        var thenResultSuccess = await result.ThenAsync(successAction);
+        var thenResultFailed = await result.ThenAsync(failedAction);
 
         // Assert
         thenResultSuccess.ShouldBeSuccessAndReferenceEqualsValue(value);
@@ -180,7 +180,7 @@ public class ThenExtensionsTests
     }
 
     [Fact]
-    public void ThenExtension_WhenInvokeOnFailedResultAndFuncWithResultReturn_ShouldNotBeInvoked()
+    public async Task ThenAsyncExtension_WhenInvokeOnFailedResultAndFuncWithResultReturn_ShouldNotBeInvoked()
     {
         // Arrange
         var error = new Error("Deadlock");
@@ -191,12 +191,12 @@ public class ThenExtensionsTests
 
         var expectedSuccessResult = Result.Ok(value);
         var expectedFailedResult = Result.Fail(internalError);
-        var successAction = () => expectedSuccessResult;
-        var failedAction = () => expectedFailedResult;
+        var successAction = async () => expectedSuccessResult;
+        var failedAction = async () => expectedFailedResult;
 
         // Act
-        var thenResultSuccess = result.Then(successAction);
-        var thenResultFailed = result.Then(failedAction);
+        var thenResultSuccess = await result.ThenAsync(successAction);
+        var thenResultFailed = await result.ThenAsync(failedAction);
 
         // Assert
         thenResultSuccess.ShouldBeFailed(error);
@@ -204,7 +204,7 @@ public class ThenExtensionsTests
     }
 
     [Fact]
-    public void ThenExtension_WhenInvokeOnSuccessTypedResultAndFunc_ShouldBeInvokedAndReturnTypedResult()
+    public async Task ThenAsyncExtension_WhenInvokeOnSuccessTypedResultAndFunc_ShouldBeInvokedAndReturnTypedResult()
     {
         // Arrange
         var value = "Good time need good result";
@@ -213,14 +213,14 @@ public class ThenExtensionsTests
         var internalValue = "Hello there!";
 
         string? expectedValues = null;
-        var action = (string x) =>
+        var action = async (string x) =>
         {
             expectedValues = x;
             return internalValue;
         };
 
         // Act
-        var thenResult = result.Then(action);
+        var thenResult = await result.ThenAsync(action);
 
         // Assert
         thenResult.ShouldBeSuccessAndEqualsValue(internalValue);
@@ -228,7 +228,7 @@ public class ThenExtensionsTests
     }
 
     [Fact]
-    public void ThenExtension_WhenInvokeOnFailedTypedResultAndFunc_ShouldNotBeInvoked()
+    public async Task ThenAsyncExtension_WhenInvokeOnFailedTypedResultAndFunc_ShouldNotBeInvoked()
     {
         // Arrange
         var error = new Error("Deadlocker");
@@ -237,14 +237,14 @@ public class ThenExtensionsTests
         var internalValue = "Hello there!";
 
         string? expectedValues = null;
-        var action = (string x) =>
+        var action = async (string x) =>
         {
             expectedValues = x;
             return internalValue;
         };
 
         // Act
-        var thenResult = result.Then(action);
+        var thenResult = await result.ThenAsync(action);
 
         // Assert
         thenResult.ShouldBeFailed(error);
@@ -253,7 +253,7 @@ public class ThenExtensionsTests
     }
 
     [Fact]
-    public void ThenExtension_WhenInvokeOnSuccessTypedResultAndFuncWithResultReturn_ShouldBeInvokedAndReturnResult()
+    public async Task ThenAsyncExtension_WhenInvokeOnSuccessTypedResultAndFuncWithResultReturn_ShouldBeInvokedAndReturnResult()
     {
         // Arrange
         var value = "Good time need good result";
@@ -265,20 +265,20 @@ public class ThenExtensionsTests
         var expectedFailedResult = Result.Fail(error);
 
         var expectedValues = new List<string>();
-        var successAction = (string x) =>
+        var successAction = async (string x) =>
         {
             expectedValues.Add(x);
             return expectedSuccessResult;
         };
-        var failedAction = (string x) =>
+        var failedAction = async (string x) =>
         {
             expectedValues.Add(x);
             return expectedFailedResult;
         };
 
         // Act
-        var thenResultSuccess = result.Then(successAction);
-        var thenResultFailed = result.Then(failedAction);
+        var thenResultSuccess = await result.ThenAsync(successAction);
+        var thenResultFailed = await result.ThenAsync(failedAction);
 
         // Assert
         thenResultSuccess.ShouldBeSuccess();
@@ -291,7 +291,7 @@ public class ThenExtensionsTests
     }
 
     [Fact]
-    public void ThenExtension_WhenInvokeOnFailedTypedResultAndFuncWithResultReturn_ShouldNotBeInvokedAndReturnResult()
+    public async Task ThenAsyncExtension_WhenInvokeOnFailedTypedResultAndFuncWithResultReturn_ShouldNotBeInvokedAndReturnResult()
     {
         // Arrange
         var error = new Error("Deadlock");
@@ -303,20 +303,20 @@ public class ThenExtensionsTests
         var expectedFailedResult = Result.Fail(internalError);
 
         var expectedValues = new List<string>();
-        var successAction = (string x) =>
+        var successAction = async (string x) =>
         {
             expectedValues.Add(x);
             return expectedSuccessResult;
         };
-        var failedAction = (string x) =>
+        var failedAction = async (string x) =>
         {
             expectedValues.Add(x);
             return expectedFailedResult;
         };
 
         // Act
-        var thenResultSuccess = result.Then(successAction);
-        var thenResultFailed = result.Then(failedAction);
+        var thenResultSuccess = await result.ThenAsync(successAction);
+        var thenResultFailed = await result.ThenAsync(failedAction);
 
         // Assert
         thenResultSuccess.ShouldBeFailed(error);
@@ -326,7 +326,7 @@ public class ThenExtensionsTests
     }
 
     [Fact]
-    public void ThenExtension_WhenInvokeOnSuccessTypedResultAndFuncWithResultReturn_ShouldBeInvokedAndReturnTypedResult()
+    public async Task ThenAsyncExtension_WhenInvokeOnSuccessTypedResultAndFuncWithResultReturn_ShouldBeInvokedAndReturnTypedResult()
     {
         // Arrange
         var value = "Good time need good result";
@@ -339,20 +339,20 @@ public class ThenExtensionsTests
         var expectedFailedResult = Result.Fail<string>(error);
 
         var expectedValues = new List<string>();
-        var successAction = (string x) =>
+        var successAction = async (string x) =>
         {
             expectedValues.Add(x);
             return expectedSuccessResult;
         };
-        var failedAction = (string x) =>
+        var failedAction = async (string x) =>
         {
             expectedValues.Add(x);
             return expectedFailedResult;
         };
 
         // Act
-        var thenResultSuccess = result.Then(successAction);
-        var thenResultFailed = result.Then(failedAction);
+        var thenResultSuccess = await result.ThenAsync(successAction);
+        var thenResultFailed = await result.ThenAsync(failedAction);
 
         // Assert
         thenResultSuccess.ShouldBeSuccessAndReferenceEqualsValue(internalValue);
@@ -365,7 +365,7 @@ public class ThenExtensionsTests
     }
 
     [Fact]
-    public void ThenExtension_WhenInvokeOnFailedTypedResultAndFuncWithResultReturn_ShouldNotBeInvoked()
+    public async Task ThenAsyncExtension_WhenInvokeOnFailedTypedResultAndFuncWithResultReturn_ShouldNotBeInvoked()
     {
         // Arrange
         var error = new Error("Deadlock");
@@ -378,20 +378,20 @@ public class ThenExtensionsTests
         var expectedFailedResult = Result.Fail<string>(internalError);
 
         var expectedValues = new List<string>();
-        var successAction = (string x) =>
+        var successAction = async (string x) =>
         {
             expectedValues.Add(x);
             return expectedSuccessResult;
         };
-        var failedAction = (string x) =>
+        var failedAction = async (string x) =>
         {
             expectedValues.Add(x);
             return expectedFailedResult;
         };
 
         // Act
-        var thenResultSuccess = result.Then(successAction);
-        var thenResultFailed = result.Then(failedAction);
+        var thenResultSuccess = await result.ThenAsync(successAction);
+        var thenResultFailed = await result.ThenAsync(failedAction);
 
         // Assert
         thenResultSuccess.ShouldBeFailed(error);
