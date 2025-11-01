@@ -46,7 +46,7 @@ var exError = new ExceptionalError(new Exception("Sorry, but..."));
 // Errors using
 Result fail = Result.Fail(new ArgumentException("myVariable"));
 // Get errors of result
-IReadOnlyCollection<IError> errors = fail.Errors; 
+IReadOnlyCollection<Error> errors = fail.Errors;
 
 bool hasSpecificError = fail.Errors.HasErrorsOfType<ExceptionalError>(x => x.Exception is ArgumentException);
 
