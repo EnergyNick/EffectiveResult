@@ -1,5 +1,4 @@
-﻿using EffectiveResult.Abstractions;
-using EffectiveResult.Extensions;
+﻿using EffectiveResult.Extensions;
 
 namespace EffectiveResult.Tests.Extensions;
 
@@ -13,7 +12,7 @@ public class ConclusionErrorsExtensionsTests
         var exceptionalError = new ExceptionalError(new Exception("Bug"));
         var otherError = new Error("Salad");
 
-        var errors = new IError[]
+        var errors = new Error[]
         {
             error,
             exceptionalError,
@@ -40,7 +39,7 @@ public class ConclusionErrorsExtensionsTests
         var exceptionalError = new ExceptionalError(new Exception("Bug"), internalError);
         var otherError = new Error("Salad");
 
-        var errors = new IError[]
+        var errors = new Error[]
         {
             error,
             exceptionalError,
@@ -70,8 +69,8 @@ public class ConclusionErrorsExtensionsTests
         var otherError = new Error("Salad");
 
         var resultSuccess = Result.Ok();
-        var resultFail = Result.Fail(new IError[] { error, otherError });
-        var resultFailWithExceptions = Result.Fail(new IError[] { error, exceptionalError });
+        var resultFail = Result.Fail([error, otherError]);
+        var resultFailWithExceptions = Result.Fail([error, exceptionalError]);
 
         // Act
         var fromSuccess = resultSuccess.GetExceptions();
@@ -98,7 +97,7 @@ public class ConclusionErrorsExtensionsTests
         var exceptionalErrorOutOfRange = new ExceptionalError(indexOutOfRangeException, internalError);
 
         var resultFailWithExceptions =
-            Result.Fail(new IError[] { error, exceptionalErrorInvalid, exceptionalErrorOutOfRange });
+            Result.Fail([error, exceptionalErrorInvalid, exceptionalErrorOutOfRange]);
 
         Predicate<Exception> predicate = x => x == invalidOperationException;
         Predicate<IndexOutOfRangeException> predicateByType = _ => true;
@@ -122,8 +121,8 @@ public class ConclusionErrorsExtensionsTests
         var otherError = new Error("Salad");
 
         var resultSuccess = Result.Ok();
-        var resultFail = Result.Fail(new IError[] { error, otherError });
-        var resultFailWithExceptions = Result.Fail(new IError[] { error, exceptionalError });
+        var resultFail = Result.Fail([error, otherError]);
+        var resultFailWithExceptions = Result.Fail([error, exceptionalError]);
 
         // Act
         var fromSuccessState = resultSuccess.TryGetException(out var fromSuccess);
@@ -154,7 +153,7 @@ public class ConclusionErrorsExtensionsTests
         var exceptionalErrorOutOfRange = new ExceptionalError(indexOutOfRangeException, internalError);
 
         var resultFailWithExceptions =
-            Result.Fail(new IError[] { error, exceptionalErrorInvalid, exceptionalErrorOutOfRange });
+            Result.Fail([error, exceptionalErrorInvalid, exceptionalErrorOutOfRange]);
 
         Predicate<Exception> predicate = x => x == invalidOperationException;
         Predicate<IndexOutOfRangeException> predicateByType = _ => true;

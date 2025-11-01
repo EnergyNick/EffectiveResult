@@ -1,5 +1,4 @@
-﻿using EffectiveResult.Abstractions;
-using EffectiveResult.Extensions;
+﻿using EffectiveResult.Extensions;
 using EffectiveResult.TestsCommon.Helpers;
 
 namespace EffectiveResult.Tests.Extensions;
@@ -14,7 +13,7 @@ public class ErrorMappingExtensionsTests
         var valuedResult = Result.Ok("Oh my!");
 
         var isInvoked = false;
-        var func = (IReadOnlyCollection<IError> errors) =>
+        var func = (IReadOnlyCollection<Error> errors) =>
         {
             isInvoked = true;
             return errors;
@@ -38,12 +37,12 @@ public class ErrorMappingExtensionsTests
         var secondError = new Error("To Much errors");
 
         var newError = new Error("Ho ho ho!");
-        var newErrors = new IError[] { newError };
+        var newErrors = new Error[] { newError };
 
         var result = Result.Fail(firstError);
         var valuedResult = Result.Fail<string>(secondError);
 
-        var func = (IReadOnlyCollection<IError> errors) => newErrors;
+        var func = (IReadOnlyCollection<Error> errors) => newErrors;
 
         // Act
         var actResult = result.MapErrorsOnFailed(func);

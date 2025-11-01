@@ -1,5 +1,4 @@
-﻿using EffectiveResult.Abstractions;
-using EffectiveResult.Extensions;
+﻿using EffectiveResult.Extensions;
 
 namespace EffectiveResult.Tests.Extensions;
 
@@ -116,8 +115,8 @@ public class ConclusionSuccessFailExtensionsTests
         var error = new Error("Bad");
         var result = Result.Fail(error);
 
-        IEnumerable<IError>? received = null;
-        Action<IEnumerable<IError>> action = errors => received = errors;
+        IEnumerable<Error>? received = null;
+        Action<IEnumerable<Error>> action = errors => received = errors;
 
         // Act
         var thenResult = result.OnFail(action);
@@ -133,8 +132,8 @@ public class ConclusionSuccessFailExtensionsTests
         // Arrange
         var result = Result.Ok();
 
-        IEnumerable<IError>? received = null;
-        Action<IEnumerable<IError>> action = errors => received = errors;
+        IEnumerable<Error>? received = null;
+        Action<IEnumerable<Error>> action = errors => received = errors;
 
         // Act
         var thenResult = result.OnFail(action);
@@ -150,8 +149,8 @@ public class ConclusionSuccessFailExtensionsTests
         // Arrange
         var result = Result.Ok();
 
-        IExceptionalError? received = null;
-        Action<IExceptionalError> action = errors => received = errors;
+        ExceptionalError? received = null;
+        Action<ExceptionalError> action = errors => received = errors;
 
         // Act
         var thenResult = result.OnFailWithException<Exception>(action);
@@ -169,8 +168,8 @@ public class ConclusionSuccessFailExtensionsTests
         var error = new ExceptionalError(exception);
         var result = Result.Fail(error);
 
-        IExceptionalError? received = null;
-        Action<IExceptionalError> action = errors => received = errors;
+        ExceptionalError? received = null;
+        Action<ExceptionalError> action = errors => received = errors;
 
         // Act
         var thenResult = result.OnFailWithException<ArgumentException>(action);
@@ -188,8 +187,8 @@ public class ConclusionSuccessFailExtensionsTests
         var error = new ExceptionalError(exception);
         var result = Result.Fail(error);
 
-        IExceptionalError? received = null;
-        Action<IExceptionalError> action = errors => received = errors;
+        ExceptionalError? received = null;
+        Action<ExceptionalError> action = errors => received = errors;
 
         // Act
         var thenResult = result.OnFailWithException<ArgumentException>(action);

@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using EffectiveResult.Abstractions;
 using EffectiveResult.Exceptions;
 using EffectiveResult.TestsCommon.Helpers;
 
@@ -99,10 +98,10 @@ public class StaticFactoriesTests
     {
         // Arrange
         var exception = new Exception("Test");
-        var errors = new IError[]
+        var errors = new Error[]
         {
-            new Error("Very bad"),
-            new Error("So bad, but why..."),
+            new("Very bad"),
+            new("So bad, but why..."),
             new ExceptionalError(exception)
         };
 
@@ -119,7 +118,7 @@ public class StaticFactoriesTests
     public void FailMethod_WhenInvokeWithEmptyErrors_ShouldThrowResultException()
     {
         // Arrange
-        var errors = Enumerable.Empty<IError>();
+        var errors = Enumerable.Empty<Error>();
 
         // Act
         var resultAction = () => Result.Fail(errors);
@@ -195,41 +194,13 @@ public class StaticFactoriesTests
     }
 
     [Fact]
-    public void TryMethod_WhenInvokeWithReturnValueAndWithExceptionsAndCustomHandler_ShouldReturnFailedResultWithValidError()
-    {
-        // Arrange
-        var exception = new Exception("Monads are not bad!");
-        Func<int> refMethod = () => throw exception;
-        Func<string> valueMethod = () => throw exception;
-
-        var error = new Error("So bad");
-        var handler = (Exception _) => error;
-
-        // Act
-        var refAction = () => Result.Try(refMethod, handler);
-        var valueAction = () => Result.Try(valueMethod, handler);
-
-        // Assert
-        refMethod.Should().Throw<Exception>();
-        refAction.Should().NotThrow();
-
-        valueMethod.Should().Throw<Exception>();
-        valueAction.Should().NotThrow();
-
-        var refResult = refAction();
-        refResult.ShouldBeFailed(error);
-        var valueResult = valueAction();
-        valueResult.ShouldBeFailed(error);
-    }
-
-    [Fact]
     public async Task TryAsyncMethod_WhenInvokeWithoutExceptions_ShouldReturnSuccessResult()
     {
         // Arrange
         var method = () => Task.CompletedTask;
 
         // Act
-        var resultAction = async () => await Result.TryAsync(method);
+        var resultAction = async () => await Result.TryAsync(method).ConfigureAwait(false);
 
         // Assert
         await method.Should().NotThrowAsync();
@@ -284,34 +255,6 @@ public class StaticFactoriesTests
 
         var result = await resultAction();
         result.ShouldBeFailed(expectedError);
-    }
-
-    [Fact]
-    public async Task TryAsyncMethod_WhenInvokeWithReturnValueAndWithExceptionsAndCustomHandler_ShouldReturnFailedResultWithValidError()
-    {
-        // Arrange
-        var exception = new Exception("Monads are not bad!");
-        Func<Task<int>> refMethod = () => throw exception;
-        Func<Task<string>> valueMethod = () => throw exception;
-
-        var error = new Error("So bad");
-        var handler = (Exception _) => error;
-
-        // Act
-        var refAction = () => Result.TryAsync(refMethod, handler);
-        var valueAction = () => Result.TryAsync(valueMethod, handler);
-
-        // Assert
-        await refMethod.Should().ThrowAsync<Exception>();
-        await refAction.Should().NotThrowAsync();
-
-        await valueMethod.Should().ThrowAsync<Exception>();
-        await valueAction.Should().NotThrowAsync();
-
-        var refResult = await refAction();
-        refResult.ShouldBeFailed(error);
-        var valueResult = await valueAction();
-        valueResult.ShouldBeFailed(error);
     }
 
     [Fact]
@@ -440,10 +383,10 @@ public class StaticFactoriesTests
     {
         // Arrange
         var exception = new Exception("Test");
-        var errors = new IError[]
+        var errors = new Error[]
         {
-            new Error("Very bad"),
-            new Error("So bad, but why..."),
+            new("Very bad"),
+            new("So bad, but why..."),
             new ExceptionalError(exception)
         };
         var value = "Hello world!";

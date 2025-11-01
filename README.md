@@ -21,8 +21,10 @@ Result<int> successValuedRes = Result.Ok(5);
 Result<int> failedValueRes1 = Result.Fail<int>("Ooops!"); 
 // Error from exception
 Result<int> failedValueRes2 = Result.Fail<int>(new Exception("Bad situation!")); 
+```
 
-/// Result methods
+### Result class methods
+```csharp
 Result<int> countResult = Result.Ok(1000);
 
 // Throw, if failed
@@ -44,7 +46,7 @@ var exError = new ExceptionalError(new Exception("Sorry, but..."));
 // Errors using
 Result fail = Result.Fail(new ArgumentException("myVariable"));
 // Get errors of result
-IReadOnlyCollection<IError> errors = fail.Errors; 
+IReadOnlyCollection<Error> errors = fail.Errors;
 
 bool hasSpecificError = fail.Errors.HasErrorsOfType<ExceptionalError>(x => x.Exception is ArgumentException);
 

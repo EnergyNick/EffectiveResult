@@ -1,46 +1,49 @@
 ﻿using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using EffectiveResult.Abstractions;
 
 namespace EffectiveResult;
 
 /// <summary>
-/// Base type of all errors from EffectiveResult library.
-/// Provide useful methods and constructors for errors implementation
-/// and default implementation of <see cref="IError"/> interface.
-/// <remarks> Used also for implicit cast of error to <see cref="Result"/> and <see cref="Result{TValue}"/>.</remarks>
+/// Represents the base type of all error causes.
 /// </summary>
-public record Error : IError
+public record Error
 {
-    private readonly ImmutableArray<IError> _causedErrors = ImmutableArray<IError>.Empty;
+    private readonly ImmutableArray<Error> _causedErrors = [];
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets a message that describes the current error.
+    /// </summary>
+    /// <returns>The error message that explains the reason, or an empty string ("").</returns>
     public string Message { get; init; }
 
-    /// <inheritdoc />
-    public IReadOnlyCollection<IError> CausedErrors => _causedErrors;
+    /// <summary>
+    /// Errors causing this error.
+    /// </summary>
+    public IReadOnlyCollection<Error> CausedErrors => _causedErrors;
 
     public Error(string message) => Message = message;
 
-    public Error(string message, IError causedBy) : this(message) =>
-        _causedErrors = ImmutableArray.Create(causedBy);
+    public Error(string message, Error causedBy) : this(message) =>
+        _causedErrors = [causedBy];
 
-    public Error(string message, params IError[] causedBy) : this(message) =>
-        _causedErrors = ImmutableArray.Create(causedBy);
+    public Error(string message, params Error[] causedBy) : this(message) =>
+        _causedErrors = [.. causedBy];
 
-    public Error(string message, IEnumerable<IError> causedBy) : this(message) =>
-        _causedErrors = causedBy.ToImmutableArray();
+    public Error(string message, IEnumerable<Error> causedBy) : this(message) =>
+        _causedErrors = [.. causedBy];
 
     [ExcludeFromCodeCoverage]
     protected virtual bool PrintMembers(StringBuilder builder)
     {
-        builder.Append("Message = ");
+        builder.Append("Message = '");
         builder.Append(Message);
-        if (_causedErrors.Any())
+        builder.Append('\'');
+
+        if (_causedErrors.Length != 0)
         {
             builder.Append(", CausedErrors = [ ");
-            builder.Append(string.Join("; ", _causedErrors));
+            builder.AppendJoin("; ", _causedErrors);
             builder.Append(" ]");
         }
         return true;
