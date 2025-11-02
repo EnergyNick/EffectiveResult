@@ -1,0 +1,43 @@
+name: build and test
+
+on:
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '8.0'
+
+jobs:
+  build-and-test:
+
+    name: Build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v5
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Install dependencies
+      run: dotnet restore
+      
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    
+    - name: Test
+      run: dotnet test -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=opencover --no-build --verbosity normal EffectiveResult.Tests.Tests/
+
+    - name: Create Test Coverage Badge
+      uses: simon-k/dotnet-code-coverage-badge@v1.0.0
+      id: create_coverage_badge
+      with:
+        label: Unit Test Coverage
+        color: brightgreen
+        path: tests/EffectiveResult.Tests/TestResults/coverage.opencover.xml
+        gist-filename: EffectiveResult-code-coverage.json
+        gist-id: 5ff54bc090435317ddc6be0b72289f04
+        gist-auth-token: ${{ secrets.GIST_AUTH_TOKEN }}       
+
+    - name: Print code coverage
+      run: echo "Code coverage percentage ${{steps.create_coverage_badge.outputs.percentage}}%"
