@@ -1,15 +1,18 @@
-name: build and test
+name: Code coverage
 
 on:
+  push:
+    branches:
+      - master
   workflow_dispatch:
 
 env:
   DOTNET_VERSION: '8.0'
 
 jobs:
-  build-and-test:
+  code-coverage:
 
-    name: Build-and-test
+    name: Code coverage
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +29,9 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     
     - name: Test
-      run: dotnet test -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=opencover --no-build --verbosity normal EffectiveResult.Tests.Tests/
+      run: > 
+        dotnet test "tests/EffectiveResult.Tests/EffectiveResult.Tests.csproj" --configuration Release --no-build -v:normal 
+        -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=opencover
 
     - name: Create Test Coverage Badge
       uses: simon-k/dotnet-code-coverage-badge@v1.0.0

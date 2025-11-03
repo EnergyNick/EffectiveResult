@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{48ABD3F5
 		tests\Directory.Build.props = tests\Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EffectiveResult.TestsCommon", "Tests\EffectiveResult.TestsCommon\EffectiveResult.TestsCommon.csproj", "{6AF90516-4448-436C-8117-A6F3D0F3D6E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EffectiveResult.TestsCommon", "tests\EffectiveResult.TestsCommon\EffectiveResult.TestsCommon.csproj", "{6AF90516-4448-436C-8117-A6F3D0F3D6E4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EffectiveResult", "src\EffectiveResult\EffectiveResult.csproj", "{B8124104-307F-43A0-8508-EC512BF10543}"
 EndProject

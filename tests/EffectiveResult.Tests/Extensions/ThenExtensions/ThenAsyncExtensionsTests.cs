@@ -47,7 +47,7 @@ public class ThenAsyncExtensionsTests
         var result = Result.Ok(value);
 
         string? expected = null;
-        var action = async (string x) => expected = x;
+        Func<string, Task> action = async x => expected = x;
 
         // Act
         var thenResult = await result.ThenAsync(action);
@@ -65,7 +65,7 @@ public class ThenAsyncExtensionsTests
         var result = Result.Fail<string>(error);
 
         string? expected = null;
-        var action = async (string x) => expected = x;
+        Func<string, Task> action = async x => expected = x;
 
         // Act
         var thenResult = await result.ThenAsync(action);

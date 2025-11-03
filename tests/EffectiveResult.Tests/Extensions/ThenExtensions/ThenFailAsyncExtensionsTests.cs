@@ -13,7 +13,7 @@ public class ThenFailAsyncExtensionsTests
         var result = Result.Fail(error);
 
         var flag = false;
-        var action = async () => flag = true;
+        Func<Task> action = async () => flag = true;
 
         // Act
         var thenResult = await result.ThenOnFailAsync(action);
@@ -29,7 +29,7 @@ public class ThenFailAsyncExtensionsTests
         // Arrange
         var result = Result.Ok();
         var flag = false;
-        var action = async () => flag = true;
+        Func<Task> action = async () => flag = true;
 
         // Act
         var thenResult = await result.ThenOnFailAsync(action);
