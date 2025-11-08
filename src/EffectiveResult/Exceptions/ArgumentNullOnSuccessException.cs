@@ -1,8 +1,11 @@
-﻿namespace EffectiveResult.Exceptions;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace EffectiveResult.Exceptions;
 
 /// <summary>
 /// Base exception for all incorrect operations with result
 /// </summary>
+[ExcludeFromCodeCoverage(Justification = "Only store data without any logic")]
 public class ArgumentNullOnSuccessException : ResultException
 {
     private const string ExceptionMessage = "Result is in success status, but not provided value for Result";
