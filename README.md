@@ -1,6 +1,6 @@
 # Effective Result
-
-![badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/EnergyNick/5ff54bc090435317ddc6be0b72289f04/raw/EffectiveResult-code-coverage.json)
+[![Build and test](https://github.com/EnergyNick/EffectiveResult/actions/workflows/BuildAndTest.yaml/badge.svg)](https://github.com/EnergyNick/EffectiveResult/actions/workflows/BuildAndTest.yaml)
+![Code coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/EnergyNick/5ff54bc090435317ddc6be0b72289f04/raw/EffectiveResult-code-coverage.json)
 
 ### Simple examples
 ```csharp
