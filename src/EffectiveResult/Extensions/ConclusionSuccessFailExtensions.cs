@@ -108,7 +108,7 @@ public static class ConclusionSuccessFailExtensions
     /// <param name="onFailAction">Action for invoke on fail</param>
     /// <typeparam name="TConclusion">Type of conclusion</typeparam>
     /// <returns>Conclusion from <paramref name="input"/></returns>
-    public static TConclusion OnFail<TConclusion>(this TConclusion input, Action<IEnumerable<Error>> onFailAction)
+    public static TConclusion OnFail<TConclusion>(this TConclusion input, Action<IReadOnlyCollection<Error>> onFailAction)
         where TConclusion : class, IConclusion
     {
         if (input.IsFailed)
