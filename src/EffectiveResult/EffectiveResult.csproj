@@ -18,7 +18,6 @@
           Release version of library with main features and async extensions support
         </PackageReleaseNotes>
         <PackageTags>Result Monad Functional Pattern Error Handling Exception</PackageTags>
-        <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
     </PropertyGroup>
 
     <PropertyGroup>

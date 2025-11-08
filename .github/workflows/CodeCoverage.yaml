@@ -30,11 +30,12 @@ jobs:
     
     - name: Test
       run: > 
-        dotnet test "tests/EffectiveResult.Tests/EffectiveResult.Tests.csproj" --configuration Release --no-build -v:normal 
-        -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=opencover
+        dotnet test "tests/EffectiveResult.Tests/EffectiveResult.Tests.csproj" --configuration Release --no-build --collect:'XPlat Code Coverage' --settings coverlet.runsettings
 
-    - name: Copy coverage files
-      run: cp tests\EffectiveResult.Tests\TestResults\*\coverage.opencover.xml tests\TestResults
+    - name: Move test results to accessible directory
+      run: |
+          mkdir TestResults
+          mv -v --backup=numbered tests/EffectiveResult.Tests/TestResults/*/*.* TestResults/
 
     - name: Create Test Coverage Badge
       uses: simon-k/dotnet-code-coverage-badge@v1.0.0
@@ -42,7 +43,7 @@ jobs:
       with:
         label: Unit Test Coverage
         color: brightgreen
-        path: tests/TestResults/coverage.opencover.xml
+        path: TestResults/coverage.opencover.xml
         gist-filename: EffectiveResult-code-coverage.json
         gist-id: 5ff54bc090435317ddc6be0b72289f04
         gist-auth-token: ${{ secrets.GIST_AUTH_TOKEN }}       
