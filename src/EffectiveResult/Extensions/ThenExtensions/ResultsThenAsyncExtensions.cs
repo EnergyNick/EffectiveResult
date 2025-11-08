@@ -1,6 +1,6 @@
 ﻿namespace EffectiveResult.Extensions;
 
-public static partial class ResultsThenAsyncExtensions
+public static class ResultsThenAsyncExtensions
 {
     /// <summary>
     /// Provide chaining method for async action on success result
