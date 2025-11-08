@@ -299,4 +299,108 @@ public class ResultContractTests
         errors3.Should().BeEmpty();
         valueOrDefault.Should().Be(strData);
     }
+
+    [Fact]
+    public void ResultEqualsOperator_WhenCompareSuccessResultsWithValue_ShouldReturnValidState()
+    {
+        // Arrange
+        var data = 123;
+        var otherDate = 234;
+
+        var result = Result.Ok(data);
+        var resultSame = Result.Ok(data);
+        var resultDifferent = Result.Ok(otherDate);
+
+        // Act
+        var equalResultForSame = result.Equals(result);
+        var equalResultForEquivalent = result.Equals(resultSame);
+        var equalResultForDifferent = result.Equals(resultDifferent);
+
+        // Assert
+        equalResultForSame.Should().BeTrue();
+        equalResultForEquivalent.Should().BeTrue();
+        equalResultForDifferent.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ResultEqualsOperator_WhenCompareSuccessResultsWithRef_ShouldReturnValidState()
+    {
+        // Arrange
+        var data = "Testing";
+        var otherDate = "Different";
+
+        var result = Result.Ok(data);
+        var resultSame = Result.Ok(data);
+        var resultDifferent = Result.Ok(otherDate);
+
+        // Act
+        var equalResultForSame = result.Equals(result);
+        var equalResultForEquivalent = result.Equals(resultSame);
+        var equalResultForDifferent = result.Equals(resultDifferent);
+
+        // Assert
+        equalResultForSame.Should().BeTrue();
+        equalResultForEquivalent.Should().BeTrue();
+        equalResultForDifferent.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ResultEqualsOperator_WhenCompareSuccessAndFailedResults_ShouldReturnValidState()
+    {
+        // Arrange
+        var result = Result.Ok();
+        var resultFailed = Result.Fail("Bad");
+        var resultWithValue = Result.Ok("Testing");
+        var resultWithValueFailed = Result.Fail<string>("Bad");
+
+        // Act
+        var equalResult = result.Equals(resultFailed);
+        var equalResultWithValue = resultWithValue.Equals(resultWithValueFailed);
+
+        // Assert
+        equalResult.Should().BeFalse();
+        equalResultWithValue.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ResultEqualsOperator_WhenCompareFailedResults_ShouldReturnValidState()
+    {
+        // Arrange
+        var error = new Error("Very bad");
+        var otherError = new Error("Very bad, but different");
+
+        var result = Result.Fail(error);
+        var resultSame = Result.Fail(error);
+        var resultDifferent = Result.Fail(otherError);
+
+        // Act
+        var equalResultForSame = result.Equals(result);
+        var equalResultForEquivalent = result.Equals(resultSame);
+        var equalResultForDifferent = result.Equals(resultDifferent);
+
+        // Assert
+        equalResultForSame.Should().BeTrue();
+        equalResultForEquivalent.Should().BeTrue();
+        equalResultForDifferent.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ResultEqualsOperator_WhenCompareWithInvalid_ShouldReturnValidState()
+    {
+        // Arrange
+        var result = Result.Ok();
+        var resultWithValue = Result.Ok(123);
+
+        // Act
+        var equalResultForNull = result.Equals((object?)null);
+        var equalResultForNullResult = result.Equals((Result?)null);
+        var equalResultWithValueForNull = resultWithValue.Equals((object?)null);
+        var equalResultWithValueForNullResult = resultWithValue.Equals((Result?)null);
+
+        // Assert
+        equalResultForNull.Should().BeFalse();
+        equalResultForNullResult.Should().BeFalse();
+        equalResultWithValueForNull.Should().BeFalse();
+        equalResultWithValueForNullResult.Should().BeFalse();
+    }
 }

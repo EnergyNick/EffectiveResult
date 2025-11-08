@@ -194,6 +194,26 @@ public class StaticFactoriesTests
     }
 
     [Fact]
+    public void TryMethod_WhenInvokeMethodWithReturnValueWithExceptions_ShouldReturnFailedResult()
+    {
+        // Arrange
+        var expectedException = new Exception("Oops");
+        var expectedError = new ExceptionalError(expectedException);
+
+        Func<int> action = () => throw expectedException;
+
+        // Act
+        var resultAction = () => Result.Try(action);
+
+        // Assert
+        action.Should().Throw<Exception>();
+        resultAction.Should().NotThrow();
+
+        var result = resultAction();
+        result.ShouldBeFailed(expectedError);
+    }
+
+    [Fact]
     public async Task TryAsyncMethod_WhenInvokeWithoutExceptions_ShouldReturnSuccessResult()
     {
         // Arrange
@@ -258,25 +278,50 @@ public class StaticFactoriesTests
     }
 
     [Fact]
+    public async Task TryAsyncMethod_WhenInvokeMethodWithResultWithExceptions_ShouldReturnFailedResult()
+    {
+        // Arrange
+        var expectedException = new Exception("Oops");
+        var expectedError = new ExceptionalError(expectedException);
+
+        Func<Task<int>> action = () => throw expectedException;
+
+        // Act
+        var resultAction = () => Result.TryAsync(action);
+
+        // Assert
+        await action.Should().ThrowAsync<Exception>();
+        await resultAction.Should().NotThrowAsync();
+
+        var result = await resultAction();
+        result.ShouldBeFailed(expectedError);
+    }
+
+    [Fact]
     public void OkIfMethod_WhenInvokeWithCondition_ShouldReturnValidResult()
     {
         // Arrange
         const string errorMessage = "Very bad";
         var error = new Error(errorMessage);
+        var exception = new Exception("Oops");
 
         // Act
         var successResultStr = Result.OkIf(true, errorMessage);
         var successResultError = Result.OkIf(true, error);
+        var successResultException = Result.OkIf(true, exception);
 
         var failedResultStr = Result.OkIf(false, errorMessage);
         var failedResultError = Result.OkIf(false, error);
+        var failedResultException = Result.OkIf(false, exception);
 
         // Assert
         successResultStr.ShouldBeSuccess();
         successResultError.ShouldBeSuccess();
+        successResultException.ShouldBeSuccess();
 
         failedResultStr.ShouldBeFailed(error);
         failedResultError.ShouldBeFailed(error);
+        failedResultException.ShouldBeFailed();
     }
 
     [Fact]
@@ -285,20 +330,25 @@ public class StaticFactoriesTests
         // Arrange
         const string errorMessage = "Very bad";
         var error = new Error(errorMessage);
+        var exception = new Exception("Oops");
 
         // Act
         var successResultStr = Result.FailIf(false, errorMessage);
         var successResultError = Result.FailIf(false, error);
+        var successResultException = Result.FailIf(false, exception);
 
         var failedResultStr = Result.FailIf(true, errorMessage);
         var failedResultError = Result.FailIf(true, error);
+        var failedResultException = Result.FailIf(true, exception);
 
         // Assert
         successResultStr.ShouldBeSuccess();
         successResultError.ShouldBeSuccess();
+        successResultException.ShouldBeSuccess();
 
         failedResultStr.ShouldBeFailed(error);
         failedResultError.ShouldBeFailed(error);
+        failedResultException.ShouldBeFailed();
     }
 
     [Fact]
