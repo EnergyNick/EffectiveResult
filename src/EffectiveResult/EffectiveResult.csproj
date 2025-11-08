@@ -11,10 +11,12 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/EnergyNick/EffectiveResult</PackageProjectUrl>
 
-        <PackageVersion>1.0.0-alpha-4</PackageVersion>
+        <PackageVersion>1.0.0</PackageVersion>
         <PackageIcon>icon-128.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageReleaseNotes>Initial pre-release version</PackageReleaseNotes>
+        <PackageReleaseNotes>
+          Release version of library with main features and async extensions support
+        </PackageReleaseNotes>
         <PackageTags>Result Monad Functional Pattern Error Handling Exception</PackageTags>
         <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
     </PropertyGroup>

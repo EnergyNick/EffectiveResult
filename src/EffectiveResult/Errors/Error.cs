@@ -7,6 +7,7 @@ namespace EffectiveResult;
 /// <summary>
 /// Represents the base type of all error causes.
 /// </summary>
+[ExcludeFromCodeCoverage(Justification = "Only store data without any logic (only for debug printing)")]
 public record Error
 {
     private readonly ImmutableArray<Error> _causedErrors = [];
@@ -33,7 +34,6 @@ public record Error
     public Error(string message, IEnumerable<Error> causedBy) : this(message) =>
         _causedErrors = [.. causedBy];
 
-    [ExcludeFromCodeCoverage]
     protected virtual bool PrintMembers(StringBuilder builder)
     {
         builder.Append("Message = '");

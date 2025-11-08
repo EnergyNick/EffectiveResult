@@ -1,6 +1,6 @@
 ﻿namespace EffectiveResult.Extensions;
 
-public static partial class ResultsThenOnFailAsyncExtensions
+public static class ResultsThenOnFailAsyncExtensions
 {
     /// <summary>
     /// Call action only if <see cref="input"/> is failed

@@ -1,10 +1,11 @@
-﻿#pragma warning disable CS1573
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace EffectiveResult.Exceptions;
 
 /// <summary>
 /// Thrown when trying to create or change result to incorrect state
 /// </summary>
+[ExcludeFromCodeCoverage(Justification = "Only store data without any logic")]
 public class InvalidResultOperationException : ResultException
 {
     /// <inheritdoc />

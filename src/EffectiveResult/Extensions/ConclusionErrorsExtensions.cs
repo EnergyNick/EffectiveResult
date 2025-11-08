@@ -12,7 +12,9 @@ public static class ConclusionErrorsExtensions
     /// <param name="predicate">Additional error predicate</param>
     /// <typeparam name="TError">Type of error</typeparam>
     /// <returns>True, if exists in enumerable</returns>
-    public static bool HasErrorsOfType<TError>(this IEnumerable<Error> errors, Predicate<TError>? predicate = null)
+    public static bool HasErrorsOfType<TError>(
+        this IEnumerable<Error> errors,
+        Predicate<TError>? predicate = null)
         where TError : Error
     {
         var enumeratedReasons = errors as ICollection<Error> ?? [.. errors];
@@ -29,7 +31,9 @@ public static class ConclusionErrorsExtensions
     /// <param name="predicate">Additional error predicate</param>
     /// <typeparam name="TError">Type of error</typeparam>
     /// <returns>True, if exists in enumerable</returns>
-    public static bool HasErrorsOfTypeRecursively<TError>(this IEnumerable<Error> errors, Predicate<TError>? predicate = null)
+    public static bool HasErrorsOfTypeRecursively<TError>(
+        this IEnumerable<Error> errors,
+        Predicate<TError>? predicate = null)
         where TError : Error
     {
         var enumeratedReasons = errors as ICollection<Error> ?? [.. errors];
@@ -48,7 +52,8 @@ public static class ConclusionErrorsExtensions
     /// <param name="exception">Provide first exception match, if return true</param>
     /// <param name="filter">Filter for matching error</param>
     /// <returns>True, if conclusion contains matching error</returns>
-    public static bool TryGetException(this IConclusion conclusion,
+    public static bool TryGetException(
+        this IConclusion conclusion,
         [NotNullWhen(true)] out Exception? exception,
         Predicate<Exception>? filter = null)
     {
@@ -63,7 +68,8 @@ public static class ConclusionErrorsExtensions
     /// <param name="filter">Filter for matching error</param>
     /// <typeparam name="TException">Type of matching exception</typeparam>
     /// <returns>True, if conclusion contains matching error</returns>
-    public static bool TryGetException<TException>(this IConclusion conclusion,
+    public static bool TryGetException<TException>(
+        this IConclusion conclusion,
         [NotNullWhen(true)] out TException? exception,
         Predicate<TException>? filter = null)
         where TException : Exception
@@ -82,7 +88,8 @@ public static class ConclusionErrorsExtensions
     /// <param name="conclusion">Source of errors</param>
     /// <param name="filter">Filter for matching error</param>
     /// <returns>Collections of matching exceptions from conclusion</returns>
-    public static IEnumerable<Exception> GetExceptions(this IConclusion conclusion,
+    public static IEnumerable<Exception> GetExceptions(
+        this IConclusion conclusion,
         Predicate<Exception>? filter = null)
     {
         return GetExceptions<Exception>(conclusion, filter);
@@ -95,7 +102,8 @@ public static class ConclusionErrorsExtensions
     /// <param name="filter">Filter for matching error</param>
     /// <typeparam name="TException">Type of exception</typeparam>
     /// <returns>Collections of matching exceptions from conclusion</returns>
-    public static IEnumerable<TException> GetExceptions<TException>(this IConclusion conclusion,
+    public static IEnumerable<TException> GetExceptions<TException>(
+        this IConclusion conclusion,
         Predicate<TException>? filter = null)
         where TException : Exception
     {

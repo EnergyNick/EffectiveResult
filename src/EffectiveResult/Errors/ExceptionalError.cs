@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace EffectiveResult;
@@ -5,12 +6,13 @@ namespace EffectiveResult;
 /// <summary>
 /// Represents the base type of error causes by exception.
 /// </summary>
+[ExcludeFromCodeCoverage(Justification = "Only store data without any logic (only for debug printing)")]
 public record ExceptionalError : Error
 {
     /// <summary>
     /// Caused exception from operation.
     /// </summary>
-    public Exception Exception { get; init; }
+    public Exception Exception { get; }
 
     public ExceptionalError(Exception exception)
         : base(exception.Message)
@@ -44,12 +46,15 @@ public record ExceptionalError : Error
 
     protected override bool PrintMembers(StringBuilder builder)
     {
-        builder.Append("Message = '");
-        builder.Append(Message);
-        builder.Append('\'');
+        if (string.Equals(Message, Exception.Message, StringComparison.InvariantCulture) is false)
+        {
+            builder.Append("Message = '");
+            builder.Append(Message);
+            builder.Append('\'');
+        }
 
         builder.Append(", Exception = '");
-        builder.Append(Message);
+        builder.Append(Exception);
         builder.Append('\'');
 
         if (CausedErrors.Count != 0)

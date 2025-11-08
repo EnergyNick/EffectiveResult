@@ -88,7 +88,7 @@ public sealed class ResultBuilder
     /// <summary>
     /// Create result object from current builder state
     /// </summary>
-    public Result ToResult() => new(_errors);
+    public Result ToResult() => new(_errors, false);
 
     /// <summary>
     /// Create result object from current builder state

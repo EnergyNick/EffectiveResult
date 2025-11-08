@@ -129,7 +129,7 @@ public sealed partial class Result : IConclusion, IEquatable<Result>
         return (obj1: this, obj2: other) switch
         {
             { obj1.IsSuccess: true, obj2.IsSuccess: true } => true,
-            { obj1.IsFailed: true, obj2.IsFailed: true } => _errors.Equals(other._errors),
+            { obj1.IsFailed: true, obj2.IsFailed: true } => _errors.SequenceEqual(other._errors),
             _ => false
         };
     }
@@ -144,5 +144,5 @@ public sealed partial class Result : IConclusion, IEquatable<Result>
     public static bool operator ==(Result? left, Result? right) => Equals(left, right);
 
     /// Compare two results by equality comparing
-    public static bool operator !=(Result? left, Result? right) => !Equals(left, right);
+    public static bool operator !=(Result? left, Result? right) => Equals(left, right) is false;
 }
