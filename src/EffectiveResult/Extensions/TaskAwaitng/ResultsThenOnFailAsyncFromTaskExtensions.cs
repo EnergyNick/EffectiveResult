@@ -28,7 +28,7 @@ public static class ResultsThenOnFailAsyncFromTaskExtensions
     /// <returns>Result from <paramref name="input"/></returns>
     public static async Task<Result> ThenOnFailAsync(
         this Task<Result> input,
-        Action<IEnumerable<Error>> onFailAction)
+        Action<IEnumerable<ResultError>> onFailAction)
     {
         var inputResult = await input.ConfigureAwait(false);
         return inputResult.ThenOnFail(onFailAction);
@@ -43,7 +43,7 @@ public static class ResultsThenOnFailAsyncFromTaskExtensions
     /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
     public static async Task<Result<TValue>>ThenOnFailAsync<TValue>(
         this Task<Result<TValue>> input,
-        Func<IReadOnlyCollection<Error>, TValue> continuation)
+        Func<IReadOnlyCollection<ResultError>, TValue> continuation)
     {
         var inputResult = await input.ConfigureAwait(false);
         return inputResult.ThenOnFail(continuation);
@@ -58,7 +58,7 @@ public static class ResultsThenOnFailAsyncFromTaskExtensions
     /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
     public static async Task<Result<TValue>> ThenOnFailAsync<TValue>(
         this Task<Result<TValue>> input,
-        Func<IReadOnlyCollection<Error>, Result<TValue>> continuation)
+        Func<IReadOnlyCollection<ResultError>, Result<TValue>> continuation)
     {
         var inputResult = await input.ConfigureAwait(false);
         return inputResult.ThenOnFail(continuation);
@@ -103,7 +103,7 @@ public static class ResultsThenOnFailAsyncFromTaskExtensions
     /// <returns>Result from <paramref name="input"/></returns>
     public static async Task<Result> ThenOnFailWithExceptionAsync<TException>(
         this Task<Result> input,
-        Action<ExceptionalError> onFailAction)
+        Action<ResultError> onFailAction)
         where TException : Exception
     {
         var inputResult = await input.ConfigureAwait(false);
@@ -128,7 +128,7 @@ public static class ResultsThenOnFailAsyncFromTaskExtensions
     /// <param name="input">Source of conclusion</param>
     /// <param name="onFailAction">Action for invoke on fail</param>
     /// <returns>Result from <paramref name="input"/></returns>
-    public static async Task<Result> ThenOnFailAsync(this Task<Result> input, Func<IEnumerable<Error>, Task> onFailAction)
+    public static async Task<Result> ThenOnFailAsync(this Task<Result> input, Func<IEnumerable<ResultError>, Task> onFailAction)
     {
         var inputResult = await input.ConfigureAwait(false);
         return await inputResult.ThenOnFailAsync(onFailAction);
@@ -143,7 +143,7 @@ public static class ResultsThenOnFailAsyncFromTaskExtensions
     /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
     public static async Task<Result<TValue>> ThenOnFailAsync<TValue>(
         this Task<Result<TValue>> input,
-        Func<IReadOnlyCollection<Error>, Task<TValue>> continuation)
+        Func<IReadOnlyCollection<ResultError>, Task<TValue>> continuation)
     {
         var inputResult = await input.ConfigureAwait(false);
         return await inputResult.ThenOnFailAsync(continuation);
@@ -158,7 +158,7 @@ public static class ResultsThenOnFailAsyncFromTaskExtensions
     /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
     public static async Task<Result<TValue>> ThenOnFailAsync<TValue>(
         this Task<Result<TValue>> input,
-        Func<IReadOnlyCollection<Error>, Task<Result<TValue>>> continuation)
+        Func<IReadOnlyCollection<ResultError>, Task<Result<TValue>>> continuation)
     {
         var inputResult = await input.ConfigureAwait(false);
         return await inputResult.ThenOnFailAsync(continuation);
@@ -203,7 +203,7 @@ public static class ResultsThenOnFailAsyncFromTaskExtensions
     /// <returns>Result from <paramref name="input"/></returns>
     public static async Task<Result> ThenOnFailWithExceptionAsync<TException>(
         this Task<Result> input,
-        Func<ExceptionalError, Task> onFailAction)
+        Func<ResultError, Task> onFailAction)
         where TException : Exception
     {
         var inputResult = await input.ConfigureAwait(false);

@@ -59,7 +59,7 @@ public static class MatchExtensions
     public static void Match<TConclusion>(
         this TConclusion input,
         Action onSuccessAction,
-        Action<IReadOnlyCollection<Error>> onFailAction)
+        Action<IReadOnlyCollection<ResultError>> onFailAction)
         where TConclusion : IConclusion
     {
         if (input.IsSuccess)
@@ -83,7 +83,7 @@ public static class MatchExtensions
     public static void Match<TConclusion, TValue>(
         this TConclusion input,
         Action<TValue> onSuccessAction,
-        Action<IReadOnlyCollection<Error>> onFailAction)
+        Action<IReadOnlyCollection<ResultError>> onFailAction)
         where TConclusion : IConclusion, IValueStorage<TValue>
     {
         if (input.IsSuccess)
@@ -151,7 +151,7 @@ public static class MatchExtensions
     public static async Task MatchAsync<TConclusion>(
         this TConclusion input,
         Func<Task> onSuccessAction,
-        Func<IReadOnlyCollection<Error>, Task> onFailAction)
+        Func<IReadOnlyCollection<ResultError>, Task> onFailAction)
         where TConclusion : IConclusion
     {
         if (input.IsSuccess)
@@ -175,7 +175,7 @@ public static class MatchExtensions
     public static async Task MatchAsync<TConclusion, TValue>(
         this TConclusion input,
         Func<TValue, Task> onSuccessAction,
-        Func<IReadOnlyCollection<Error>, Task> onFailAction)
+        Func<IReadOnlyCollection<ResultError>, Task> onFailAction)
         where TConclusion : IConclusion, IValueStorage<TValue>
     {
         if (input.IsSuccess)

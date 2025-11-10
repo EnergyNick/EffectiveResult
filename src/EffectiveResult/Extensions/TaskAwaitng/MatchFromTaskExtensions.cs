@@ -52,7 +52,7 @@ public static class MatchFromTaskExtensions
     public static async Task MatchAsync<TConclusion>(
         this Task<TConclusion> input,
         Action onSuccessAction,
-        Action<IReadOnlyCollection<Error>> onFailAction)
+        Action<IReadOnlyCollection<ResultError>> onFailAction)
         where TConclusion : IConclusion
     {
         var inputResult = await input;
@@ -70,7 +70,7 @@ public static class MatchFromTaskExtensions
     public static async Task MatchAsync<TConclusion, TValue>(
         this Task<TConclusion> input,
         Action<TValue> onSuccessAction,
-        Action<IReadOnlyCollection<Error>> onFailAction)
+        Action<IReadOnlyCollection<ResultError>> onFailAction)
         where TConclusion : IConclusion, IValueStorage<TValue>
     {
         var inputResult = await input;
@@ -120,7 +120,7 @@ public static class MatchFromTaskExtensions
     public static async Task MatchAsync<TConclusion>(
         this Task<TConclusion> input,
         Func<Task> onSuccessAction,
-        Func<IReadOnlyCollection<Error>, Task> onFailAction)
+        Func<IReadOnlyCollection<ResultError>, Task> onFailAction)
         where TConclusion : IConclusion
     {
         var inputResult = await input;
@@ -138,7 +138,7 @@ public static class MatchFromTaskExtensions
     public static async Task MatchAsync<TConclusion, TValue>(
         this Task<TConclusion> input,
         Func<TValue, Task> onSuccessAction,
-        Func<IReadOnlyCollection<Error>, Task> onFailAction)
+        Func<IReadOnlyCollection<ResultError>, Task> onFailAction)
         where TConclusion : IConclusion, IValueStorage<TValue>
     {
         var inputResult = await input;

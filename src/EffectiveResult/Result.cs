@@ -10,7 +10,7 @@ namespace EffectiveResult;
 /// </summary>
 public sealed partial class Result : IConclusion, IEquatable<Result>
 {
-    private readonly Error[] _errors = [];
+    private readonly ResultError[] _errors = [];
 
     /// <inheritdoc />
     public bool IsSuccess => _errors.Length == 0;
@@ -19,14 +19,14 @@ public sealed partial class Result : IConclusion, IEquatable<Result>
     public bool IsFailed => _errors.Length != 0;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<Error> Errors => _errors;
+    public IReadOnlyCollection<ResultError> Errors => _errors;
 
     internal Result()
     { }
 
-    internal Result(Error error) => _errors = [error];
+    internal Result(ResultError error) => _errors = [error];
 
-    internal Result(Error[] errors, bool isFailed = true)
+    internal Result(ResultError[] errors, bool isFailed = true)
     {
         _errors = errors;
 
@@ -63,14 +63,14 @@ public sealed partial class Result : IConclusion, IEquatable<Result>
             : new Result<TNewValue>(_errors);
 
     /// Convert to failed result
-    public static implicit operator Result(Error error) => Result.Fail(error);
+    public static implicit operator Result(ResultError error) => Result.Fail(error);
 
     /// <summary>
     /// Provide method for fluent deconstruct type and use with syntactic sugar
     /// </summary>
     /// <param name="isSuccess">Status of result</param>
     /// <param name="errors">Errors on fail or empty collection on success</param>
-    public void Deconstruct(out bool isSuccess, out IReadOnlyCollection<Error> errors)
+    public void Deconstruct(out bool isSuccess, out IReadOnlyCollection<ResultError> errors)
     {
         isSuccess = IsSuccess;
         errors = _errors;
@@ -92,7 +92,7 @@ public sealed partial class Result : IConclusion, IEquatable<Result>
         if (IsFailed)
         {
             builder.Append(", Errors = [ ");
-            builder.AppendJoin<Error>("; ", _errors);
+            builder.AppendJoin<ResultError>("; ", _errors);
             builder.Append(" ]");
         }
 

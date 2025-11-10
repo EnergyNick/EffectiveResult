@@ -21,7 +21,7 @@ public static class ResultsThenOnFailAsyncExtensions
     /// <param name="input">Source of conclusion</param>
     /// <param name="onFailAction">Action for invoke on fail</param>
     /// <returns>Result from <paramref name="input"/></returns>
-    public static async Task<Result> ThenOnFailAsync(this Result input, Func<IEnumerable<Error>, Task> onFailAction)
+    public static async Task<Result> ThenOnFailAsync(this Result input, Func<IEnumerable<ResultError>, Task> onFailAction)
     {
         return input.IsFailed
             ? await Result.TryAsync(() => onFailAction(input.Errors))
@@ -37,7 +37,7 @@ public static class ResultsThenOnFailAsyncExtensions
     /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
     public static async Task<Result<TValue>> ThenOnFailAsync<TValue>(
         this Result<TValue> input,
-        Func<IReadOnlyCollection<Error>, Task<TValue>> continuation)
+        Func<IReadOnlyCollection<ResultError>, Task<TValue>> continuation)
     {
         return input.IsFailed
             ? await Result.TryAsync(() => continuation(input.Errors))
@@ -53,7 +53,7 @@ public static class ResultsThenOnFailAsyncExtensions
     /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
     public static async Task<Result<TValue>> ThenOnFailAsync<TValue>(
         this Result<TValue> input,
-        Func<IReadOnlyCollection<Error>, Task<Result<TValue>>> continuation)
+        Func<IReadOnlyCollection<ResultError>, Task<Result<TValue>>> continuation)
     {
         return input.IsFailed
             ? await continuation(input.Errors)
@@ -101,13 +101,12 @@ public static class ResultsThenOnFailAsyncExtensions
     /// <returns>Result from <paramref name="input"/></returns>
     public static async Task<Result> ThenOnFailWithExceptionAsync<TException>(
         this Result input,
-        Func<ExceptionalError, Task> onFailAction)
+        Func<ResultError, Task> onFailAction)
         where TException : Exception
     {
         if (input.IsFailed)
         {
             var exceptionalError = input.Errors
-                .OfType<ExceptionalError>()
                 .FirstOrDefault(x => x.Exception is TException);
 
             if (exceptionalError is not null)

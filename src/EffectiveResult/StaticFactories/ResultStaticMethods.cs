@@ -20,22 +20,22 @@ public partial class Result
     /// </summary>
     [DebuggerStepThrough]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result Fail(Error error) => new(error);
+    public static Result Fail(ResultError error) => new(error);
 
     /// <summary>
     /// Creates a failed result with the given errors
     /// </summary>
     [DebuggerStepThrough]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result Fail(IEnumerable<Error> errors) => new([.. errors]);
+    public static Result Fail(IEnumerable<ResultError> errors) => new([.. errors]);
 
     /// <summary>
     /// Creates a failed result with the given error message.
-    /// Message will be transformed to <see cref="Error"/>
+    /// Message will be transformed to <see cref="ResultError"/>
     /// </summary>
     [DebuggerStepThrough]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result Fail(string errorMessage) => Fail(new Error(errorMessage));
+    public static Result Fail(string errorMessage) => Fail(new ResultError(errorMessage));
 
     /// <summary>
     /// Creates a failed result with the given exception.
@@ -43,7 +43,7 @@ public partial class Result
     /// </summary>
     [DebuggerStepThrough]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result Fail(Exception exception) => Fail(new ExceptionalError(exception));
+    public static Result Fail(Exception exception) => Fail(new ResultError(exception));
 
     /// <summary>
     /// Creates a success result with the given value
@@ -57,22 +57,22 @@ public partial class Result
     /// </summary>
     [DebuggerStepThrough]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result<TValue> Fail<TValue>(Error error) => new(error);
+    public static Result<TValue> Fail<TValue>(ResultError error) => new(error);
 
     /// <summary>
     /// Creates a failed result with the given errors
     /// </summary>
     [DebuggerStepThrough]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result<TValue> Fail<TValue>(IEnumerable<Error> errors) => new([.. errors]);
+    public static Result<TValue> Fail<TValue>(IEnumerable<ResultError> errors) => new([.. errors]);
 
     /// <summary>
     /// Creates a failed result with the given error message.
-    /// Message will be transformed to <see cref="Error"/>
+    /// Message will be transformed to <see cref="ResultError"/>
     /// </summary>
     [DebuggerStepThrough]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result<TValue> Fail<TValue>(string errorMessage) => Fail<TValue>(new Error(errorMessage));
+    public static Result<TValue> Fail<TValue>(string errorMessage) => Fail<TValue>(new ResultError(errorMessage));
 
     /// <summary>
     /// Creates a failed result with the given exception.
@@ -80,7 +80,7 @@ public partial class Result
     /// </summary>
     [DebuggerStepThrough]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result<TValue> Fail<TValue>(Exception exception) => Fail<TValue>(new ExceptionalError(exception));
+    public static Result<TValue> Fail<TValue>(Exception exception) => Fail<TValue>(new ResultError(exception));
 
     /// <summary>
     /// Executes the action and catch all exceptions, If they will be thrown within the action.
@@ -147,7 +147,7 @@ public partial class Result
     /// <summary>
     /// Create result with status depending on condition
     /// </summary>
-    public static Result OkIf(bool condition, Error error) => condition ? Ok() : Fail(error);
+    public static Result OkIf(bool condition, ResultError error) => condition ? Ok() : Fail(error);
 
     /// <summary>
     /// Create result with status depending on condition
@@ -162,7 +162,7 @@ public partial class Result
     /// <summary>
     /// Create result with status depending on condition
     /// </summary>
-    public static Result FailIf(bool condition, Error error) => condition ? Fail(error) : Ok();
+    public static Result FailIf(bool condition, ResultError error) => condition ? Fail(error) : Ok();
 
     /// <summary>
     /// Create result with status depending on condition
@@ -177,7 +177,7 @@ public partial class Result
     /// <summary>
     /// Create result with status depending on condition
     /// </summary>
-    public static Result<TValue> OkIf<TValue>(bool condition, Error error, TValue valueIfSuccess) =>
+    public static Result<TValue> OkIf<TValue>(bool condition, ResultError error, TValue valueIfSuccess) =>
         condition ? Ok(valueIfSuccess) : Fail<TValue>(error);
 
     /// <summary>
@@ -195,7 +195,7 @@ public partial class Result
     /// <summary>
     /// Create result with status depending on condition
     /// </summary>
-    public static Result<TValue> FailIf<TValue>(bool condition, Error error, TValue valueIfSuccess) =>
+    public static Result<TValue> FailIf<TValue>(bool condition, ResultError error, TValue valueIfSuccess) =>
         condition ? Fail<TValue>(error) : Ok(valueIfSuccess);
 
     /// <summary>

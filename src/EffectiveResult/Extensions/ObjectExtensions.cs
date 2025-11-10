@@ -16,14 +16,14 @@ public static class ObjectExtensions
     /// Create failed result from error
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result MakeFailedResult(this Error error) =>
+    public static Result MakeFailedResult(this ResultError error) =>
         Result.Fail(error);
 
     /// <summary>
     /// Create failed typed result from error
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result<TValue> MakeFailedResult<TValue>(this Error error) =>
+    public static Result<TValue> MakeFailedResult<TValue>(this ResultError error) =>
         Result.Fail<TValue>(error);
 
     /// <summary>

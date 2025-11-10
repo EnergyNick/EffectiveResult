@@ -12,7 +12,7 @@ namespace EffectiveResult;
 public sealed class Result<TValue>
     : IConclusion, IValueStorage<TValue>, IReferenceValueStorage<TValue>, IEquatable<Result<TValue>>
 {
-    private readonly Error[] _errors = [];
+    private readonly ResultError[] _errors = [];
     private readonly TValue? _value;
 
     /// <inheritdoc />
@@ -47,13 +47,13 @@ public sealed class Result<TValue>
     public bool IsFailed => _errors.Length != 0;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<Error> Errors => _errors;
+    public IReadOnlyCollection<ResultError> Errors => _errors;
 
     internal Result(in TValue? value) => _value = value;
 
-    internal Result(Error error) => _errors = [error];
+    internal Result(ResultError error) => _errors = [error];
 
-    internal Result(Error[] errors, bool isFailed = true)
+    internal Result(ResultError[] errors, bool isFailed = true)
     {
         _errors = errors;
 
@@ -132,14 +132,14 @@ public sealed class Result<TValue>
     public static implicit operator Result<TValue>(in TValue value) => new(value);
 
     /// Convert to failed result
-    public static implicit operator Result<TValue>(Error error) => Result.Fail<TValue>(error);
+    public static implicit operator Result<TValue>(ResultError error) => Result.Fail<TValue>(error);
 
     /// <summary>
     /// Provide method for fluent deconstruct type and use with syntactic sugar
     /// </summary>
     /// <param name="isSuccess">Status of result</param>
     /// <param name="errors">Errors on fail or empty collection on success</param>
-    public void Deconstruct(out bool isSuccess, out IReadOnlyCollection<Error> errors)
+    public void Deconstruct(out bool isSuccess, out IReadOnlyCollection<ResultError> errors)
     {
         isSuccess = IsSuccess;
         errors = _errors;
@@ -151,7 +151,7 @@ public sealed class Result<TValue>
     /// <param name="isSuccess">Status of result</param>
     /// <param name="valueOrDefault">Value on success or default value on fail</param>
     /// <param name="errors">Errors on fail or empty collection on success</param>
-    public void Deconstruct(out bool isSuccess, out TValue? valueOrDefault, out IReadOnlyCollection<Error> errors)
+    public void Deconstruct(out bool isSuccess, out TValue? valueOrDefault, out IReadOnlyCollection<ResultError> errors)
     {
         isSuccess = IsSuccess;
         valueOrDefault = _value;
@@ -177,7 +177,7 @@ public sealed class Result<TValue>
         }
         else
         {
-            builder.AppendJoin<Error>("; ", _errors);
+            builder.AppendJoin<ResultError>("; ", _errors);
             builder.Append(" ]");
         }
 
