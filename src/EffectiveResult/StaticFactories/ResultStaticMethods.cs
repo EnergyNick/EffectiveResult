@@ -27,7 +27,7 @@ public partial class Result
     /// </summary>
     [DebuggerStepThrough]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result Fail(IEnumerable<Error> errors) => new(errors);
+    public static Result Fail(IEnumerable<Error> errors) => new([.. errors]);
 
     /// <summary>
     /// Creates a failed result with the given error message.
@@ -64,7 +64,7 @@ public partial class Result
     /// </summary>
     [DebuggerStepThrough]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result<TValue> Fail<TValue>(IEnumerable<Error> errors) => new(errors);
+    public static Result<TValue> Fail<TValue>(IEnumerable<Error> errors) => new([.. errors]);
 
     /// <summary>
     /// Creates a failed result with the given error message.

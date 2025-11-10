@@ -11,7 +11,7 @@ public sealed class ResultBuilder
 
     internal ResultBuilder(int capacity) => _errors = new List<Error>(capacity);
 
-    internal ResultBuilder(IEnumerable<Error> errors) => _errors = [..errors];
+    internal ResultBuilder(IEnumerable<Error> errors) => _errors = [.. errors];
 
     /// <summary>
     /// Add new error to builder state
@@ -88,7 +88,7 @@ public sealed class ResultBuilder
     /// <summary>
     /// Create result object from current builder state
     /// </summary>
-    public Result ToResult() => new(_errors, false);
+    public Result ToResult() => new([.. _errors], false);
 
     /// <summary>
     /// Create result object from current builder state
@@ -97,7 +97,7 @@ public sealed class ResultBuilder
     /// <returns>Success or fail result based on result builder state</returns>
     public Result<TValue> ToResult<TValue>(in TValue valueIfSuccess) =>
         _errors.Count != 0
-            ? new Result<TValue>(_errors)
+            ? new Result<TValue>([.. _errors])
             : new Result<TValue>(valueIfSuccess);
 
     /// <summary>
@@ -107,7 +107,7 @@ public sealed class ResultBuilder
     /// <returns>Success or fail result based on result builder state</returns>
     public Result<TValue> ToResult<TValue>(Func<TValue> valueFactoryIfSuccess) =>
         _errors.Count != 0
-            ? new Result<TValue>(_errors)
+            ? new Result<TValue>([.. _errors])
             : new Result<TValue>(valueFactoryIfSuccess());
 
     /// <summary>

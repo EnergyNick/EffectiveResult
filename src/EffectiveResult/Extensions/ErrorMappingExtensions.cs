@@ -13,7 +13,7 @@ public static class ErrorMappingExtensions
         Func<IReadOnlyCollection<Error>, IEnumerable<Error>> errorMapper)
     {
         return input.IsFailed
-            ? new Result(errorMapper(input.Errors))
+            ? new Result([.. errorMapper(input.Errors)])
             : input;
     }
 
@@ -29,7 +29,7 @@ public static class ErrorMappingExtensions
         Func<IReadOnlyCollection<Error>, IEnumerable<Error>> errorMapper)
     {
         return input.IsFailed
-            ? new Result<TValue>(errorMapper(input.Errors))
+            ? new Result<TValue>([.. errorMapper(input.Errors)])
             : input;
     }
 }

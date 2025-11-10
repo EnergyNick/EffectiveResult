@@ -10,7 +10,7 @@ namespace EffectiveResult;
 [ExcludeFromCodeCoverage(Justification = "Only store data without any logic (only for debug printing)")]
 public record Error
 {
-    private readonly ImmutableArray<Error> _causedErrors = [];
+    private readonly Error[] _causedErrors = [];
 
     /// <summary>
     /// Gets a message that describes the current error.

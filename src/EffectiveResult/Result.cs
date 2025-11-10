@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using EffectiveResult.Abstractions;
 using EffectiveResult.Exceptions;
@@ -11,7 +10,7 @@ namespace EffectiveResult;
 /// </summary>
 public sealed partial class Result : IConclusion, IEquatable<Result>
 {
-    private readonly ImmutableArray<Error> _errors = [];
+    private readonly Error[] _errors = [];
 
     /// <inheritdoc />
     public bool IsSuccess => _errors.Length == 0;
@@ -27,23 +26,11 @@ public sealed partial class Result : IConclusion, IEquatable<Result>
 
     internal Result(Error error) => _errors = [error];
 
-    internal Result(in ImmutableArray<Error> errors, bool isFailed = true)
+    internal Result(Error[] errors, bool isFailed = true)
     {
         _errors = errors;
 
         if (isFailed && _errors.Length == 0)
-        {
-            throw new InvalidResultOperationException("Can't create failed result without errors");
-        }
-    }
-
-    internal Result(IEnumerable<Error> errors, bool isMustBeFailed = true)
-    {
-        _errors = errors is Error[] arrayErrors
-            ? [..arrayErrors]
-            : [..errors];
-
-        if (isMustBeFailed && _errors.Length == 0)
         {
             throw new InvalidResultOperationException("Can't create failed result without errors");
         }
@@ -105,7 +92,7 @@ public sealed partial class Result : IConclusion, IEquatable<Result>
         if (IsFailed)
         {
             builder.Append(", Errors = [ ");
-            builder.AppendJoin("; ", _errors);
+            builder.AppendJoin<Error>("; ", _errors);
             builder.Append(" ]");
         }
 

@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using EffectiveResult.Abstractions;
 using EffectiveResult.Exceptions;
@@ -13,7 +12,7 @@ namespace EffectiveResult;
 public sealed class Result<TValue>
     : IConclusion, IValueStorage<TValue>, IReferenceValueStorage<TValue>, IEquatable<Result<TValue>>
 {
-    private readonly ImmutableArray<Error> _errors = [];
+    private readonly Error[] _errors = [];
     private readonly TValue? _value;
 
     /// <inheritdoc />
@@ -54,19 +53,7 @@ public sealed class Result<TValue>
 
     internal Result(Error error) => _errors = [error];
 
-    internal Result(IEnumerable<Error> errors, bool isFailed = true)
-    {
-        _errors = errors is Error[] arrayErrors
-            ? [..arrayErrors]
-            : [..errors];
-
-        if (isFailed && _errors.Length == 0)
-        {
-            throw new InvalidResultOperationException("Can't create failed result without errors");
-        }
-    }
-
-    internal Result(in ImmutableArray<Error> errors, bool isFailed = true)
+    internal Result(Error[] errors, bool isFailed = true)
     {
         _errors = errors;
 
@@ -190,7 +177,7 @@ public sealed class Result<TValue>
         }
         else
         {
-            builder.AppendJoin("; ", _errors);
+            builder.AppendJoin<Error>("; ", _errors);
             builder.Append(" ]");
         }
 
