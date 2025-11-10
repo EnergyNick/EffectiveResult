@@ -57,7 +57,7 @@ public class StaticFactoriesTests
         var resultWithValue = Result.Fail<string>(errorReason);
 
         // Assert
-        var expectedError = new Error(errorReason);
+        var expectedError = new ResultError(errorReason);
         result.ShouldBeFailed(expectedError);
         resultWithValue.ShouldBeFailed(expectedError);
     }
@@ -66,7 +66,7 @@ public class StaticFactoriesTests
     public void FailMethod_WhenInvokeWithError_ShouldReturnFailedResultWithValidError()
     {
         // Arrange
-        var error = new Error("Very bad");
+        var error = new ResultError("Very bad");
 
         // Act
         var result = Result.Fail(error);
@@ -78,11 +78,11 @@ public class StaticFactoriesTests
     }
 
     [Fact]
-    public void FailMethod_WhenInvokeWithExceptionalError_ShouldReturnFailedResultWithValidError()
+    public void FailMethod_WhenInvokeWithResultError_ShouldReturnFailedResultWithValidError()
     {
         // Arrange
         var exception = new Exception("Test");
-        var error = new ExceptionalError(exception);
+        var error = new ResultError(exception);
 
         // Act
         var result = Result.Fail(exception);
@@ -98,11 +98,11 @@ public class StaticFactoriesTests
     {
         // Arrange
         var exception = new Exception("Test");
-        var errors = new Error[]
+        var errors = new ResultError[]
         {
             new("Very bad"),
             new("So bad, but why..."),
-            new ExceptionalError(exception)
+            new ResultError(exception)
         };
 
         // Act
@@ -118,7 +118,7 @@ public class StaticFactoriesTests
     public void FailMethod_WhenInvokeWithEmptyErrors_ShouldThrowResultException()
     {
         // Arrange
-        var errors = Enumerable.Empty<Error>();
+        var errors = Enumerable.Empty<ResultError>();
 
         // Act
         var resultAction = () => Result.Fail(errors);
@@ -178,7 +178,7 @@ public class StaticFactoriesTests
     {
         // Arrange
         var expectedException = new Exception("Oops");
-        var expectedError = new ExceptionalError(expectedException);
+        var expectedError = new ResultError(expectedException);
 
         Action action = () => throw expectedException;
 
@@ -198,7 +198,7 @@ public class StaticFactoriesTests
     {
         // Arrange
         var expectedException = new Exception("Oops");
-        var expectedError = new ExceptionalError(expectedException);
+        var expectedError = new ResultError(expectedException);
 
         Func<int> action = () => throw expectedException;
 
@@ -262,7 +262,7 @@ public class StaticFactoriesTests
     {
         // Arrange
         var expectedException = new Exception("Oops");
-        var expectedError = new ExceptionalError(expectedException);
+        var expectedError = new ResultError(expectedException);
 
         Func<Task> action = () => throw expectedException;
 
@@ -282,7 +282,7 @@ public class StaticFactoriesTests
     {
         // Arrange
         var expectedException = new Exception("Oops");
-        var expectedError = new ExceptionalError(expectedException);
+        var expectedError = new ResultError(expectedException);
 
         Func<Task<int>> action = () => throw expectedException;
 
@@ -302,7 +302,7 @@ public class StaticFactoriesTests
     {
         // Arrange
         const string errorMessage = "Very bad";
-        var error = new Error(errorMessage);
+        var error = new ResultError(errorMessage);
         var exception = new Exception("Oops");
 
         // Act
@@ -329,7 +329,7 @@ public class StaticFactoriesTests
     {
         // Arrange
         const string errorMessage = "Very bad";
-        var error = new Error(errorMessage);
+        var error = new ResultError(errorMessage);
         var exception = new Exception("Oops");
 
         // Act
@@ -357,7 +357,8 @@ public class StaticFactoriesTests
         // Arrange
         const string errorMessage = "Very bad";
         var exception = new Exception(errorMessage);
-        var error = new Error(errorMessage);
+        var error = new ResultError(errorMessage);
+        var errorWithException = new ResultError(errorMessage, exception);
         var value = new List<int>();
 
         // Act
@@ -376,7 +377,7 @@ public class StaticFactoriesTests
 
         failedResultStr.ShouldBeFailed(error);
         failedResultError.ShouldBeFailed(error);
-        failedResultException.ShouldBeFailed(error);
+        failedResultException.ShouldBeFailed(errorWithException);
     }
 
     [Fact]
@@ -385,7 +386,8 @@ public class StaticFactoriesTests
         // Arrange
         const string errorMessage = "Very bad";
         var exception = new Exception(errorMessage);
-        var error = new Error(errorMessage);
+        var error = new ResultError(errorMessage);
+        var errorWithException = new ResultError(errorMessage, exception);
         var value = new List<int>();
 
         // Act
@@ -404,7 +406,7 @@ public class StaticFactoriesTests
 
         failedResultStr.ShouldBeFailed(error);
         failedResultError.ShouldBeFailed(error);
-        failedResultException.ShouldBeFailed(error);
+        failedResultException.ShouldBeFailed(errorWithException);
     }
 
     [Fact]
@@ -433,11 +435,11 @@ public class StaticFactoriesTests
     {
         // Arrange
         var exception = new Exception("Test");
-        var errors = new Error[]
+        var errors = new ResultError[]
         {
             new("Very bad"),
             new("So bad, but why..."),
-            new ExceptionalError(exception)
+            new(exception)
         };
         var value = "Hello world!";
 

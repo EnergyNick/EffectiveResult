@@ -26,7 +26,7 @@ public class ResultBuilderTests
         // Arrange
         var builder = Result.Build();
         var errorMessage = "Bad situation";
-        var error = new Error("Bad data");
+        var error = new ResultError("Bad data");
         var exception = new Exception("Oops");
 
         // Act
@@ -36,7 +36,7 @@ public class ResultBuilderTests
         var result = builder.ToResult();
 
         // Assert
-        result.ShouldBeFailed(error, new ExceptionalError(exception), new Error(errorMessage));
+        result.ShouldBeFailed(error, new ResultError(exception), new ResultError(errorMessage));
     }
 
     [Fact]
@@ -46,14 +46,14 @@ public class ResultBuilderTests
         var builder = Result.Build();
         var errorMessage = "Bad situation";
         var exception = new Exception("Oops");
-        var error = new Error("Bad data");
+        var error = new ResultError("Bad data");
 
         // Act
-        builder.AppendErrors(error, new ExceptionalError(exception), new Error(errorMessage));
+        builder.AppendErrors(error, new ResultError(exception), new ResultError(errorMessage));
         var result = builder.ToResult();
 
         // Assert
-        result.ShouldBeFailed(error, new ExceptionalError(exception), new Error(errorMessage));
+        result.ShouldBeFailed(error, new ResultError(exception), new ResultError(errorMessage));
     }
 
     [Fact]
@@ -63,14 +63,14 @@ public class ResultBuilderTests
         var builder = Result.Build();
         var errorMessage = "Bad situation";
         var exception = new Exception("Oops");
-        var error = new Error("Bad data");
+        var error = new ResultError("Bad data");
 
         // Act
-        builder.AppendErrors(new[] { error, new ExceptionalError(exception), new Error(errorMessage) }.AsEnumerable());
+        builder.AppendErrors(new[] { error, new ResultError(exception), new ResultError(errorMessage) }.AsEnumerable());
         var result = builder.ToResult();
 
         // Assert
-        result.ShouldBeFailed(error, new ExceptionalError(exception), new Error(errorMessage));
+        result.ShouldBeFailed(error, new ResultError(exception), new ResultError(errorMessage));
     }
 
     [Fact]
@@ -79,14 +79,14 @@ public class ResultBuilderTests
         // Arrange
         var errorMessage = "Bad situation";
         var exception = new Exception("Oops");
-        var error = new Error("Bad data");
+        var error = new ResultError("Bad data");
 
         // Act
-        var builder = ResultBuilder.Create(error, new ExceptionalError(exception), new Error(errorMessage));
+        var builder = ResultBuilder.Create(error, new ResultError(exception), new ResultError(errorMessage));
         var result = builder.ToResult();
 
         // Assert
-        result.ShouldBeFailed(error, new ExceptionalError(exception), new Error(errorMessage));
+        result.ShouldBeFailed(error, new ResultError(exception), new ResultError(errorMessage));
     }
 
     [Fact]
@@ -95,12 +95,12 @@ public class ResultBuilderTests
         // Arrange
         var errorMessage = "Bad situation";
         var exception = new Exception("Oops");
-        var error = new Error("Bad data");
+        var error = new ResultError("Bad data");
         var errorsEnumerable = new[]
         {
             error,
-            new ExceptionalError(exception),
-            new Error(errorMessage)
+            new ResultError(exception),
+            new ResultError(errorMessage)
         }.AsEnumerable();
 
         // Act
@@ -108,7 +108,7 @@ public class ResultBuilderTests
         var result = builder.ToResult();
 
         // Assert
-        result.ShouldBeFailed(error, new ExceptionalError(exception), new Error(errorMessage));
+        result.ShouldBeFailed(error, new ResultError(exception), new ResultError(errorMessage));
     }
 
     [Fact]
@@ -118,7 +118,7 @@ public class ResultBuilderTests
         var builder = Result.Build();
         var errorMessage = "Bad situation";
         var errorMessage2 = "Very bad situation";
-        var error = new Error("Bad data");
+        var error = new ResultError("Bad data");
         var exception = new Exception("Oops");
 
         // Act
@@ -131,9 +131,9 @@ public class ResultBuilderTests
         // Assert
         result.ShouldBeFailed(
             error,
-            new ExceptionalError(exception),
-            new Error(errorMessage),
-            new Error(errorMessage2));
+            new ResultError(exception),
+            new ResultError(errorMessage),
+            new ResultError(errorMessage2));
     }
 
     [Fact]
@@ -142,7 +142,7 @@ public class ResultBuilderTests
         // Arrange
         var builder = Result.Build();
         var errorMessage = "Bad situation";
-        var builderWithErrors = ResultBuilder.Create(new Error(errorMessage));
+        var builderWithErrors = ResultBuilder.Create(new ResultError(errorMessage));
         var builderWithoutErrors = ResultBuilder.Create();
 
         // Act
@@ -151,7 +151,7 @@ public class ResultBuilderTests
         var result = builder.ToResult();
 
         // Assert
-        result.ShouldBeFailed(new Error(errorMessage));
+        result.ShouldBeFailed(new ResultError(errorMessage));
     }
 
     [Fact]
@@ -159,7 +159,7 @@ public class ResultBuilderTests
     {
         // Arrange
         var errorMessage = "Bad situation";
-        var builder = ResultBuilder.Create(new Error(errorMessage));
+        var builder = ResultBuilder.Create(new ResultError(errorMessage));
 
         // Act
         var result = builder.ToResult();
@@ -167,9 +167,9 @@ public class ResultBuilderTests
         var resultWithValueFactory = builder.ToResult(() => 456);
 
         // Assert
-        result.ShouldBeFailed(new Error(errorMessage));
-        resultWithValue.ShouldBeFailed(new Error(errorMessage));
-        resultWithValueFactory.ShouldBeFailed(new Error(errorMessage));
+        result.ShouldBeFailed(new ResultError(errorMessage));
+        resultWithValue.ShouldBeFailed(new ResultError(errorMessage));
+        resultWithValueFactory.ShouldBeFailed(new ResultError(errorMessage));
     }
 
     [Fact]

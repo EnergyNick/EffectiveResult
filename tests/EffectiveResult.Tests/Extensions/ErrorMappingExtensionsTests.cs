@@ -13,7 +13,7 @@ public class ErrorMappingExtensionsTests
         var valuedResult = Result.Ok("Oh my!");
 
         var isInvoked = false;
-        var func = (IReadOnlyCollection<Error> errors) =>
+        var func = (IReadOnlyCollection<ResultError> errors) =>
         {
             isInvoked = true;
             return errors;
@@ -33,16 +33,16 @@ public class ErrorMappingExtensionsTests
     public void MapErrorsOnFailedExtension_WhenFailedResult_ShouldBeInvoked()
     {
         // Arrange
-        var firstError = new Error("Fail");
-        var secondError = new Error("To Much errors");
+        var firstError = new ResultError("Fail");
+        var secondError = new ResultError("To Much errors");
 
-        var newError = new Error("Ho ho ho!");
-        var newErrors = new Error[] { newError };
+        var newError = new ResultError("Ho ho ho!");
+        var newErrors = new ResultError[] { newError };
 
         var result = Result.Fail(firstError);
         var valuedResult = Result.Fail<string>(secondError);
 
-        var func = (IReadOnlyCollection<Error> errors) => newErrors;
+        var func = (IReadOnlyCollection<ResultError> errors) => newErrors;
 
         // Act
         var actResult = result.MapErrorsOnFailed(func);
