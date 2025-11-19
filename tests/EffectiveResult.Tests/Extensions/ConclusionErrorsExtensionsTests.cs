@@ -8,11 +8,11 @@ public class ConclusionErrorsExtensionsTests
     public void HasErrorOfType_WhenSearchError_ShouldReturnValidState()
     {
         // Arrange
-        var error = new Error("Hello");
-        var exceptionalError = new ExceptionalError(new Exception("Bug"));
-        var otherError = new Error("Salad");
+        var error = new ResultError("Hello");
+        var exceptionalError = new ResultError(new Exception("Bug"));
+        var otherError = new ResultError("Salad");
 
-        var errors = new Error[]
+        var errors = new ResultError[]
         {
             error,
             exceptionalError,
@@ -20,9 +20,9 @@ public class ConclusionErrorsExtensionsTests
         var result = Result.Fail(errors);
 
         // Act
-        var isContainsException = result.Errors.HasErrorsOfType<ExceptionalError>();
-        var isContainsError = result.Errors.HasErrorsOfType((Error x) => x == error);
-        var isContainsOtherError = result.Errors.HasErrorsOfType((Error x) => x == otherError);
+        var isContainsException = result.Errors.HasErrorsOfType<ResultError>();
+        var isContainsError = result.Errors.HasErrorsOfType((ResultError x) => x == error);
+        var isContainsOtherError = result.Errors.HasErrorsOfType((ResultError x) => x == otherError);
 
         // Assert
         isContainsException.Should().BeTrue();
@@ -34,12 +34,12 @@ public class ConclusionErrorsExtensionsTests
     public void HasErrorsOfTypeRecursively_WhenSearchError_ShouldReturnValidState()
     {
         // Arrange
-        var error = new Error("Hello");
-        var internalError = new Error("Internal bad");
-        var exceptionalError = new ExceptionalError(new Exception("Bug"), internalError);
-        var otherError = new Error("Salad");
+        var error = new ResultError("Hello");
+        var internalError = new ResultError("Internal bad");
+        var exceptionalError = new ResultError(new Exception("Bug"), internalError);
+        var otherError = new ResultError("Salad");
 
-        var errors = new Error[]
+        var errors = new ResultError[]
         {
             error,
             exceptionalError,
@@ -47,10 +47,10 @@ public class ConclusionErrorsExtensionsTests
         var result = Result.Fail(errors);
 
         // Act
-        var isContainsException = result.Errors.HasErrorsOfTypeRecursively<ExceptionalError>();
-        var isContainsError = result.Errors.HasErrorsOfTypeRecursively((Error x) => x == error);
-        var isContainsOtherError = result.Errors.HasErrorsOfTypeRecursively((Error x) => x == otherError);
-        var isContainsInternalError = result.Errors.HasErrorsOfTypeRecursively((Error x) => x == internalError);
+        var isContainsException = result.Errors.HasErrorsOfTypeRecursively<ResultError>();
+        var isContainsError = result.Errors.HasErrorsOfTypeRecursively((ResultError x) => x == error);
+        var isContainsOtherError = result.Errors.HasErrorsOfTypeRecursively((ResultError x) => x == otherError);
+        var isContainsInternalError = result.Errors.HasErrorsOfTypeRecursively((ResultError x) => x == internalError);
 
         // Assert
         isContainsException.Should().BeTrue();
@@ -63,10 +63,10 @@ public class ConclusionErrorsExtensionsTests
     public void GetExceptions_WhenSearchExceptions_ShouldReturnAllExceptions()
     {
         // Arrange
-        var error = new Error("Hello");
-        var internalError = new Error("Internal bad");
-        var exceptionalError = new ExceptionalError(new Exception("Bug"), internalError);
-        var otherError = new Error("Salad");
+        var error = new ResultError("Hello");
+        var internalError = new ResultError("Internal bad");
+        var exceptionalError = new ResultError(new Exception("Bug"), internalError);
+        var otherError = new ResultError("Salad");
 
         var resultSuccess = Result.Ok();
         var resultFail = Result.Fail([error, otherError]);
@@ -90,11 +90,11 @@ public class ConclusionErrorsExtensionsTests
         var invalidOperationException = new InvalidOperationException("100 + 5 = 30?");
         var indexOutOfRangeException = new IndexOutOfRangeException();
 
-        var error = new Error("Hello");
-        var internalError = new Error("Internal bad");
+        var error = new ResultError("Hello");
+        var internalError = new ResultError("Internal bad");
 
-        var exceptionalErrorInvalid = new ExceptionalError(invalidOperationException, internalError);
-        var exceptionalErrorOutOfRange = new ExceptionalError(indexOutOfRangeException, internalError);
+        var exceptionalErrorInvalid = new ResultError(invalidOperationException, internalError);
+        var exceptionalErrorOutOfRange = new ResultError(indexOutOfRangeException, internalError);
 
         var resultFailWithExceptions =
             Result.Fail([error, exceptionalErrorInvalid, exceptionalErrorOutOfRange]);
@@ -115,10 +115,10 @@ public class ConclusionErrorsExtensionsTests
     public void TryGetException_WhenSearchExceptions_ShouldReturnAllExceptions()
     {
         // Arrange
-        var error = new Error("Hello");
-        var internalError = new Error("Internal bad");
-        var exceptionalError = new ExceptionalError(new Exception("Bug"), internalError);
-        var otherError = new Error("Salad");
+        var error = new ResultError("Hello");
+        var internalError = new ResultError("Internal bad");
+        var exceptionalError = new ResultError(new Exception("Bug"), internalError);
+        var otherError = new ResultError("Salad");
 
         var resultSuccess = Result.Ok();
         var resultFail = Result.Fail([error, otherError]);
@@ -146,11 +146,11 @@ public class ConclusionErrorsExtensionsTests
         var invalidOperationException = new InvalidOperationException("100 + 5 = 30?");
         var indexOutOfRangeException = new IndexOutOfRangeException();
 
-        var error = new Error("Hello");
-        var internalError = new Error("Internal bad");
+        var error = new ResultError("Hello");
+        var internalError = new ResultError("Internal bad");
 
-        var exceptionalErrorInvalid = new ExceptionalError(invalidOperationException, internalError);
-        var exceptionalErrorOutOfRange = new ExceptionalError(indexOutOfRangeException, internalError);
+        var exceptionalErrorInvalid = new ResultError(invalidOperationException, internalError);
+        var exceptionalErrorOutOfRange = new ResultError(indexOutOfRangeException, internalError);
 
         var resultFailWithExceptions =
             Result.Fail([error, exceptionalErrorInvalid, exceptionalErrorOutOfRange]);

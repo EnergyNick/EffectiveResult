@@ -50,12 +50,12 @@ public static class ResultValidator
         ReferenceEquals(result.Value, expected).Should().BeTrue();
     }
 
-    public static void ShouldBeFailed(this IConclusion result, params Error[] expectedErrors)
+    public static void ShouldBeFailed(this IConclusion result, params ResultError[] expectedErrors)
     {
-        result.ShouldBeFailed(expectedErrors as ICollection<Error>);
+        result.ShouldBeFailed(expectedErrors as ICollection<ResultError>);
     }
 
-    public static void ShouldBeFailed(this IConclusion result, IEnumerable<Error>? expectedErrors = null)
+    public static void ShouldBeFailed(this IConclusion result, IEnumerable<ResultError>? expectedErrors = null)
     {
         result.IsSuccess.Should().BeFalse();
         result.IsFailed.Should().BeTrue();
@@ -68,13 +68,13 @@ public static class ResultValidator
         }
     }
 
-    public static void ShouldBeFailed<TResult, TValue>(this TResult result, params Error[] expectedErrors)
+    public static void ShouldBeFailed<TResult, TValue>(this TResult result, params ResultError[] expectedErrors)
         where TResult : IConclusion, IValueStorage<TValue>
     {
-        result.ShouldBeFailed(expectedErrors as ICollection<Error>);
+        result.ShouldBeFailed(expectedErrors as ICollection<ResultError>);
     }
 
-    public static void ShouldBeFailed<TResult, TValue>(this TResult result, IEnumerable<Error>? expectedErrors = null)
+    public static void ShouldBeFailed<TResult, TValue>(this TResult result, IEnumerable<ResultError>? expectedErrors = null)
         where TResult : IConclusion, IValueStorage<TValue>
     {
         result.IsSuccess.Should().BeFalse();

@@ -1,8 +1,9 @@
-﻿using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using System.Text.Json.Serialization;
 using EffectiveResult.Abstractions;
 using EffectiveResult.Exceptions;
+using EffectiveResult.Json;
 
 namespace EffectiveResult;
 
@@ -10,10 +11,11 @@ namespace EffectiveResult;
 /// An implementation of the result monad pattern for an alternative way of handling errors.
 /// Can store value on success state.
 /// </summary>
+[JsonConverter(typeof(ResultWithValueJsonConverterFactory))]
 public sealed class Result<TValue>
     : IConclusion, IValueStorage<TValue>, IReferenceValueStorage<TValue>, IEquatable<Result<TValue>>
 {
-    private readonly ImmutableArray<Error> _errors = [];
+    private readonly ResultError[] _errors = [];
     private readonly TValue? _value;
 
     /// <inheritdoc />
@@ -48,25 +50,13 @@ public sealed class Result<TValue>
     public bool IsFailed => _errors.Length != 0;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<Error> Errors => _errors;
+    public IReadOnlyCollection<ResultError> Errors => _errors;
 
     internal Result(in TValue? value) => _value = value;
 
-    internal Result(Error error) => _errors = [error];
+    internal Result(ResultError error) => _errors = [error];
 
-    internal Result(IEnumerable<Error> errors, bool isFailed = true)
-    {
-        _errors = errors is Error[] arrayErrors
-            ? [..arrayErrors]
-            : [..errors];
-
-        if (isFailed && _errors.Length == 0)
-        {
-            throw new InvalidResultOperationException("Can't create failed result without errors");
-        }
-    }
-
-    internal Result(in ImmutableArray<Error> errors, bool isFailed = true)
+    internal Result(ResultError[] errors, bool isFailed = true)
     {
         _errors = errors;
 
@@ -145,14 +135,14 @@ public sealed class Result<TValue>
     public static implicit operator Result<TValue>(in TValue value) => new(value);
 
     /// Convert to failed result
-    public static implicit operator Result<TValue>(Error error) => Result.Fail<TValue>(error);
+    public static implicit operator Result<TValue>(ResultError error) => Result.Fail<TValue>(error);
 
     /// <summary>
     /// Provide method for fluent deconstruct type and use with syntactic sugar
     /// </summary>
     /// <param name="isSuccess">Status of result</param>
     /// <param name="errors">Errors on fail or empty collection on success</param>
-    public void Deconstruct(out bool isSuccess, out IReadOnlyCollection<Error> errors)
+    public void Deconstruct(out bool isSuccess, out IReadOnlyCollection<ResultError> errors)
     {
         isSuccess = IsSuccess;
         errors = _errors;
@@ -164,7 +154,7 @@ public sealed class Result<TValue>
     /// <param name="isSuccess">Status of result</param>
     /// <param name="valueOrDefault">Value on success or default value on fail</param>
     /// <param name="errors">Errors on fail or empty collection on success</param>
-    public void Deconstruct(out bool isSuccess, out TValue? valueOrDefault, out IReadOnlyCollection<Error> errors)
+    public void Deconstruct(out bool isSuccess, out TValue? valueOrDefault, out IReadOnlyCollection<ResultError> errors)
     {
         isSuccess = IsSuccess;
         valueOrDefault = _value;
@@ -190,7 +180,7 @@ public sealed class Result<TValue>
         }
         else
         {
-            builder.AppendJoin("; ", _errors);
+            builder.AppendJoin<ResultError>("; ", _errors);
             builder.Append(" ]");
         }
 
@@ -216,7 +206,7 @@ public sealed class Result<TValue>
             { obj1.IsSuccess: true, obj2.IsSuccess: true } =>
                 EqualityComparer<TValue?>.Default.Equals(_value, other._value),
             { obj1.IsFailed: true, obj2.IsFailed: true } =>
-                _errors.Equals(other._errors),
+                _errors.SequenceEqual(other._errors),
             _ => false
         };
     }

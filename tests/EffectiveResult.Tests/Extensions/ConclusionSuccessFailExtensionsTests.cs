@@ -24,7 +24,7 @@ public class ConclusionSuccessFailExtensionsTests
     public void OnSuccessExtension_WhenInvokeOnFailedResult_ShouldNotBeInvoked()
     {
         // Arrange
-        var error = new Error("Bad");
+        var error = new ResultError("Bad");
         var result = Result.Fail(error);
 
         var flag = false;
@@ -60,7 +60,7 @@ public class ConclusionSuccessFailExtensionsTests
     public void OnSuccessExtension_WhenInvokeOnFailedTypedResult_ShouldNotBeInvoked()
     {
         // Arrange
-        var error = new Error("Deadlock");
+        var error = new ResultError("Deadlock");
         var result = Result.Fail<string>(error);
 
         string? expected = null;
@@ -78,7 +78,7 @@ public class ConclusionSuccessFailExtensionsTests
     public void OnFailExtension_WhenInvokeOnFailedResult_ShouldBeInvoked()
     {
         // Arrange
-        var error = new Error("Bad");
+        var error = new ResultError("Bad");
         var result = Result.Fail(error);
 
         var flag = false;
@@ -112,11 +112,11 @@ public class ConclusionSuccessFailExtensionsTests
     public void OnFailExtension_WhenInvokeOnFailedResultWithArgumentAction_ShouldBeInvoked()
     {
         // Arrange
-        var error = new Error("Bad");
+        var error = new ResultError("Bad");
         var result = Result.Fail(error);
 
-        IEnumerable<Error>? received = null;
-        Action<IEnumerable<Error>> action = errors => received = errors;
+        IEnumerable<ResultError>? received = null;
+        Action<IEnumerable<ResultError>> action = errors => received = errors;
 
         // Act
         var thenResult = result.OnFail(action);
@@ -132,8 +132,8 @@ public class ConclusionSuccessFailExtensionsTests
         // Arrange
         var result = Result.Ok();
 
-        IEnumerable<Error>? received = null;
-        Action<IEnumerable<Error>> action = errors => received = errors;
+        IEnumerable<ResultError>? received = null;
+        Action<IEnumerable<ResultError>> action = errors => received = errors;
 
         // Act
         var thenResult = result.OnFail(action);
@@ -149,8 +149,8 @@ public class ConclusionSuccessFailExtensionsTests
         // Arrange
         var result = Result.Ok();
 
-        ExceptionalError? received = null;
-        Action<ExceptionalError> action = errors => received = errors;
+        ResultError? received = null;
+        Action<ResultError> action = errors => received = errors;
 
         // Act
         var thenResult = result.OnFailWithException<Exception>(action);
@@ -165,11 +165,11 @@ public class ConclusionSuccessFailExtensionsTests
     {
         // Arrange
         var exception = new Exception("Bad");
-        var error = new ExceptionalError(exception);
+        var error = new ResultError(exception);
         var result = Result.Fail(error);
 
-        ExceptionalError? received = null;
-        Action<ExceptionalError> action = errors => received = errors;
+        ResultError? received = null;
+        Action<ResultError> action = errors => received = errors;
 
         // Act
         var thenResult = result.OnFailWithException<ArgumentException>(action);
@@ -184,11 +184,11 @@ public class ConclusionSuccessFailExtensionsTests
     {
         // Arrange
         var exception = new ArgumentException("Fault!");
-        var error = new ExceptionalError(exception);
+        var error = new ResultError(exception);
         var result = Result.Fail(error);
 
-        ExceptionalError? received = null;
-        Action<ExceptionalError> action = errors => received = errors;
+        ResultError? received = null;
+        Action<ResultError> action = errors => received = errors;
 
         // Act
         var thenResult = result.OnFailWithException<ArgumentException>(action);

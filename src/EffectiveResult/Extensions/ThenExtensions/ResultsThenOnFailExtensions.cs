@@ -21,7 +21,7 @@ public static class ResultsThenOnFailExtensions
     /// <param name="input">Source of conclusion</param>
     /// <param name="onFailAction">Action for invoke on fail</param>
     /// <returns>Result from <paramref name="input"/></returns>
-    public static Result ThenOnFail(this Result input, Action<IEnumerable<Error>> onFailAction)
+    public static Result ThenOnFail(this Result input, Action<IEnumerable<ResultError>> onFailAction)
     {
         return input.IsFailed
             ? Result.Try(() => onFailAction(input.Errors))
@@ -36,7 +36,7 @@ public static class ResultsThenOnFailExtensions
     /// <typeparam name="TValue">Type of "<paramref name="continuation"/>" result</typeparam>
     /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
     public static Result<TValue> ThenOnFail<TValue>(this Result<TValue> input,
-        Func<IReadOnlyCollection<Error>, TValue> continuation)
+        Func<IReadOnlyCollection<ResultError>, TValue> continuation)
     {
         return input.IsFailed
             ? Result.Try(() => continuation(input.Errors))
@@ -51,7 +51,7 @@ public static class ResultsThenOnFailExtensions
     /// <typeparam name="TValue">Type of "<paramref name="continuation"/>" result</typeparam>
     /// <returns>Result from <see cref="input"/> or result from <paramref name="continuation"/> </returns>
     public static Result<TValue> ThenOnFail<TValue>(this Result<TValue> input,
-        Func<IReadOnlyCollection<Error>, Result<TValue>> continuation)
+        Func<IReadOnlyCollection<ResultError>, Result<TValue>> continuation)
     {
         return input.IsFailed
             ? continuation(input.Errors)
@@ -94,13 +94,12 @@ public static class ResultsThenOnFailExtensions
     /// <typeparam name="TException">Type of searching error</typeparam>
     /// <returns>Result from <paramref name="input"/></returns>
     public static Result ThenOnFailWithException<TException>(this Result input,
-        Action<ExceptionalError> onFailAction)
+        Action<ResultError> onFailAction)
         where TException : Exception
     {
         if (input.IsFailed)
         {
             var exceptionalError = input.Errors
-                .OfType<ExceptionalError>()
                 .FirstOrDefault(x => x.Exception is TException);
 
             if (exceptionalError is not null)

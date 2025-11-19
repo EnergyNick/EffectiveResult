@@ -65,7 +65,7 @@ public static class ConclusionSuccessFailExtensions
     /// <param name="onFailAction">Action for invoke on fail</param>
     /// <typeparam name="TConclusion">Type of conclusion</typeparam>
     /// <returns>Conclusion from <paramref name="input"/></returns>
-    public static TConclusion OnFail<TConclusion>(this TConclusion input, Action<IReadOnlyCollection<Error>> onFailAction)
+    public static TConclusion OnFail<TConclusion>(this TConclusion input, Action<IReadOnlyCollection<ResultError>> onFailAction)
         where TConclusion : class, IConclusion
     {
         if (input.IsFailed)
@@ -84,13 +84,12 @@ public static class ConclusionSuccessFailExtensions
     /// <typeparam name="TException">Type of searching error</typeparam>
     /// <returns>Conclusion from <paramref name="input"/></returns>
     public static IConclusion OnFailWithException<TException>(this IConclusion input,
-        Action<ExceptionalError> onFailAction)
+        Action<ResultError> onFailAction)
         where TException : Exception
     {
         if (input.IsFailed)
         {
             var exceptionalError = input.Errors
-                .OfType<ExceptionalError>()
                 .FirstOrDefault(x => x.Exception is TException);
 
             if (exceptionalError is not null)

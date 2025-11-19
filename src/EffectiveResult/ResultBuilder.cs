@@ -5,45 +5,45 @@
 /// </summary>
 public sealed class ResultBuilder
 {
-    private readonly List<Error> _errors;
+    private readonly List<ResultError> _errors;
 
     internal ResultBuilder() => _errors = [];
 
-    internal ResultBuilder(int capacity) => _errors = new List<Error>(capacity);
+    internal ResultBuilder(int capacity) => _errors = new List<ResultError>(capacity);
 
-    internal ResultBuilder(IEnumerable<Error> errors) => _errors = [..errors];
+    internal ResultBuilder(IEnumerable<ResultError> errors) => _errors = [.. errors];
 
     /// <summary>
     /// Add new error to builder state
     /// </summary>
-    public ResultBuilder AppendError(Error error)
+    public ResultBuilder AppendError(ResultError error)
     {
         _errors.Add(error);
         return this;
     }
 
     /// <summary>
-    /// Add new <see cref="Error"/> with message and add to builder state
+    /// Add new <see cref="ResultError"/> with message and add to builder state
     /// </summary>
     public ResultBuilder AppendError(string errorMessage)
     {
-        _errors.Add(new Error(errorMessage));
+        _errors.Add(new ResultError(errorMessage));
         return this;
     }
 
     /// <summary>
-    /// Add new <see cref="ExceptionalError"/> from exception and add to builder state
+    /// Add new <see cref="ResultError"/> from exception and add to builder state
     /// </summary>
     public ResultBuilder AppendError(Exception exception)
     {
-        _errors.Add(new ExceptionalError(exception));
+        _errors.Add(new ResultError(exception));
         return this;
     }
 
     /// <summary>
     /// Add new errors to builder state
     /// </summary>
-    public ResultBuilder AppendErrors(IEnumerable<Error> errors)
+    public ResultBuilder AppendErrors(IEnumerable<ResultError> errors)
     {
         _errors.AddRange(errors);
         return this;
@@ -52,7 +52,7 @@ public sealed class ResultBuilder
     /// <summary>
     /// Add new errors to builder state
     /// </summary>
-    public ResultBuilder AppendErrors(params Error[] errors)
+    public ResultBuilder AppendErrors(params ResultError[] errors)
     {
         _errors.AddRange(errors);
         return this;
@@ -88,7 +88,7 @@ public sealed class ResultBuilder
     /// <summary>
     /// Create result object from current builder state
     /// </summary>
-    public Result ToResult() => new(_errors, false);
+    public Result ToResult() => new([.. _errors], false);
 
     /// <summary>
     /// Create result object from current builder state
@@ -97,7 +97,7 @@ public sealed class ResultBuilder
     /// <returns>Success or fail result based on result builder state</returns>
     public Result<TValue> ToResult<TValue>(in TValue valueIfSuccess) =>
         _errors.Count != 0
-            ? new Result<TValue>(_errors)
+            ? new Result<TValue>([.. _errors])
             : new Result<TValue>(valueIfSuccess);
 
     /// <summary>
@@ -107,7 +107,7 @@ public sealed class ResultBuilder
     /// <returns>Success or fail result based on result builder state</returns>
     public Result<TValue> ToResult<TValue>(Func<TValue> valueFactoryIfSuccess) =>
         _errors.Count != 0
-            ? new Result<TValue>(_errors)
+            ? new Result<TValue>([.. _errors])
             : new Result<TValue>(valueFactoryIfSuccess());
 
     /// <summary>
@@ -127,11 +127,11 @@ public sealed class ResultBuilder
     /// Create builder with initial errors
     /// </summary>
     /// <returns>New builder with added errors</returns>
-    public static ResultBuilder Create(IEnumerable<Error> errors) => new(errors);
+    public static ResultBuilder Create(IEnumerable<ResultError> errors) => new(errors);
 
     /// <summary>
     /// Create builder with initial errors
     /// </summary>
     /// <returns>New builder with added errors</returns>
-    public static ResultBuilder Create(params Error[] errors) => new(errors);
+    public static ResultBuilder Create(params ResultError[] errors) => new(errors);
 }

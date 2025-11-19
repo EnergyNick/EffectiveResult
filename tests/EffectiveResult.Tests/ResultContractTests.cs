@@ -29,7 +29,7 @@ public class ResultContractTests
     public void ResultConstruction_WhenCreateFailedResult_ShouldBeInValidState()
     {
         // Arrange
-        var error = new Error("Very bad");
+        var error = new ResultError("Very bad");
 
         // Act
         var result = new Result(error);
@@ -46,10 +46,10 @@ public class ResultContractTests
     public void ResultConstruction_WhenCreateFailedResultWithErrors_ShouldBeInValidState()
     {
         // Arrange
-        var errors = new Error[]
+        var errors = new ResultError[]
         {
             new("Very bad"),
-            new ExceptionalError(new Exception())
+            new(new Exception())
         };
 
         // Act
@@ -67,7 +67,7 @@ public class ResultContractTests
     public void ResultConstruction_WhenCreateFailedResultWithNoErrors_ShouldBeThrown()
     {
         // Arrange
-        var errors = Array.Empty<Error>();
+        var errors = Array.Empty<ResultError>();
 
         // Act
         var resultArray = () => new Result(errors);
@@ -82,7 +82,7 @@ public class ResultContractTests
     public void ResultConstruction_WhenCloneWithCopyConstructor_ShouldBeEquals()
     {
         // Arrange
-        var error = new Error("So bad");
+        var error = new ResultError("So bad");
         var value = new List<int> { 1, 2, 3, 4, 5 };
 
         var successResult = new Result<List<int>>(value);
@@ -120,7 +120,7 @@ public class ResultContractTests
     public void ResultGetValueOrDefault_WhenInvokeOnFailedResult_ShouldReturnDefaultValue()
     {
         // Arrange
-        var error = new Error("Error!!!");
+        var error = new ResultError("Error!!!");
         var result = Result.Fail<List<string>>(error);
 
         var defaultValue = new List<string> { "Default" };
@@ -188,8 +188,8 @@ public class ResultContractTests
         // Arrange
         var data = 145;
 
-        var error = new Error("Bad data");
-        var errors = new Error[] { error };
+        var error = new ResultError("Bad data");
+        var errors = new ResultError[] { error };
 
         var result = new Result(errors);
         var structResult = new Result<int>(errors);
@@ -258,7 +258,7 @@ public class ResultContractTests
     public void ResultImplicitOperator_WhenSetFromError_ShouldCreateFailedResult()
     {
         // Arrange
-        var error = new Error("Very bad");
+        var error = new ResultError("Very bad");
 
         // Act
         Result result = error;
@@ -275,7 +275,7 @@ public class ResultContractTests
     public void ResultDeconstructOperator_WhenInvoked_ShouldReturnValidData()
     {
         // Arrange
-        var error = new Error("Very bad");
+        var error = new ResultError("Very bad");
         var strData = "Hello there!";
         var valueData = 1988;
 
@@ -338,10 +338,18 @@ public class ResultContractTests
         var equalResultForEquivalent = result.Equals(resultSame);
         var equalResultForDifferent = result.Equals(resultDifferent);
 
+        var equalResultForSameByOperator = result == result;
+        var equalResultForEquivalentByOperator = result == resultSame;
+        var equalResultForDifferentByOperator = result == resultDifferent;
+
         // Assert
         equalResultForSame.Should().BeTrue();
         equalResultForEquivalent.Should().BeTrue();
         equalResultForDifferent.Should().BeFalse();
+
+        equalResultForSameByOperator.Should().BeTrue();
+        equalResultForEquivalentByOperator.Should().BeTrue();
+        equalResultForDifferentByOperator.Should().BeFalse();
     }
 
     [Fact]
@@ -356,18 +364,22 @@ public class ResultContractTests
         // Act
         var equalResult = result.Equals(resultFailed);
         var equalResultWithValue = resultWithValue.Equals(resultWithValueFailed);
+        var equalResultByOperator = result == resultFailed;
+        var equalResultWithValueByOperator = resultWithValue == resultWithValueFailed;
 
         // Assert
         equalResult.Should().BeFalse();
         equalResultWithValue.Should().BeFalse();
+        equalResultByOperator.Should().BeFalse();
+        equalResultWithValueByOperator.Should().BeFalse();
     }
 
     [Fact]
     public void ResultEqualsOperator_WhenCompareFailedResults_ShouldReturnValidState()
     {
         // Arrange
-        var error = new Error("Very bad");
-        var otherError = new Error("Very bad, but different");
+        var error = new ResultError("Very bad");
+        var otherError = new ResultError("Very bad, but different");
 
         var result = Result.Fail(error);
         var resultSame = Result.Fail(error);

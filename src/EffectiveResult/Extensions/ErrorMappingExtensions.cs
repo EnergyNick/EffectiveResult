@@ -10,10 +10,10 @@ public static class ErrorMappingExtensions
     /// <returns>Result from <see cref="input"/> on success or result with mapped errors</returns>
     public static Result MapErrorsOnFailed(
         this Result input,
-        Func<IReadOnlyCollection<Error>, IEnumerable<Error>> errorMapper)
+        Func<IReadOnlyCollection<ResultError>, IEnumerable<ResultError>> errorMapper)
     {
         return input.IsFailed
-            ? new Result(errorMapper(input.Errors))
+            ? new Result([.. errorMapper(input.Errors)])
             : input;
     }
 
@@ -26,10 +26,10 @@ public static class ErrorMappingExtensions
     /// <returns>Result from <see cref="input"/> on success or result with mapped errors</returns>
     public static Result<TValue> MapErrorsOnFailed<TValue>(
         this Result<TValue> input,
-        Func<IReadOnlyCollection<Error>, IEnumerable<Error>> errorMapper)
+        Func<IReadOnlyCollection<ResultError>, IEnumerable<ResultError>> errorMapper)
     {
         return input.IsFailed
-            ? new Result<TValue>(errorMapper(input.Errors))
+            ? new Result<TValue>([.. errorMapper(input.Errors)])
             : input;
     }
 }
