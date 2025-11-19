@@ -1,13 +1,16 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using System.Text.Json.Serialization;
 using EffectiveResult.Abstractions;
 using EffectiveResult.Exceptions;
+using EffectiveResult.Json;
 
 namespace EffectiveResult;
 
 /// <summary>
 /// An implementation of the result monad pattern for an alternative way of handling errors.
 /// </summary>
+[JsonConverter(typeof(ResultJsonConverter))]
 public sealed partial class Result : IConclusion, IEquatable<Result>
 {
     private readonly ResultError[] _errors = [];

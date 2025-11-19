@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using System.Text.Json.Serialization;
 using EffectiveResult.Abstractions;
 using EffectiveResult.Exceptions;
+using EffectiveResult.Json;
 
 namespace EffectiveResult;
 
@@ -9,6 +11,7 @@ namespace EffectiveResult;
 /// An implementation of the result monad pattern for an alternative way of handling errors.
 /// Can store value on success state.
 /// </summary>
+[JsonConverter(typeof(ResultWithValueJsonConverterFactory))]
 public sealed class Result<TValue>
     : IConclusion, IValueStorage<TValue>, IReferenceValueStorage<TValue>, IEquatable<Result<TValue>>
 {

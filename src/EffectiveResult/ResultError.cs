@@ -1,11 +1,14 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using System.Text.Json.Serialization;
+using EffectiveResult.Json;
 
 namespace EffectiveResult;
 
 /// <summary>
 /// Represents the base type of all error causes.
 /// </summary>
+[JsonConverter(typeof(ResultErrorJsonConverter))]
 public record ResultError
 {
     private readonly IReadOnlyCollection<ResultError> _causedErrors;
@@ -30,6 +33,7 @@ public record ResultError
         init => _causedErrors = value is not null ? [.. value] : [];
     }
 
+    [JsonConstructor]
     public ResultError(string message, Exception? exception, IEnumerable<ResultError>? causedErrors)
     {
         Message = message;
