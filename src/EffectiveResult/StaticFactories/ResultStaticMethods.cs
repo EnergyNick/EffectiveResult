@@ -39,7 +39,7 @@ public partial class Result
 
     /// <summary>
     /// Creates a failed result with the given exception.
-    /// Message will be transformed to <see cref="ExceptionalError"/>
+    /// Message will be transformed to <see cref="ResultError"/>
     /// </summary>
     [DebuggerStepThrough]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -76,7 +76,7 @@ public partial class Result
 
     /// <summary>
     /// Creates a failed result with the given exception.
-    /// Message will be transformed to <see cref="ExceptionalError"/>
+    /// Message will be transformed to <see cref="ResultError"/>
     /// </summary>
     [DebuggerStepThrough]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

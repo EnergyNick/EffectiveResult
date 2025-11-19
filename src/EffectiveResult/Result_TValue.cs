@@ -203,7 +203,7 @@ public sealed class Result<TValue>
             { obj1.IsSuccess: true, obj2.IsSuccess: true } =>
                 EqualityComparer<TValue?>.Default.Equals(_value, other._value),
             { obj1.IsFailed: true, obj2.IsFailed: true } =>
-                _errors.Equals(other._errors),
+                _errors.SequenceEqual(other._errors),
             _ => false
         };
     }

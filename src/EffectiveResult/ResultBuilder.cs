@@ -32,7 +32,7 @@ public sealed class ResultBuilder
     }
 
     /// <summary>
-    /// Add new <see cref="ExceptionalError"/> from exception and add to builder state
+    /// Add new <see cref="ResultError"/> from exception and add to builder state
     /// </summary>
     public ResultBuilder AppendError(Exception exception)
     {

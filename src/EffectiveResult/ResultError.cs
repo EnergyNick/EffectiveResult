@@ -6,7 +6,6 @@ namespace EffectiveResult;
 /// <summary>
 /// Represents the base type of all error causes.
 /// </summary>
-[ExcludeFromCodeCoverage(Justification = "Only store data without any logic (only for debug printing)")]
 public record ResultError
 {
     private readonly IReadOnlyCollection<ResultError> _causedErrors;
@@ -31,15 +30,14 @@ public record ResultError
         init => _causedErrors = value is not null ? [.. value] : [];
     }
 
-    public ResultError(string message, Exception? exception = null, IEnumerable<ResultError>? causedErrors = null)
+    public ResultError(string message, Exception? exception, IEnumerable<ResultError>? causedErrors)
     {
         Message = message;
         Exception = exception;
         _causedErrors = causedErrors is not null ? [.. causedErrors] : [];
     }
 
-    public ResultError(string message, IEnumerable<ResultError> causedErrors)
-        : this(message, null, causedErrors)
+    public ResultError(string message, Exception exception) : this(message, exception, null)
     {
     }
 
@@ -48,12 +46,7 @@ public record ResultError
     {
     }
 
-    public ResultError(Exception exception) : this(exception.Message, exception)
-    {
-    }
-
-    public ResultError(Exception exception, IEnumerable<ResultError> causedErrors)
-        : this(exception.Message, exception, causedErrors)
+    public ResultError(Exception exception) : this(exception.Message, exception, null)
     {
     }
 
@@ -62,6 +55,29 @@ public record ResultError
     {
     }
 
+    /// <inheritdoc/>
+    public virtual bool Equals(ResultError? other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, other))
+        {
+            return true;
+        }
+
+        return EqualityComparer<string>.Default.Equals(Message, other.Message)
+               && EqualityComparer<Exception>.Default.Equals(Exception, other.Exception)
+               && _causedErrors.SequenceEqual(other._causedErrors);
+    }
+
+    /// <summary>
+    /// Convert to human-readable representation
+    /// </summary>
+    /// <returns>Human-readable string based on result state</returns>
+    [ExcludeFromCodeCoverage]
     protected virtual bool PrintMembers(StringBuilder builder)
     {
         if (Exception is not null)
@@ -84,7 +100,7 @@ public record ResultError
 
         builder.Append('\'');
 
-        if (CausedErrors.Count != 0)
+        if (CausedErrors is { Count: > 0 })
         {
             builder.Append(", CausedErrors = [ ");
             builder.AppendJoin("; ", CausedErrors);

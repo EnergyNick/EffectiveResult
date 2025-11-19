@@ -42,7 +42,8 @@ public static class ConclusionErrorsExtensions
             reason is TError reasonOfType
             && (predicate is null || predicate(reasonOfType)));
 
-        return anyErrors || enumeratedReasons.Any(error => HasErrorsOfTypeRecursively(error.CausedErrors, predicate));
+        return anyErrors || enumeratedReasons.Any(error =>
+            error.CausedErrors is { Count: > 0 } && HasErrorsOfTypeRecursively(error.CausedErrors, predicate));
     }
 
     /// <summary>
