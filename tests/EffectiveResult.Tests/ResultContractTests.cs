@@ -338,10 +338,18 @@ public class ResultContractTests
         var equalResultForEquivalent = result.Equals(resultSame);
         var equalResultForDifferent = result.Equals(resultDifferent);
 
+        var equalResultForSameByOperator = result == result;
+        var equalResultForEquivalentByOperator = result == resultSame;
+        var equalResultForDifferentByOperator = result == resultDifferent;
+
         // Assert
         equalResultForSame.Should().BeTrue();
         equalResultForEquivalent.Should().BeTrue();
         equalResultForDifferent.Should().BeFalse();
+
+        equalResultForSameByOperator.Should().BeTrue();
+        equalResultForEquivalentByOperator.Should().BeTrue();
+        equalResultForDifferentByOperator.Should().BeFalse();
     }
 
     [Fact]
@@ -356,10 +364,14 @@ public class ResultContractTests
         // Act
         var equalResult = result.Equals(resultFailed);
         var equalResultWithValue = resultWithValue.Equals(resultWithValueFailed);
+        var equalResultByOperator = result == resultFailed;
+        var equalResultWithValueByOperator = resultWithValue == resultWithValueFailed;
 
         // Assert
         equalResult.Should().BeFalse();
         equalResultWithValue.Should().BeFalse();
+        equalResultByOperator.Should().BeFalse();
+        equalResultWithValueByOperator.Should().BeFalse();
     }
 
     [Fact]
