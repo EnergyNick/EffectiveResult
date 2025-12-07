@@ -56,6 +56,33 @@ public class ResultErrorContractTests
     }
 
     [Fact]
+    public void ResultConstruction_WhenWithNestedAsEnumerable_ShouldBeInValidState()
+    {
+        // Arrange
+        const string message = "Bad";
+        var exception = new Exception("Wow");
+        var nestedError = new ResultError("Other");
+
+        // Act
+        var error = new ResultError(message, (IEnumerable<ResultError>)[nestedError]);
+        var errorWithException = new ResultError(exception, (IEnumerable<ResultError>)[nestedError]);
+        var errorWithMessageAndException = new ResultError(message, exception, (IEnumerable<ResultError>)[nestedError]);
+
+        // Assert
+        error.Message.Should().Be(message);
+        error.Exception.Should().BeNull();
+        error.CausedErrors.Should().ContainSingle().And.AllBeEquivalentTo(nestedError);
+
+        errorWithException.Message.Should().Be(exception.Message);
+        errorWithException.Exception.Should().Be(exception);
+        errorWithException.CausedErrors.Should().ContainSingle().And.AllBeEquivalentTo(nestedError);
+
+        errorWithMessageAndException.Message.Should().Be(message);
+        errorWithMessageAndException.Exception.Should().Be(exception);
+        errorWithMessageAndException.CausedErrors.Should().ContainSingle().And.AllBeEquivalentTo(nestedError);
+    }
+
+    [Fact]
     public void ResultEqualsOperator_WhenCompareErrorWithMessage_ShouldReturnValidState()
     {
         // Arrange

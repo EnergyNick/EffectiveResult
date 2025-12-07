@@ -11,11 +11,11 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/EnergyNick/EffectiveResult</PackageProjectUrl>
 
-        <PackageVersion>1.1.0</PackageVersion>
+        <PackageVersion>1.1.1</PackageVersion>
         <PackageIcon>icon-128.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageReleaseNotes>
-          Rework errors model structure, support STJ (de)serialization, boxing reduces
+          Add append method with condition for ResultBuilder, add error constructor from enumerable
         </PackageReleaseNotes>
         <PackageTags>Result Monad Functional Pattern Error Handling Exception</PackageTags>
     </PropertyGroup>

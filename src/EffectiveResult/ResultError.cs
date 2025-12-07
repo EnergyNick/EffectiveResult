@@ -45,6 +45,11 @@ public record ResultError
     {
     }
 
+    public ResultError(string message, IEnumerable<ResultError> causedErrors)
+        : this(message, null, causedErrors)
+    {
+    }
+
     public ResultError(string message, params ResultError[] causedErrors)
         : this(message, null, causedErrors)
     {
@@ -55,6 +60,11 @@ public record ResultError
     }
 
     public ResultError(Exception exception, params ResultError[] causedErrors)
+        : this(exception.Message, exception, causedErrors)
+    {
+    }
+
+    public ResultError(Exception exception, IEnumerable<ResultError> causedErrors)
         : this(exception.Message, exception, causedErrors)
     {
     }

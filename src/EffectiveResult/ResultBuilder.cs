@@ -14,6 +14,42 @@ public sealed class ResultBuilder
     internal ResultBuilder(IEnumerable<ResultError> errors) => _errors = [.. errors];
 
     /// <summary>
+    /// Add new error to builder, if condition is true
+    /// </summary>
+    public ResultBuilder AppendErrorIf(bool condition, ResultError error) =>
+        condition ? AppendError(error) : this;
+
+    /// <summary>
+    /// Add new error to builder, if condition is true
+    /// </summary>
+    public ResultBuilder AppendErrorIf(bool condition, string errorMessage) =>
+        condition ? AppendError(errorMessage) : this;
+
+    /// <summary>
+    /// Add new error to builder, if condition is true
+    /// </summary>
+    public ResultBuilder AppendErrorIf(bool condition, Exception exception) =>
+        condition ? AppendError(exception) : this;
+
+    /// <summary>
+    /// Add new error to builder, if condition is false
+    /// </summary>
+    public ResultBuilder AppendErrorIfNot(bool condition, ResultError error) =>
+        condition is false ? AppendError(error) : this;
+
+    /// <summary>
+    /// Add new error to builder, if condition is false
+    /// </summary>
+    public ResultBuilder AppendErrorIfNot(bool condition, string errorMessage) =>
+        condition is false ? AppendError(errorMessage) : this;
+
+    /// <summary>
+    /// Add new error to builder, if condition is false
+    /// </summary>
+    public ResultBuilder AppendErrorIfNot(bool condition, Exception exception) =>
+        condition is false ? AppendError(exception) : this;
+
+    /// <summary>
     /// Add new error to builder state
     /// </summary>
     public ResultBuilder AppendError(ResultError error)
