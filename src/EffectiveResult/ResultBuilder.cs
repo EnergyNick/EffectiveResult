@@ -1,10 +1,15 @@
-﻿namespace EffectiveResult;
+﻿using System.Diagnostics;
+
+namespace EffectiveResult;
 
 /// <summary>
 /// Mutable builder for result errors
 /// </summary>
+[DebuggerDisplay("{DebuggerInfo,nq}")]
 public sealed class ResultBuilder
 {
+    private string DebuggerInfo => $"ResultBuilder {{ ErrorsCount = {_errors.Count} }}";
+
     private readonly List<ResultError> _errors;
 
     internal ResultBuilder() => _errors = [];
@@ -32,6 +37,24 @@ public sealed class ResultBuilder
         condition ? AppendError(exception) : this;
 
     /// <summary>
+    /// Add new error to builder, if condition is true
+    /// </summary>
+    public ResultBuilder AppendErrorIf(bool condition, Func<ResultError> errorFactory) =>
+        condition ? AppendError(errorFactory()) : this;
+
+    /// <summary>
+    /// Add new error to builder, if condition is true
+    /// </summary>
+    public ResultBuilder AppendErrorIf(bool condition, Func<string> errorMessageFactory) =>
+        condition ? AppendError(errorMessageFactory()) : this;
+
+    /// <summary>
+    /// Add new error to builder, if condition is true
+    /// </summary>
+    public ResultBuilder AppendErrorIf(bool condition, Func<Exception> exceptionFactory) =>
+        condition ? AppendError(exceptionFactory()) : this;
+
+    /// <summary>
     /// Add new error to builder, if condition is false
     /// </summary>
     public ResultBuilder AppendErrorIfNot(bool condition, ResultError error) =>
@@ -48,6 +71,24 @@ public sealed class ResultBuilder
     /// </summary>
     public ResultBuilder AppendErrorIfNot(bool condition, Exception exception) =>
         condition is false ? AppendError(exception) : this;
+
+    /// <summary>
+    /// Add new error to builder, if condition is false
+    /// </summary>
+    public ResultBuilder AppendErrorIfNot(bool condition, Func<ResultError> errorFactory) =>
+        condition is false ? AppendError(errorFactory()) : this;
+
+    /// <summary>
+    /// Add new error to builder, if condition is false
+    /// </summary>
+    public ResultBuilder AppendErrorIfNot(bool condition, Func<string> errorMessageFactory) =>
+        condition is false ? AppendError(errorMessageFactory()) : this;
+
+    /// <summary>
+    /// Add new error to builder, if condition is false
+    /// </summary>
+    public ResultBuilder AppendErrorIfNot(bool condition, Func<Exception> exceptionFactory) =>
+        condition is false ? AppendError(exceptionFactory()) : this;
 
     /// <summary>
     /// Add new error to builder state

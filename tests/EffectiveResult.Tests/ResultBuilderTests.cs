@@ -70,6 +70,35 @@ public class ResultBuilderTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    public void AppendErrorIf_WhenAppendErrorsWithDifferentTypesAndFactory_ShouldCreateValidResult(bool condition)
+    {
+        // Arrange
+        var builder = Result.Build();
+        var errorMessage = "Bad situation";
+        var error = new ResultError("Bad data");
+        var exception = new Exception("Oops");
+        // var erro2 == new ResultError()
+
+        // Act
+        builder.AppendErrorIf(condition, () => error);
+        builder.AppendErrorIf(condition, () => exception);
+        builder.AppendErrorIf(condition, () => errorMessage);
+        var result = builder.ToResult();
+
+        // Assert
+        if (condition)
+        {
+            result.ShouldBeFailed(error, new ResultError(exception), new ResultError(errorMessage));
+        }
+        else
+        {
+            result.ShouldBeSuccess();
+        }
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
     public void AppendErrorIfNot_WhenAppendErrorsWithDifferentTypes_ShouldCreateValidResult(bool condition)
     {
         // Arrange
@@ -95,6 +124,33 @@ public class ResultBuilderTests
         }
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void AppendErrorIfNot_WhenAppendErrorsWithDifferentTypesAndFactory_ShouldCreateValidResult(bool condition)
+    {
+        // Arrange
+        var builder = Result.Build();
+        var errorMessage = "Bad situation";
+        var error = new ResultError("Bad data");
+        var exception = new Exception("Oops");
+
+        // Act
+        builder.AppendErrorIfNot(condition, () => error);
+        builder.AppendErrorIfNot(condition, () => exception);
+        builder.AppendErrorIfNot(condition, () => errorMessage);
+        var result = builder.ToResult();
+
+        // Assert
+        if (condition)
+        {
+            result.ShouldBeSuccess();
+        }
+        else
+        {
+            result.ShouldBeFailed(error, new ResultError(exception), new ResultError(errorMessage));
+        }
+    }
 
     [Fact]
     public void AppendErrors_WhenAppendErrorsWithDifferentTypes_ShouldCreateValidResult()

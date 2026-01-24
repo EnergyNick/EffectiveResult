@@ -6,16 +6,16 @@
           Implementation of the result monad pattern for an alternative way of handling errors.
         </Description>
         <Authors>Nickolay Sikachin</Authors>
-        <Copyright>Copyright © Nickolay Sikachin 2025</Copyright>
+        <Copyright>Copyright © Nickolay Sikachin 2026</Copyright>
 
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/EnergyNick/EffectiveResult</PackageProjectUrl>
 
-        <PackageVersion>1.1.1</PackageVersion>
+        <PackageVersion>1.1.2</PackageVersion>
         <PackageIcon>icon-128.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageReleaseNotes>
-          Add append method with condition for ResultBuilder, add error constructor from enumerable
+          Fixed ResultError ToString and equality operations, add ResultBuilder error factories
         </PackageReleaseNotes>
         <PackageTags>Result Monad Functional Pattern Error Handling Exception</PackageTags>
     </PropertyGroup>

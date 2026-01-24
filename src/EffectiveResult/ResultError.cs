@@ -34,15 +34,11 @@ public record ResultError
     }
 
     [JsonConstructor]
-    public ResultError(string message, Exception? exception, IEnumerable<ResultError>? causedErrors)
+    public ResultError(string message, Exception? exception = null, IEnumerable<ResultError>? causedErrors = null)
     {
         Message = message;
         Exception = exception;
         _causedErrors = causedErrors is not null ? [.. causedErrors] : [];
-    }
-
-    public ResultError(string message, Exception exception) : this(message, exception, null)
-    {
     }
 
     public ResultError(string message, IEnumerable<ResultError> causedErrors)
@@ -55,7 +51,7 @@ public record ResultError
     {
     }
 
-    public ResultError(Exception exception) : this(exception.Message, exception, null)
+    public ResultError(Exception exception) : this(exception.Message, exception)
     {
     }
 
@@ -87,6 +83,8 @@ public record ResultError
                && _causedErrors.SequenceEqual(other._causedErrors);
     }
 
+    public override int GetHashCode() => HashCode.Combine(Message, Exception, _causedErrors);
+
     /// <summary>
     /// Convert to human-readable representation
     /// </summary>
@@ -100,10 +98,10 @@ public record ResultError
             {
                 builder.Append("Message = '");
                 builder.Append(Message);
-                builder.Append('\'');
+                builder.Append("', ");
             }
 
-            builder.Append(", Exception = '");
+            builder.Append("Exception = '");
             builder.Append(Exception);
         }
         else
