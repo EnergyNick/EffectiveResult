@@ -43,16 +43,62 @@ public static class ConclusionErrorsExtensions
             && (predicate is null || predicate(reasonOfType)));
 
         return anyErrors || enumeratedReasons.Any(error =>
-            error.CausedErrors is { Count: > 0 } && HasErrorsOfTypeRecursively(error.CausedErrors, predicate));
+            error.CausedErrors is { Count: > 0 } && error.CausedErrors.HasErrorsOfTypeRecursively(predicate));
     }
 
     /// <summary>
-    /// Trying to get matching exception from conclusion.
+    /// Get collection of <see cref="ResultError"/> contains error of <see cref="TError"/> type.
+    /// </summary>
+    /// <param name="conclusion">Source of errors</param>
+    /// <param name="predicate">Additional error predicate</param>
+    /// <typeparam name="TError">Type of error</typeparam>
+    public static IEnumerable<TError> GetErrorsOfType<TError>(
+        this IConclusion conclusion,
+        Predicate<TError>? predicate = null)
+        where TError : ResultError
+    {
+        if (conclusion.IsSuccess)
+        {
+            return [];
+        }
+
+        var typedErrors = conclusion.Errors.OfType<TError>();
+        return predicate is not null
+            ? typedErrors.Where(e => predicate(e))
+            : typedErrors;
+    }
+
+    /// <summary>
+    /// Get collection of <see cref="ResultError"/> contains error of <see cref="TError"/> type and in caused errors.
+    /// </summary>
+    /// <param name="conclusion">Source of errors</param>
+    /// <param name="predicate">Additional error predicate</param>
+    /// <typeparam name="TError">Type of error</typeparam>
+    public static IEnumerable<TError> GetErrorsOfTypeRecursively<TError>(
+        this IConclusion conclusion,
+        Predicate<TError>? predicate = null)
+        where TError : ResultError
+    {
+        if (conclusion.IsSuccess)
+        {
+            return [];
+        }
+
+        var typedErrors = conclusion.Errors
+            .Concat(conclusion.Errors.SelectMany(e => e.CausedErrors))
+            .OfType<TError>();
+        return predicate is not null
+            ? typedErrors.Where(e => predicate(e))
+            : typedErrors;
+    }
+
+    /// <summary>
+    /// Trying to get first matching exception from conclusion.
     /// </summary>
     /// <param name="conclusion">Source of errors</param>
     /// <param name="exception">Provide first exception match, if return true</param>
-    /// <param name="filter">Filter for matching error</param>
-    /// <returns>True, if conclusion contains matching error</returns>
+    /// <param name="filter">Filter for matching exception</param>
+    /// <returns>True, if conclusion contains matching exception</returns>
     public static bool TryGetException(
         this IConclusion conclusion,
         [NotNullWhen(true)] out Exception? exception,
@@ -62,13 +108,13 @@ public static class ConclusionErrorsExtensions
     }
 
     /// <summary>
-    /// Trying to get matching exception from conclusion.
+    /// Trying to get first matching exception from conclusion.
     /// </summary>
     /// <param name="conclusion">Source of errors</param>
     /// <param name="exception">Provide first exception match, if return true</param>
-    /// <param name="filter">Filter for matching error</param>
+    /// <param name="filter">Filter for matching exception</param>
     /// <typeparam name="TException">Type of matching exception</typeparam>
-    /// <returns>True, if conclusion contains matching error</returns>
+    /// <returns>True, if conclusion contains matching exception</returns>
     public static bool TryGetException<TException>(
         this IConclusion conclusion,
         [NotNullWhen(true)] out TException? exception,
@@ -79,7 +125,7 @@ public static class ConclusionErrorsExtensions
             .FirstOrDefault(e => e.Exception is TException ex && (filter?.Invoke(ex) ?? true));
 
         exception = error?.Exception as TException;
-        return error != null;
+        return error is not null;
     }
 
     /// <summary>

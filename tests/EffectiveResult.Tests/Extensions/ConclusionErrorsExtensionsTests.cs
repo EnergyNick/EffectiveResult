@@ -12,7 +12,7 @@ public class ConclusionErrorsExtensionsTests
         var exceptionalError = new ResultError(new Exception("Bug"));
         var otherError = new ResultError("Salad");
 
-        var errors = new ResultError[]
+        var errors = new[]
         {
             error,
             exceptionalError,
@@ -57,6 +57,170 @@ public class ConclusionErrorsExtensionsTests
         isContainsError.Should().BeTrue();
         isContainsOtherError.Should().BeFalse();
         isContainsInternalError.Should().BeTrue();
+    }
+
+    [Fact]
+    public void GetErrorsOfType_WhenSearchErrors_ShouldReturnAllExceptions()
+    {
+        // Arrange
+        var myError = new MyOtherResultError("Other type error");
+        var myCausedError = new MyOtherResultError("Internal other error");
+
+        var resultSuccess = Result.Ok();
+        var failedWithoutTypedErrors = Result.Fail([new ResultError("Not my error")]);
+        var failedWithTypedErrors = Result.Fail([new ResultError("Not my error"), myError]);
+        var failedWithTypedErrorsAndCaused = Result.Fail(
+        [
+            myError,
+            new ResultError(
+                "Not my error",
+                myCausedError)
+        ]);
+
+        // Act
+        var fromSuccess = resultSuccess.GetErrorsOfType<MyOtherResultError>();
+        var fromFailWithout = failedWithoutTypedErrors.GetErrorsOfType<MyOtherResultError>();
+        var fromFailWithTyped = failedWithTypedErrors.GetErrorsOfType<MyOtherResultError>();
+        var fromFailWithTypedNotCaused =
+            failedWithTypedErrorsAndCaused.GetErrorsOfType<MyOtherResultError>();
+
+        // Assert
+        fromSuccess.Should().BeEmpty();
+        fromFailWithout.Should().BeEmpty();
+        fromFailWithTyped.Should().ContainSingle().And.HaveElementAt(0, myError);
+        fromFailWithTypedNotCaused.Should().ContainSingle().And.HaveElementAt(0, myError);
+    }
+
+    [Fact]
+    public void GetErrorsOfType_WhenSearchExceptionByTypeOrPredicate_ShouldReturnValidExceptions()
+    {
+        // Arrange
+        var myError = new MyOtherResultError("Other type error");
+        var myInvalidError = new MyOtherResultError("Other type error, but invalid");
+        var myCausedError = new MyOtherResultError("Internal other error");
+
+        var resultSuccess = Result.Ok();
+        var failedWithoutTypedErrors = Result.Fail([myInvalidError, new ResultError("Not my error")]);
+        var failedWithTypedErrors = Result.Fail([myInvalidError, new ResultError("Not my error"), myError]);
+        var failedWithTypedErrorsAndCaused = Result.Fail(
+        [
+            myInvalidError,
+            myError,
+            new ResultError(
+                "Not my error",
+                new ResultError("Not my caused error"),
+                myCausedError)
+        ]);
+
+        Predicate<MyOtherResultError> predicateByType = e => e == myError || e == myCausedError;
+
+        // Act
+        var fromSuccess = resultSuccess.GetErrorsOfType(predicateByType);
+        var fromFailWithout = failedWithoutTypedErrors.GetErrorsOfType(predicateByType);
+        var fromFailWithTyped = failedWithTypedErrors.GetErrorsOfType(predicateByType);
+        var fromFailWithTypedNotCaused =
+            failedWithTypedErrorsAndCaused.GetErrorsOfType(predicateByType);
+
+        // Assert
+        fromSuccess.Should().BeEmpty();
+        fromFailWithout.Should().BeEmpty();
+        fromFailWithTyped.Should().ContainSingle().And.HaveElementAt(0, myError);
+        fromFailWithTypedNotCaused.Should().ContainSingle().And.HaveElementAt(0, myError);
+    }
+
+    [Fact]
+    public void GetErrorsOfTypeRecursively_WhenSearchErrors_ShouldReturnAllExceptions()
+    {
+        // Arrange
+        var myError = new MyOtherResultError("Other type error");
+        var myCausedError = new MyOtherResultError("Internal other error");
+
+        var resultSuccess = Result.Ok();
+        var failedWithoutTypedErrors = Result.Fail([new ResultError("Not my error")]);
+        var failedWithTypedErrors = Result.Fail([new ResultError("Not my error"), myError]);
+        var failedWithTypedErrorsAndCaused = Result.Fail(
+        [
+            myError,
+            new ResultError(
+                "Not my error",
+                new ResultError("Not my caused error"))
+        ]);
+        var failedWithTypedErrorsAndCausedOfNeededType = Result.Fail(
+        [
+            myError,
+            new ResultError(
+                "Not my error",
+                myCausedError)
+        ]);
+
+        // Act
+        var fromSuccess = resultSuccess.GetErrorsOfTypeRecursively<MyOtherResultError>();
+        var fromFailWithout = failedWithoutTypedErrors.GetErrorsOfTypeRecursively<MyOtherResultError>();
+        var fromFailWithTyped = failedWithTypedErrors.GetErrorsOfTypeRecursively<MyOtherResultError>();
+        var fromFailWithTypedNotCaused =
+            failedWithTypedErrorsAndCaused.GetErrorsOfTypeRecursively<MyOtherResultError>();
+        var fromFailWithTypedAndCaused =
+            failedWithTypedErrorsAndCausedOfNeededType.GetErrorsOfTypeRecursively<MyOtherResultError>();
+
+        // Assert
+        fromSuccess.Should().BeEmpty();
+        fromFailWithout.Should().BeEmpty();
+        fromFailWithTyped.Should().ContainSingle().And.HaveElementAt(0, myError);
+        fromFailWithTypedNotCaused.Should().ContainSingle().And.HaveElementAt(0, myError);
+        fromFailWithTypedAndCaused.Should().HaveCount(2)
+            .And.AllBeOfType<MyOtherResultError>()
+            .And.IntersectWith([myError, myCausedError]);
+    }
+
+    [Fact]
+    public void GetErrorsOfTypeRecursively_WhenSearchExceptionByTypeOrPredicate_ShouldReturnValidExceptions()
+    {
+        // Arrange
+        var myError = new MyOtherResultError("Other type error");
+        var myInvalidError = new MyOtherResultError("Other type error, but invalid");
+        var myCausedError = new MyOtherResultError("Internal other error");
+        var myCausedInvalidError = new MyOtherResultError("Internal other error, but invalid");
+
+        var resultSuccess = Result.Ok();
+        var failedWithoutTypedErrors = Result.Fail([myInvalidError, new ResultError("Not my error")]);
+        var failedWithTypedErrors = Result.Fail([myInvalidError, new ResultError("Not my error"), myError]);
+        var failedWithTypedErrorsAndCaused = Result.Fail(
+        [
+            myInvalidError,
+            myError,
+            new ResultError(
+                "Not my error",
+                new ResultError("Not my caused error"),
+                myCausedInvalidError)
+        ]);
+        var failedWithTypedErrorsAndCausedOfNeededType = Result.Fail(
+        [
+            myError,
+            new ResultError(
+                "Not my error",
+                myCausedError,
+                myCausedInvalidError)
+        ]);
+
+        Predicate<MyOtherResultError> predicateByType = e => e == myError || e == myCausedError;
+
+        // Act
+        var fromSuccess = resultSuccess.GetErrorsOfTypeRecursively(predicateByType);
+        var fromFailWithout = failedWithoutTypedErrors.GetErrorsOfTypeRecursively(predicateByType);
+        var fromFailWithTyped = failedWithTypedErrors.GetErrorsOfTypeRecursively(predicateByType);
+        var fromFailWithTypedNotCaused =
+            failedWithTypedErrorsAndCaused.GetErrorsOfTypeRecursively(predicateByType);
+        var fromFailWithTypedAndCaused =
+            failedWithTypedErrorsAndCausedOfNeededType.GetErrorsOfTypeRecursively(predicateByType);
+
+        // Assert
+        fromSuccess.Should().BeEmpty();
+        fromFailWithout.Should().BeEmpty();
+        fromFailWithTyped.Should().ContainSingle().And.HaveElementAt(0, myError);
+        fromFailWithTypedNotCaused.Should().ContainSingle().And.HaveElementAt(0, myError);
+        fromFailWithTypedAndCaused.Should().HaveCount(2)
+            .And.AllBeOfType<MyOtherResultError>()
+            .And.IntersectWith([myError, myCausedError]);
     }
 
     [Fact]
@@ -168,5 +332,13 @@ public class ConclusionErrorsExtensionsTests
 
         fromPredicate.Should().Be(invalidOperationException);
         fromTypedPredicate.Should().Be(indexOutOfRangeException);
+    }
+
+    private record MyOtherResultError : ResultError
+    {
+        public MyOtherResultError(string message, params ResultError[] causedErrors)
+            : base(message, causedErrors)
+        {
+        }
     }
 }
