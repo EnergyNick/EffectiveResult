@@ -99,6 +99,21 @@ public partial class Result
     }
 
     /// <summary>
+    /// Executes the action with return value and catch all exceptions, If they will be thrown within the action.
+    /// </summary>
+    public static Result Try(Func<Result> action)
+    {
+        try
+        {
+            return action();
+        }
+        catch (Exception e)
+        {
+            return Fail(e);
+        }
+    }
+
+    /// <summary>
     /// Executes the async action and catch all exceptions, If they will be thrown within the action.
     /// </summary>
     public static async Task<Result> TryAsync(Func<Task> action)
@@ -107,6 +122,21 @@ public partial class Result
         {
             await action().ConfigureAwait(false);
             return Ok();
+        }
+        catch (Exception e)
+        {
+            return Fail(e);
+        }
+    }
+
+    /// <summary>
+    /// Executes the action with return value and catch all exceptions, If they will be thrown within the action.
+    /// </summary>
+    public static async Task<Result> TryAsync(Func<Task<Result>> action)
+    {
+        try
+        {
+            return await action();
         }
         catch (Exception e)
         {
@@ -130,6 +160,21 @@ public partial class Result
     }
 
     /// <summary>
+    /// Executes the action with return value and catch all exceptions, If they will be thrown within the action.
+    /// </summary>
+    public static Result<T> Try<T>(Func<Result<T>> action)
+    {
+        try
+        {
+            return action();
+        }
+        catch (Exception e)
+        {
+            return Fail<T>(e);
+        }
+    }
+
+    /// <summary>
     /// Executes the async action with return value and catch all exceptions, If they will be thrown within the action.
     /// </summary>
     public static async Task<Result<T>> TryAsync<T>(Func<Task<T>> action)
@@ -137,6 +182,21 @@ public partial class Result
         try
         {
             return Ok(await action().ConfigureAwait(false));
+        }
+        catch (Exception e)
+        {
+            return Fail<T>(e);
+        }
+    }
+
+    /// <summary>
+    /// Executes the async action with return value and catch all exceptions, If they will be thrown within the action.
+    /// </summary>
+    public static async Task<Result<T>> TryAsync<T>(Func<Task<Result<T>>> action)
+    {
+        try
+        {
+            return await action().ConfigureAwait(false);
         }
         catch (Exception e)
         {

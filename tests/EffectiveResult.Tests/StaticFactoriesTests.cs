@@ -147,6 +147,25 @@ public class StaticFactoriesTests
     }
 
     [Fact]
+    public void TryMethod_WhenInvokeWithoutExceptionsAndReturningResult_ShouldReturnSameResult()
+    {
+        // Arrange
+        var returningResult = Result.Ok();
+        var method = () => returningResult;
+
+        // Act
+        var resultAction = () => Result.Try(method);
+
+        // Assert
+        method.Should().NotThrow();
+        resultAction.Should().NotThrow();
+
+        var result = resultAction();
+        result.ShouldBeSuccess();
+        result.Should().Be(returningResult);
+    }
+
+    [Fact]
     public void TryMethod_WhenInvokeWithReturnValueAndWithoutExceptions_ShouldReturnSuccessResultWithValidValue()
     {
         // Arrange
@@ -174,6 +193,36 @@ public class StaticFactoriesTests
     }
 
     [Fact]
+    public void TryMethod_WhenInvokeWithReturnValueAndWithoutExceptionsWithResult_ShouldReturnSameResultWithValidValue()
+    {
+        // Arrange
+        const string refData = "Result is real!";
+        const int valueData = 145;
+
+        var refReturningResult = Result.Ok(refData);
+        var valueReturningResult = Result.Ok(valueData);
+
+        var refMethod = () => refReturningResult;
+        var valueMethod = () => valueReturningResult;
+
+        // Act
+        var refAction = () => Result.Try(refMethod);
+        var valueAction = () => Result.Try(valueMethod);
+
+        // Assert
+        refMethod.Should().NotThrow();
+        refAction.Should().NotThrow();
+
+        valueMethod.Should().NotThrow();
+        valueAction.Should().NotThrow();
+
+        var refResult = refAction();
+        refResult.Should().Be(refReturningResult);
+        var valueResult = valueAction();
+        valueResult.Should().Be(valueReturningResult);
+    }
+
+    [Fact]
     public void TryMethod_WhenInvokeWithExceptions_ShouldReturnFailedResult()
     {
         // Arrange
@@ -194,6 +243,27 @@ public class StaticFactoriesTests
     }
 
     [Fact]
+    public void TryMethod_WhenReturnResultAndInvokeWithExceptions_ShouldReturnFailedResult()
+    {
+        // Arrange
+        var expectedException = new Exception("Oops");
+        var expectedError = new ResultError(expectedException);
+
+        Func<Result> action = () => throw expectedException;
+
+        // Act
+        var resultAction = () => Result.Try(action);
+
+        // Assert
+        action.Should().Throw<Exception>();
+        resultAction.Should().NotThrow();
+
+        var result = resultAction();
+        result.ShouldBeFailed(expectedError);
+    }
+
+
+    [Fact]
     public void TryMethod_WhenInvokeMethodWithReturnValueWithExceptions_ShouldReturnFailedResult()
     {
         // Arrange
@@ -201,6 +271,26 @@ public class StaticFactoriesTests
         var expectedError = new ResultError(expectedException);
 
         Func<int> action = () => throw expectedException;
+
+        // Act
+        var resultAction = () => Result.Try(action);
+
+        // Assert
+        action.Should().Throw<Exception>();
+        resultAction.Should().NotThrow();
+
+        var result = resultAction();
+        result.ShouldBeFailed(expectedError);
+    }
+
+    [Fact]
+    public void TryMethod_WhenReturnResultAndInvokeMethodWithReturnValueWithExceptions_ShouldReturnFailedResult()
+    {
+        // Arrange
+        var expectedException = new Exception("Oops");
+        var expectedError = new ResultError(expectedException);
+
+        Func<Result<int>> action = () => throw expectedException;
 
         // Act
         var resultAction = () => Result.Try(action);
@@ -231,6 +321,25 @@ public class StaticFactoriesTests
     }
 
     [Fact]
+    public async Task TryAsyncMethod_WhenInvokeWithoutExceptionsAndReturnResult_ShouldReturnSameResult()
+    {
+        // Arrange
+        var returningResult = Result.Ok();
+        var method = () => Task.FromResult(returningResult);
+
+        // Act
+        var resultAction = async () => await Result.TryAsync(method).ConfigureAwait(false);
+
+        // Assert
+        await method.Should().NotThrowAsync();
+        await resultAction.Should().NotThrowAsync();
+
+        var result = await resultAction();
+        result.ShouldBeSuccess();
+        result.Should().Be(returningResult);
+    }
+
+    [Fact]
     public async Task TryAsyncMethod_WhenInvokeWithReturnValueAndWithoutExceptions_ShouldReturnSuccessResultWithValidValue()
     {
         // Arrange
@@ -258,6 +367,36 @@ public class StaticFactoriesTests
     }
 
     [Fact]
+    public async Task TryAsyncMethod_WhenInvokeWithReturnValueAndWithoutExceptionsAndReturnResult_ShouldReturnSameResultWithValidValue()
+    {
+        // Arrange
+        const string refData = "Result is real!";
+        const int valueData = 145;
+
+        var refReturningResult = Result.Ok(refData);
+        var valueReturningResult = Result.Ok(valueData);
+
+        var refMethod = () => Task.FromResult(refReturningResult);
+        var valueMethod = () => Task.FromResult(valueReturningResult);
+
+        // Act
+        var refAction = () => Result.TryAsync(refMethod);
+        var valueAction = () => Result.TryAsync(valueMethod);
+
+        // Assert
+        await refMethod.Should().NotThrowAsync();
+        await refAction.Should().NotThrowAsync();
+
+        await valueMethod.Should().NotThrowAsync();
+        await valueAction.Should().NotThrowAsync();
+
+        var refResult = await refAction();
+        refResult.Should().Be(refReturningResult);
+        var valueResult = await valueAction();
+        valueResult.Should().Be(valueReturningResult);
+    }
+
+    [Fact]
     public async Task TryAsyncMethod_WhenInvokeWithExceptions_ShouldReturnFailedResult()
     {
         // Arrange
@@ -278,6 +417,27 @@ public class StaticFactoriesTests
     }
 
     [Fact]
+    public async Task TryAsyncMethod_WhenReturnValueAndInvokeWithExceptions_ShouldReturnFailedResult()
+    {
+        // Arrange
+        var expectedException = new Exception("Oops");
+        var expectedError = new ResultError(expectedException);
+
+        Func<Task<Result>> action = () => throw expectedException;
+
+        // Act
+        var resultAction = () => Result.TryAsync(action);
+
+        // Assert
+        await action.Should().ThrowAsync<Exception>();
+        await resultAction.Should().NotThrowAsync();
+
+        var result = await resultAction();
+        result.ShouldBeFailed(expectedError);
+    }
+
+
+    [Fact]
     public async Task TryAsyncMethod_WhenInvokeMethodWithResultWithExceptions_ShouldReturnFailedResult()
     {
         // Arrange
@@ -285,6 +445,26 @@ public class StaticFactoriesTests
         var expectedError = new ResultError(expectedException);
 
         Func<Task<int>> action = () => throw expectedException;
+
+        // Act
+        var resultAction = () => Result.TryAsync(action);
+
+        // Assert
+        await action.Should().ThrowAsync<Exception>();
+        await resultAction.Should().NotThrowAsync();
+
+        var result = await resultAction();
+        result.ShouldBeFailed(expectedError);
+    }
+
+    [Fact]
+    public async Task TryAsyncMethod_WhenReturnResultAndInvokeMethodWithResultWithExceptions_ShouldReturnFailedResult()
+    {
+        // Arrange
+        var expectedException = new Exception("Oops");
+        var expectedError = new ResultError(expectedException);
+
+        Func<Task<Result<int>>> action = () => throw expectedException;
 
         // Act
         var resultAction = () => Result.TryAsync(action);
